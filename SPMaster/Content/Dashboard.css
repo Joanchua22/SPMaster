@@ -1,0 +1,525 @@
+﻿/* =========================
+   COLOURS AND BASE STYLES
+   ========================= */
+:root {
+    --dashboard-yellow: #ffe449;
+    --dashboard-purple: #8c4dff;
+    --dashboard-purple-dark: #6930cf;
+    --dashboard-navy: #2d2365;
+    --dashboard-muted: #777382;
+    --dashboard-white: #fffdfb;
+    --dashboard-border: #ece8f0;
+    --dashboard-hover: #f5efff;
+    --dashboard-active: #ece2ff;
+    --sidebar-width: 230px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--dashboard-yellow);
+    color: var(--dashboard-navy);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--dashboard-purple-dark);
+    outline-offset: 4px;
+}
+
+/* =========================
+   SKIP LINK
+   ========================= */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 1000;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: var(--dashboard-navy);
+    color: white;
+    font-weight: 600;
+}
+
+    .skip-link:focus {
+        top: 12px;
+    }
+
+/* =========================
+   MAIN LAYOUT
+   ========================= */
+.dashboard-layout {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+.dashboard-main {
+    min-width: 0;
+    min-height: 100vh;
+    margin-left: var(--sidebar-width);
+    padding: 24px 28px;
+}
+
+/* =========================
+   SIDEBAR
+   ========================= */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-width);
+    padding: 24px 14px 18px;
+    background: var(--dashboard-white);
+    border-right: 1px solid var(--dashboard-border);
+    overflow-y: auto;
+}
+
+/* Logo */
+.dashboard-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 32px;
+    padding: 0 12px;
+}
+
+.dashboard-logo {
+    width: 150px;
+    height: auto;
+}
+
+/* Main menu label */
+.menu-heading {
+    margin: 0 12px 14px;
+    color: var(--dashboard-muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+/* Navigation */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--dashboard-muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .nav-item:hover {
+        background: var(--dashboard-hover);
+        color: var(--dashboard-navy);
+    }
+
+    /* Selected page */
+    .nav-item.active,
+    .nav-item[aria-current="page"] {
+        background-color: var(--dashboard-active);
+        color: var(--dashboard-navy);
+        font-weight: 700;
+    }
+
+/* Temporary placeholder icons */
+.nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Profile and Settings at the bottom */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 24px;
+}
+
+    .sidebar-bottom nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 16px;
+        border-top: 1px solid var(--dashboard-border);
+    }
+
+/* =========================
+   TOP BAR
+   ========================= */
+.dashboard-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 80px;
+    padding: 16px 22px;
+    border-radius: 14px;
+    background: var(--dashboard-white);
+    box-shadow: 0 2px 4px rgba(45, 35, 101, 0.04);
+}
+
+.topbar-heading {
+    min-width: 0;
+}
+
+.dashboard-date {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--dashboard-muted);
+    font-size: 12px;
+}
+
+.dashboard-title {
+    margin: 0;
+    color: var(--dashboard-navy);
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+/* Username and notification area */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+.user-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #fbc7e7;
+    color: var(--dashboard-navy);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    color: var(--dashboard-navy);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.user-role {
+    color: var(--dashboard-muted);
+    font-size: 11px;
+}
+
+/* Notification placeholder */
+.topbar-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #f4f2f7;
+    color: var(--dashboard-navy);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+    .topbar-icon-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .topbar-icon-button:not(:disabled):hover {
+        background: var(--dashboard-active);
+    }
+
+/* Hidden on desktop */
+.dashboard-menu-toggle,
+.dashboard-menu-close,
+.dashboard-menu-overlay {
+    display: none;
+}
+
+/* =========================
+   PAGE CONTENT AREA
+   ========================= */
+.dashboard-content {
+    min-width: 0;
+    margin-top: 22px;
+}
+
+/* =========================
+   TABLETS AND MOBILE SIDEBAR
+   ========================= */
+@media (max-width: 1000px) {
+    :root {
+        --sidebar-width: 200px;
+    }
+
+    /* Main content */
+    .dashboard-main {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    /* Overlay sidebar */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1200;
+        width: 260px;
+        max-width: calc(100% - 48px);
+        padding: 70px 14px 20px;
+        background: var(--dashboard-white);
+        border-right: 1px solid var(--dashboard-border);
+        border-bottom: none;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        visibility: hidden;
+        transform: translateX(-100%);
+    }
+
+    .dashboard-layout.mobile-menu-open .sidebar {
+        visibility: visible;
+        transform: translateX(0);
+        box-shadow: 8px 0 28px rgba(45, 35, 101, 0.18);
+    }
+
+    /* Sidebar logo */
+    .sidebar .dashboard-brand {
+        justify-content: center;
+        margin-bottom: 32px;
+        padding: 0 12px;
+    }
+
+    .dashboard-logo {
+        width: 135px;
+    }
+
+    /* Sidebar navigation */
+    .sidebar .menu-heading {
+        margin: 0 12px 14px;
+    }
+
+    .sidebar .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar .sidebar-bottom {
+        margin-top: auto;
+        padding-top: 24px;
+    }
+
+        .sidebar .sidebar-bottom nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 16px;
+        }
+
+    /* Top bar */
+    .dashboard-topbar {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px;
+    }
+
+        .dashboard-topbar .topbar-heading {
+            flex: 1;
+            min-width: 0;
+        }
+
+    .dashboard-title {
+        font-size: 20px;
+    }
+
+    .topbar-actions {
+        gap: 10px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+    }
+
+    /* Hamburger and close buttons */
+    .dashboard-menu-toggle,
+    .dashboard-menu-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: none;
+        border-radius: 10px;
+        color: var(--dashboard-navy);
+        font-size: 26px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .dashboard-menu-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-size: 30px;
+    }
+
+        .dashboard-menu-toggle:hover,
+        .dashboard-menu-close:hover {
+            background: #dfd0fc;
+        }
+
+    /* Background overlay */
+    .dashboard-menu-overlay:not([hidden]) {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1100;
+        background: rgba(25, 19, 50, 0.35);
+    }
+
+    body.dashboard-menu-open {
+        overflow: hidden;
+    }
+}
+
+/* =========================
+   SMALL SCREENS
+   ========================= */
+@media (max-width: 760px) {
+    .dashboard-main {
+        min-height: 0;
+        padding: 18px 16px;
+    }
+
+    .dashboard-logo {
+        width: 125px;
+    }
+
+    .nav-item {
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .sidebar .sidebar-bottom nav {
+        flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+        margin-left: auto;
+    }
+
+    .dashboard-content {
+        margin-top: 18px;
+    }
+}
+
+/* =========================
+   NARROW PHONES
+   ========================= */
+@media (max-width: 450px) {
+    .dashboard-main {
+        padding: 14px 12px;
+    }
+
+    .dashboard-topbar .topbar-heading {
+        display: none;
+    }
+
+    .dashboard-topbar {
+        align-items: center;
+    }
+
+        .dashboard-topbar .topbar-actions {
+            width: auto;
+            margin-left: auto;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
+
+    .user-name {
+        white-space: nowrap;
+    }
+
+    .nav-item {
+        font-size: 12px;
+    }
+}
+
+/* =========================
+   REDUCED MOTION
+   ========================= */
+@media (prefers-reduced-motion: reduce) {
+    .nav-item {
+        transition: none;
+    }
+}

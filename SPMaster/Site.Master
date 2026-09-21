@@ -1,0 +1,229 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="SPMaster.Site" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SPMaster | Practice. Progress. Master.</title>
+    <link runat="server" href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link runat="server" href="~/Content/Home.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+
+<body>
+    <form id="form1" runat="server" class="site-wrapper">
+        <a href ="#main-content" class="skip-link">
+            Skip to content
+        </a>
+
+        <%--Header--%>
+        <header class="site-header">
+            <div class="header-inner">
+
+                <!-- Logo -->
+                <a href="<%= ResolveUrl("~/Home.aspx") %>" class="brand">
+                    <img src="<%= ResolveUrl("~/Images/spmaster-logo.png") %>"
+                         alt="SPMaster home"
+                         class="header-logo" />
+                </a>
+
+                <!-- Only navigation links collapse -->
+                <div class="header-menu" id="headerMenu">
+                    <nav class="main-nav" aria-label="Main navigation">
+                        <a href="<%= ResolveUrl("~/Home.aspx") %>">Home</a>
+
+                        <a href="<%= ResolveUrl("~/Home.aspx#features") %>">
+                            Features
+                        </a>
+
+                        <a href="<%= ResolveUrl("~/Home.aspx#how-it-works") %>">
+                            How It Works
+                        </a>
+
+                        <a href="<%= ResolveUrl("~/Home.aspx#about-us") %>">
+                            About Us
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Always visible -->
+                <div class="header-actions">
+                    <a href="<%= ResolveUrl("~/Login.aspx") %>"
+                       class="login-link">
+                        Log in
+                    </a>
+
+                    <a href="<%= ResolveUrl("~/Register.aspx") %>"
+                       class="button button-primary">
+                        Sign up free
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                    <button type="button"
+                            class="menu-toggle"
+                            id="menuToggle"
+                            aria-controls="headerMenu"
+                            aria-expanded="false"
+                            aria-label="Open navigation menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+
+            </div>
+        </header>
+
+        <%--Content--%>
+        <main id="main-content" class="main-content" tabindex="-1">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </main>
+
+        <%--Footer--%>
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-top">
+
+                    <%--Brand Information--%>
+                    <a href="<%= ResolveUrl("~/Home.aspx") %>" class="brand">
+                        <img src="<%=ResolveUrl("~/Images/spmaster-logo.png") %>" alt="SPMaster Home" class="footer-logo" />
+                    </a>
+
+                    <p>
+                        Small steps. Stronger skills.<br />
+                        Your SPM journey starts here.
+                    </p>
+
+                    <span class="footer-badge">
+                        Made for SPM stars
+                    </span>
+                </div>
+
+                <%--Footer navigation--%>
+                <nav class="footer-links" aria-label="Footer Navigation">
+                    <h2>Explore</h2>
+
+                    <a href="<%= ResolveUrl("~/Home.aspx") %>">Home
+                    </a>
+
+                    <a href="<%= ResolveUrl("~/Home.aspx#features") %>">Features
+                    </a>
+
+                    <a href="<%= ResolveUrl("~/Home.aspx#how-it-works") %>">How It Works
+                    </a>
+
+                    <a href="<%= ResolveUrl("~/Home.aspx#about-us") %>">About Us
+                    </a> 
+                </nav>
+
+                <%--Registration invitation--%>
+                <div class="footer-cta">
+                    <h2>Ready to level up?</h2>
+
+                    <p> Build your confidence, one quiz at a time</p>
+
+                    <a href="<%= ResolveUrl("~/Register.aspx") %>" class="button button-primary">Start learning free 
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    &copy; <%= DateTime.Now.Year %> SPMaster.
+                    All rights reserved.
+                </p>
+                <p> Practice. Progress. Master.</p>
+            </div>
+        </footer>
+
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+<script>
+    (function () {
+        function initialiseMenu() {
+            const button = document.getElementById("menuToggle");
+            const menu = document.getElementById("headerMenu");
+            const header = document.querySelector(".site-header");
+
+            if (!button || !menu || !header) {
+                console.error(
+                    "Menu setup failed: check menuToggle and headerMenu IDs."
+                );
+                return;
+            }
+
+            const smallScreen = window.matchMedia("(max-width: 1000px)");
+
+            function closeMenu(returnFocus) {
+                if (returnFocus) {
+                    button.focus();
+                }
+
+                menu.classList.remove("is-open");
+                button.setAttribute("aria-expanded", "false");
+                button.setAttribute("aria-label", "Open navigation menu");
+            }
+
+            button.addEventListener("click", function () {
+                const isOpen = menu.classList.toggle("is-open");
+
+                button.setAttribute("aria-expanded", String(isOpen));
+                button.setAttribute(
+                    "aria-label",
+                    isOpen
+                        ? "Close navigation menu"
+                        : "Open navigation menu"
+                );
+            });
+
+            menu.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    if (smallScreen.matches) {
+                        closeMenu(true);
+                    }
+                });
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" &&
+                    menu.classList.contains("is-open")) {
+                    closeMenu(true);
+                }
+            });
+
+            document.addEventListener("click", function (event) {
+                if (smallScreen.matches &&
+                    !header.contains(event.target)) {
+                    closeMenu(menu.contains(document.activeElement));
+                }
+            });
+
+            smallScreen.addEventListener("change", function () {
+                const focusWasInMenu = menu.contains(document.activeElement);
+                closeMenu(smallScreen.matches && focusWasInMenu);
+
+                if (!smallScreen.matches &&
+                    document.activeElement === button) {
+                    const firstLink = menu.querySelector("a");
+                    if (firstLink) firstLink.focus();
+                }
+            });
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initialiseMenu);
+        } else {
+            initialiseMenu();
+        }
+    })();
+</script>
+</body>
+</html>
