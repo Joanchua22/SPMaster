@@ -1,0 +1,319 @@
+﻿<%@ Master Language="C#"
+    AutoEventWireup="true"
+    CodeBehind="Portal.Master.cs"
+    Inherits="SPMaster.Master.Portal" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1" />
+
+    <title>SPMaster Portal</title>
+
+    <link runat="server"
+          href="~/Content/Portal.css?v=1"
+          rel="stylesheet"
+          type="text/css" />
+
+    <asp:ContentPlaceHolder ID="PortalHead" runat="server" />
+</head>
+
+<body class="portal-body">
+    <form id="portalForm" runat="server" class="portal-wrapper">
+
+        <a href="#portal-content" class="portal-skip-link">
+            Skip to content
+        </a>
+
+        <%-- SHARED HEADER --%>
+        <header class="portal-header">
+            <div class="portal-header-inner">
+
+                <a href="<%= ResolveUrl(PortalFolder + "Dashboard.aspx") %>"
+                   class="portal-brand">
+                    <img src="<%= ResolveUrl("~/Images/spmaster-logo.png") %>"
+                         alt="SPMaster dashboard"
+                         class="portal-logo" />
+                </a>
+
+                <%-- Only these navigation links collapse --%>
+                <div id="portalMenu" class="portal-menu">
+                    <nav class="portal-nav"
+                         aria-label="Main navigation">
+
+                        <% if (IsLecturer) { %>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/Dashboard.aspx") %>">
+                                Dashboard
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/QuestionBank.aspx") %>">
+                                Question Bank
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>">
+                                Quizzes
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>">
+                                Sessions
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>">
+                                Grading
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Lecturer/Performance.aspx") %>">
+                                Performance
+                            </a>
+
+                        <% } else { %>
+
+                            <a href="<%= ResolveUrl("~/Student/Dashboard.aspx") %>">
+                                Dashboard
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Student/MyQuizzes.aspx") %>">
+                                My Quizzes
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Student/Performance.aspx") %>">
+                                Performance
+                            </a>
+
+                            <a href="<%= ResolveUrl("~/Student/Feedback.aspx") %>">
+                                Feedback
+                            </a>
+
+                        <% } %>
+
+                    </nav>
+                </div>
+
+                <%-- Account and hamburger remain visible --%>
+                <div class="portal-header-actions">
+
+                    <div class="portal-account" id="portalAccount">
+
+                        <button type="button"
+                                id="portalAccountToggle"
+                                class="portal-account-toggle"
+                                aria-controls="portalAccountMenu"
+                                aria-expanded="false">
+
+                            <span class="portal-avatar" aria-hidden="true">
+                                <%= UserInitials %>
+                            </span>
+
+                            <span class="portal-user-name">
+                                <%= DisplayName %>
+                            </span>
+
+                            <span class="portal-chevron" aria-hidden="true">
+                                ▾
+                            </span>
+                        </button>
+
+                        <div id="portalAccountMenu"
+                             class="portal-account-menu"
+                             hidden>
+
+                            <div class="portal-account-info">
+                                <strong><%= DisplayName %></strong>
+                                <span><%= DisplayRole %></span>
+                            </div>
+
+                            <nav aria-label="Account navigation">
+                                <a href="<%= ResolveUrl(PortalFolder + "Profile.aspx") %>">
+                                    Profile
+                                </a>
+
+                                <a href="<%= ResolveUrl(PortalFolder + "Settings.aspx") %>">
+                                    Settings
+                                </a>
+
+                                <% if (IsLecturer) { %>
+                                    <a href="<%= ResolveUrl("~/Lecturer/Feedback.aspx") %>">
+                                        Feedback
+                                    </a>
+                                <% } %>
+                            </nav>
+
+                            <%-- Connect to your real logout handler later --%>
+                            <button type="button"
+                                    class="portal-logout"
+                                    disabled>
+                                Log out (coming soon)
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button"
+                            id="portalMenuToggle"
+                            class="portal-menu-toggle"
+                            aria-label="Open navigation menu"
+                            aria-controls="portalMenu"
+                            aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                </div>
+            </div>
+        </header>
+
+        <%-- PAGE CONTENT --%>
+        <main id="portal-content"
+              class="portal-main"
+              tabindex="-1">
+
+            <asp:ContentPlaceHolder
+                ID="PortalContent"
+                runat="server" />
+
+        </main>
+
+        <%-- SHARED FOOTER --%>
+        <footer class="portal-footer">
+            <div class="portal-footer-inner">
+
+                <p class="portal-copyright">
+                    &copy; <%= DateTime.UtcNow.AddHours(8).Year %>
+                    SPMaster. All rights reserved.
+                </p>
+
+            </div>
+        </footer>
+
+    </form>
+
+    <script>
+(function() {
+    const menu = document.getElementById("portalMenu");
+    const menuToggle = document.getElementById("portalMenuToggle");
+    const header = document.querySelector(".portal-header-inner");
+
+    const account = document.getElementById("portalAccount");
+    const accountToggle =
+        document.getElementById("portalAccountToggle");
+    const accountMenu =
+        document.getElementById("portalAccountMenu");
+
+    const smallScreen =
+        window.matchMedia("(max-width: 1000px)");
+
+    function closeNavigation(returnFocus) {
+        if (returnFocus) menuToggle.focus();
+
+        menu.classList.remove("is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute(
+            "aria-label",
+            "Open navigation menu"
+        );
+    }
+
+    function closeAccount(returnFocus) {
+        if (returnFocus) accountToggle.focus();
+
+        accountMenu.hidden = true;
+        accountToggle.setAttribute("aria-expanded", "false");
+    }
+
+    menuToggle.addEventListener("click", function() {
+        const opening = !menu.classList.contains("is-open");
+
+        closeAccount(false);
+        menu.classList.toggle("is-open", opening);
+        menuToggle.setAttribute("aria-expanded", String(opening));
+        menuToggle.setAttribute(
+            "aria-label",
+            opening
+                ? "Close navigation menu"
+                : "Open navigation menu"
+        );
+    });
+
+    accountToggle.addEventListener("click", function() {
+        const opening = accountMenu.hidden;
+
+        closeNavigation(false);
+        accountMenu.hidden = !opening;
+        accountToggle.setAttribute(
+            "aria-expanded",
+            String(opening)
+        );
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!account.contains(event.target)) {
+            closeAccount(
+                accountMenu.contains(document.activeElement)
+            );
+        }
+
+        if (!header.contains(event.target)) {
+            closeNavigation(
+                smallScreen.matches &&
+                menu.contains(document.activeElement)
+            );
+        }
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key !== "Escape") return;
+
+        if (!accountMenu.hidden) {
+            closeAccount(true);
+        } else if (menu.classList.contains("is-open")) {
+            closeNavigation(true);
+        }
+    });
+
+    // Close dropdowns when keyboard focus leaves them.
+    document.addEventListener("focusin", function(event) {
+        if (!account.contains(event.target)) {
+            closeAccount(false);
+        }
+
+        if (!header.contains(event.target)) {
+            closeNavigation(false);
+        }
+    });
+
+    smallScreen.addEventListener("change", function() {
+        const focusInMenu =
+            menu.contains(document.activeElement);
+
+        closeNavigation(smallScreen.matches && focusInMenu);
+        closeAccount(false);
+
+        if (!smallScreen.matches &&
+            document.activeElement === menuToggle) {
+            const firstLink = menu.querySelector("a");
+            if (firstLink) firstLink.focus();
+        }
+    });
+
+    // Highlight the link for the current page.
+    const currentPath = window.location.pathname.toLowerCase();
+
+    document.querySelectorAll(".portal-nav a").forEach(
+        function(link) {
+            const linkUrl = new URL(link.href);
+
+            if (linkUrl.pathname.toLowerCase() === currentPath) {
+                link.classList.add("active");
+                link.setAttribute("aria-current", "page");
+            }
+        }
+    );
+        })();
+    </script>
+
+    <asp:ContentPlaceHolder ID="PortalScripts" runat="server" />
+</body>
+</html>
