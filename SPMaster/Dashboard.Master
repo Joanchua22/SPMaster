@@ -1,104 +1,109 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Dashboard.master.cs" Inherits="SPMaster.Dashboard" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true"
+    CodeBehind="Dashboard.master.cs"
+    Inherits="SPMaster.Dashboard" %>
 
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SPMaster Dashboard</title>
+
+    <title>SPMaster Admin</title>
+
     <link runat="server" href="~/Content/Dashboard.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <asp:ContentPlaceHolder ID="DashboardHead" runat="server">
-    </asp:ContentPlaceHolder>
+
+    <asp:ContentPlaceHolder ID="DashboardHead" runat="server" />
 </head>
 
 <body>
     <form id="dashboardForm" runat="server">
+
         <a href="#dashboard-content" class="skip-link">
             Skip to content
         </a>
 
         <div class="dashboard-layout">
 
-            <%-- SIDEBAR --%>
-            <aside id="dashboardSidebar" class="sidebar" aria-label="Dashboard Sidebar">
+            <%-- ADMIN SIDEBAR --%>
+            <aside id="dashboardSidebar" class="sidebar" aria-label="Admin sidebar">
 
                 <button type="button" id="dashboardMenuClose" class="dashboard-menu-close" aria-label="Close navigation">
                     <i class="bi bi-x" aria-hidden="true"></i>
                 </button>
 
-                <%-- LOGO --%>
-                <a href="<%= ResolveUrl("~/Home.aspx") %>" class="dashboard-brand">
-                    <img src="<%= ResolveUrl("~/Images/spmaster-logo.png") %>" alt="SPMaster home" class="dashboard-logo" />
+                <a href="<%= ResolveUrl("~/Admin/Dashboard.aspx") %>" class="dashboard-brand">
+                    <img src="<%= ResolveUrl("~/Images/spmaster-logo.png") %>" alt="SPMaster admin dashboard" class="dashboard-logo" />
                 </a>
 
                 <p class="menu-heading">Main Menu</p>
 
-                <%--Student Navigation as Default. Lecturer & Admin pages can replace this placeholder--%>
+                <%-- Shared admin navigation --%>
                 <asp:ContentPlaceHolder ID="DashboardNavigation" runat="server">
 
-                    <nav class="sidebar-nav" aria-label="Main navigation">
+                    <nav class="sidebar-nav" aria-label="Admin navigation">
 
-                        <a href="<%= ResolveUrl("~/Student/Dashboard.aspx") %>" class="nav-item">
-                            <span class="nav-icon" aria-hidden="true">○</span>
+                        <a href="<%= ResolveUrl("~/Admin/Dashboard.aspx") %>" class="nav-item">
+                            <span class="nav-icon" aria-hidden="true">
+                                <i class="bi bi-grid"></i>
+                            </span>
                             <span>Dashboard</span>
                         </a>
 
-                        <a href="<%= ResolveUrl("~/Student/Quizzes.aspx") %>" class="nav-item">
-                            <span class="nav-icon" aria-hidden="true">○</span>
-                            <span>My Quizzes</span>
+                        <a href="<%= ResolveUrl("~/Admin/UserManagement.aspx") %>" class="nav-item">
+                            <span class="nav-icon" aria-hidden="true">
+                                <i class="bi bi-people"></i>
+                            </span>
+                            <span>User Management</span>
                         </a>
 
-                        <a href="<%= ResolveUrl("~/Student/Performance.aspx") %>" class="nav-item">
-                            <span class="nav-icon" aria-hidden="true">○</span>
-                            <span>Performance</span>
+                        <a href="<%= ResolveUrl("~/Admin/ContentAudit.aspx") %>" class="nav-item">
+                            <span class="nav-icon" aria-hidden="true">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </span>
+                            <span>Content Audit</span>
                         </a>
 
-                        <a href="<%= ResolveUrl("~/Student/Hints.aspx") %>" class="nav-item">
-                            <span class="nav-icon" aria-hidden="true">○</span>
-                            <span>Hints &amp; Formulas</span>
-                        </a>
-
-                        <a href="<%= ResolveUrl("~/Student/Feedback.aspx") %>" class="nav-item">
-                            <span class="nav-icon" aria-hidden="true">○</span>
-                            <span>Feedback</span>
+                        <a href="<%= ResolveUrl("~/Admin/FeedbackReports.aspx") %>" class="nav-item">
+                            <span class="nav-icon" aria-hidden="true">
+                                <i class="bi bi-chat-left-text"></i>
+                            </span>
+                            <span>Feedback &amp; Reports</span>
                         </a>
 
                     </nav>
 
                 </asp:ContentPlaceHolder>
 
-                <%-- Bottom sidebar links --%>
+                <%-- ACCOUNT NAVIGATION --%>
                 <div class="sidebar-bottom">
 
                     <asp:ContentPlaceHolder ID="DashboardAccountNavigation" runat="server">
 
-                        <nav aria-label="Account navigation">
+                        <nav aria-label="Admin account navigation">
 
-                            <a href="<%= ResolveUrl("~/Student/Profile.aspx") %>" class="nav-item">
-                                <span class="nav-icon" aria-hidden="true">○</span>
+                            <a href="<%= ResolveUrl("~/Admin/Profile.aspx") %>" class="nav-item">
+                                <span class="nav-icon" aria-hidden="true">
+                                    <i class="bi bi-person-circle"></i>
+                                </span>
                                 <span>Profile</span>
                             </a>
 
-                            <a href="<%= ResolveUrl("~/Student/Settings.aspx") %>" class="nav-item">
-                                <span class="nav-icon" aria-hidden="true">○</span>
+                            <a href="<%= ResolveUrl("~/Admin/Settings.aspx") %>" class="nav-item">
+                                <span class="nav-icon" aria-hidden="true">
+                                    <i class="bi bi-gear"></i>
+                                </span>
                                 <span>Settings</span>
                             </a>
-
                         </nav>
-
                     </asp:ContentPlaceHolder>
-
-
                 </div>
-
             </aside>
 
-            <div id="dashboardMenuOverlay" class="dashboard-menu-overlay" aria-hidden="true" hidden> </div>
+            <%-- Mobile sidebar backdrop --%>
+            <div id="dashboardMenuOverlay" class="dashboard-menu-overlay" aria-hidden="true" hidden></div>
 
-            <%-- MAIN AREA --%>
             <div class="dashboard-main">
 
                 <%-- TOP BAR --%>
@@ -115,62 +120,53 @@
                         </time>
 
                         <h1 class="dashboard-title">
-
-                            <asp:ContentPlaceHolder ID="DashboardTitle" runat="server"> My Dashboard </asp:ContentPlaceHolder>
-
+                            <asp:ContentPlaceHolder ID="DashboardTitle" runat="server">
+                                Admin Dashboard
+                            </asp:ContentPlaceHolder>
                         </h1>
 
                     </div>
 
                     <div class="topbar-actions">
 
-                        <%-- Hard-coded account details for now --%>
+                        <%-- Sample account details until connected to login --%>
                         <asp:ContentPlaceHolder ID="DashboardUser" runat="server">
 
                             <div class="user-summary">
-
                                 <span class="user-avatar" aria-hidden="true">
-                                    AL
+                                    AD
                                 </span>
 
                                 <div class="user-details">
-                                    <span class="user-name">Aina Lee</span>
-                                    <span class="user-role">Student</span>
+                                    <span class="user-name">Admin</span>
+                                    <span class="user-role">Admin</span>
                                 </div>
-
                             </div>
 
                         </asp:ContentPlaceHolder>
 
-                        <%-- Notification function will be added later --%>
                         <button type="button" class="topbar-icon-button" aria-label="Notifications — coming soon" title="Notifications — coming soon" disabled>
-
                             <i class="bi bi-bell" aria-hidden="true"></i>
-
                         </button>
 
                     </div>
-
                 </header>
 
-                <%-- CONTENT FROM STUDENT, LECTURER OR ADMIN PAGES --%>
+                <%-- CONTENT FROM THE CURRENT ADMIN PAGE --%>
                 <main id="dashboard-content" class="dashboard-content" tabindex="-1">
-
                     <asp:ContentPlaceHolder ID="DashboardContent" runat="server" />
-
                 </main>
 
             </div>
-
         </div>
 
-        <%-- Optional JavaScript for individual pages --%>
         <asp:ContentPlaceHolder ID="DashboardScripts" runat="server" />
 
     </form>
 
     <script>
-        (function() {
+        // Mobile sidebar.
+        (function () {
             const layout = document.querySelector(".dashboard-layout");
             const sidebar = document.getElementById("dashboardSidebar");
             const main = document.querySelector(".dashboard-main");
@@ -178,8 +174,7 @@
             const closeButton = document.getElementById("dashboardMenuClose");
             const overlay = document.getElementById("dashboardMenuOverlay");
 
-            if (!layout || !sidebar || !main ||
-                !openButton || !closeButton || !overlay) {
+            if (!layout || !sidebar || !main ||!openButton || !closeButton || !overlay) {
                 return;
             }
 
@@ -197,8 +192,6 @@
                 openButton.setAttribute("aria-expanded", "true");
 
                 closeButton.focus();
-
-                // Prevent interaction with content behind the sidebar.
                 main.inert = true;
             }
 
@@ -219,15 +212,15 @@
 
             openButton.addEventListener("click", openMenu);
 
-            closeButton.addEventListener("click", function() {
+            closeButton.addEventListener("click", function () {
                 closeMenu(true);
             });
 
-            overlay.addEventListener("click", function() {
+            overlay.addEventListener("click", function () {
                 closeMenu(true);
             });
 
-            document.addEventListener("keydown", function(event) {
+            document.addEventListener("keydown", function (event) {
                 if (!isOpen) return;
 
                 if (event.key === "Escape") {
@@ -236,11 +229,9 @@
                     return;
                 }
 
-                // Keep keyboard focus inside the open sidebar.
                 if (event.key === "Tab") {
-                    const items = Array.from(sidebar.querySelectorAll(
-                        'a[href], button:not([disabled]), [tabindex="0"]'
-                    )).filter(function(item) {
+                    const items = Array.from(sidebar.querySelectorAll('a[href], button:not([disabled]), [tabindex="0"]'
+                    )).filter(function (item) {
                         return item.getClientRects().length > 0;
                     });
 
@@ -249,45 +240,40 @@
 
                     if (!first) return;
 
-                    if (event.shiftKey &&
-                        document.activeElement === first) {
+                    if (event.shiftKey && document.activeElement === first) {
                         event.preventDefault();
                         last.focus();
-                    } else if (!event.shiftKey &&
-                        document.activeElement === last) {
+                    } else if (!event.shiftKey && document.activeElement === last) {
                         event.preventDefault();
                         first.focus();
                     }
                 }
             });
 
-            smallScreen.addEventListener("change", function() {
-                const focusInSidebar =
-                    sidebar.contains(document.activeElement);
+            smallScreen.addEventListener("change", function () {
+                const focusInSidebar = sidebar.contains(document.activeElement);
 
-                const focusOnMobileControl =
-                    document.activeElement === openButton ||
-                    document.activeElement === closeButton;
+                const focusOnMobileControl = document.activeElement === openButton || document.activeElement === closeButton;
 
                 closeMenu(smallScreen.matches && focusInSidebar);
 
-                // Mobile-only buttons disappear when returning to desktop.
                 if (!smallScreen.matches && focusOnMobileControl) {
                     const firstLink = sidebar.querySelector("a[href]");
                     if (firstLink) firstLink.focus();
                 }
-                    });
-                })();
+            });
+        })();
 
+        // Highlight the navigation link for the current page.
         (function () {
             const currentPath = window.location.pathname.toLowerCase();
 
-            const menuLinks = document.querySelectorAll("#dashboardSidebar a.nav-item[href]");
+            const links = document.querySelectorAll("#dashboardSidebar a.nav-item[href]");
 
-            menuLinks.forEach(function (link) {
-                const linkUrl = new URL(link.href, window.location.href);
+            links.forEach(function (link) {
+                const url = new URL(link.href, window.location.href);
 
-                const isCurrentPage = linkUrl.origin === window.location.origin && linkUrl.pathname.toLowerCase() === currentPath;
+                const isCurrentPage = url.origin === window.location.origin && url.pathname.toLowerCase() === currentPath;
 
                 link.classList.toggle("active", isCurrentPage);
 
