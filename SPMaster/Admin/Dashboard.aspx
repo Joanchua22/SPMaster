@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="System Overview"
     Language="C#"
-    MasterPageFile="~/Dashboard.Master"
+    MasterPageFile="~/Master/Dashboard.Master"
     AutoEventWireup="true"
     CodeBehind="Dashboard.aspx.cs"
     Inherits="SPMaster.Admin.Dashboard" %>
