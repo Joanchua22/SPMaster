@@ -2,16 +2,15 @@
     Language="C#"
     MasterPageFile="~/Master/Dashboard.Master"
     AutoEventWireup="true"
-    CodeBehind="AddUser.aspx.cs"
-    Inherits="SPMaster.Admin.AddUser" %>
-
+    CodeBehind="EditUser.aspx.cs"
+    Inherits="SPMaster.Admin.EditUser" %>
 
 <asp:Content
     ID="AdminTitle"
     ContentPlaceHolderID="DashboardTitle"
     runat="server">
 
-    Add User
+    Edit User
 
 </asp:Content>
 
@@ -33,6 +32,7 @@
             <span>Dashboard</span>
         </a>
 
+
         <a href="<%= ResolveUrl("~/Admin/UserManagement.aspx") %>"
            class="nav-item">
 
@@ -43,6 +43,7 @@
             <span>User Management</span>
         </a>
 
+
         <a href="<%= ResolveUrl("~/Admin/ContentAudit.aspx") %>"
            class="nav-item">
 
@@ -52,6 +53,7 @@
 
             <span>Content Audit</span>
         </a>
+
 
         <a href="<%= ResolveUrl("~/Admin/FeedbackReports.aspx") %>"
            class="nav-item">
@@ -84,6 +86,7 @@
 
             <span>Profile</span>
         </a>
+
 
         <a href="#"
            class="nav-item">
@@ -140,11 +143,11 @@
             <div>
 
                 <h2>
-                    Add New User
+                    Edit User
                 </h2>
 
                 <p>
-                    Create a new student, lecturer or admin account.
+                    Update the selected user's account details.
                 </p>
 
             </div>
@@ -165,7 +168,6 @@
 
         <div class="add-user-card">
 
-
             <asp:Label
                 ID="lblMessage"
                 runat="server"
@@ -176,8 +178,6 @@
 
             <div class="admin-form-grid">
 
-
-                <!-- FULL NAME -->
                 <div class="admin-form-group">
 
                     <label for="<%= txtFullName.ClientID %>">
@@ -188,8 +188,7 @@
                         ID="txtFullName"
                         runat="server"
                         CssClass="admin-form-input"
-                        MaxLength="50"
-                        placeholder="Enter full name">
+                        MaxLength="50">
                     </asp:TextBox>
 
                     <asp:RequiredFieldValidator
@@ -204,7 +203,6 @@
                 </div>
 
 
-                <!-- EMAIL -->
                 <div class="admin-form-group">
 
                     <label for="<%= txtEmail.ClientID %>">
@@ -216,8 +214,7 @@
                         runat="server"
                         CssClass="admin-form-input"
                         TextMode="Email"
-                        MaxLength="254"
-                        placeholder="user@example.com">
+                        MaxLength="254">
                     </asp:TextBox>
 
                     <asp:RequiredFieldValidator
@@ -242,7 +239,6 @@
                 </div>
 
 
-                <!-- ROLE -->
                 <div class="admin-form-group">
 
                     <label for="<%= ddlRole.ClientID %>">
@@ -254,42 +250,15 @@
                         runat="server"
                         CssClass="admin-form-input">
 
-                        <asp:ListItem
-                            Text="Select role"
-                            Value="">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Student"
-                            Value="1">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Lecturer"
-                            Value="2">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Admin"
-                            Value="3">
-                        </asp:ListItem>
+                        <asp:ListItem Text="Student" Value="1"></asp:ListItem>
+                        <asp:ListItem Text="Lecturer" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="Admin" Value="3"></asp:ListItem>
 
                     </asp:DropDownList>
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvRole"
-                        runat="server"
-                        ControlToValidate="ddlRole"
-                        InitialValue=""
-                        ErrorMessage="Please select a role."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
 
                 </div>
 
 
-                <!-- GENDER -->
                 <div class="admin-form-group">
 
                     <label for="<%= ddlGender.ClientID %>">
@@ -301,37 +270,13 @@
                         runat="server"
                         CssClass="admin-form-input">
 
-                        <asp:ListItem
-                            Text="Select gender"
-                            Value="">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Male"
-                            Value="Male">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Female"
-                            Value="Female">
-                        </asp:ListItem>
-
+                        <asp:ListItem Text="Male" Value="Male"></asp:ListItem>
+                        <asp:ListItem Text="Female" Value="Female"></asp:ListItem>
                     </asp:DropDownList>
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvGender"
-                        runat="server"
-                        ControlToValidate="ddlGender"
-                        InitialValue=""
-                        ErrorMessage="Please select a gender."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
 
                 </div>
 
 
-                <!-- SCHOOL -->
                 <div class="admin-form-group form-group-full">
 
                     <label for="<%= ddlSchool.ClientID %>">
@@ -343,56 +288,21 @@
                         runat="server"
                         CssClass="admin-form-input">
 
-                        <asp:ListItem
-                            Text="Select school / institution"
-                            Value="">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Asia Pacific University (APU)"
-                            Value="Asia Pacific University">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="SMK"
-                            Value="SMK">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Private School"
-                            Value="Private School">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="International School"
-                            Value="International School">
-                        </asp:ListItem>
-
-                        <asp:ListItem
-                            Text="Other"
-                            Value="Other">
-                        </asp:ListItem>
+                        <asp:ListItem Text="Asia Pacific University (APU)" Value="Asia Pacific University"></asp:ListItem>
+                        <asp:ListItem Text="SMK" Value="SMK"></asp:ListItem>
+                        <asp:ListItem Text="Private School" Value="Private School"></asp:ListItem>
+                        <asp:ListItem Text="International School" Value="International School"></asp:ListItem>
+                        <asp:ListItem Text="Other" Value="Other"></asp:ListItem>
 
                     </asp:DropDownList>
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvSchool"
-                        runat="server"
-                        ControlToValidate="ddlSchool"
-                        InitialValue=""
-                        ErrorMessage="Please select a school / institution."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
 
                 </div>
 
 
-                <!-- PASSWORD -->
                 <div class="admin-form-group">
 
                     <label for="<%= txtPassword.ClientID %>">
-                        Password
+                        New Password
                     </label>
 
                     <asp:TextBox
@@ -400,23 +310,13 @@
                         runat="server"
                         CssClass="admin-form-input"
                         TextMode="Password"
-                        placeholder="Enter password">
+                        placeholder="Leave blank to keep current password">
                     </asp:TextBox>
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvPassword"
-                        runat="server"
-                        ControlToValidate="txtPassword"
-                        ErrorMessage="Password is required."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
-
                     <asp:RegularExpressionValidator
                         ID="revPassword"
                         runat="server"
                         ControlToValidate="txtPassword"
-                        ValidationExpression="^.{8,}$"
+                        ValidationExpression="^$|^.{8,}$"
                         ErrorMessage="Password must be at least 8 characters."
                         CssClass="validation-message"
                         Display="Dynamic">
@@ -425,11 +325,10 @@
                 </div>
 
 
-                <!-- CONFIRM PASSWORD -->
                 <div class="admin-form-group">
 
                     <label for="<%= txtConfirmPassword.ClientID %>">
-                        Confirm Password
+                        Confirm New Password
                     </label>
 
                     <asp:TextBox
@@ -437,17 +336,8 @@
                         runat="server"
                         CssClass="admin-form-input"
                         TextMode="Password"
-                        placeholder="Confirm password">
+                        placeholder="Leave blank to keep current password">
                     </asp:TextBox>
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvConfirmPassword"
-                        runat="server"
-                        ControlToValidate="txtConfirmPassword"
-                        ErrorMessage="Please confirm the password."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
 
                     <asp:CompareValidator
                         ID="cvPassword"
@@ -478,11 +368,11 @@
 
 
                 <asp:Button
-                    ID="btnAddUser"
+                    ID="btnSave"
                     runat="server"
-                    Text="Create User"
+                    Text="Save Changes"
                     CssClass="create-user-button"
-                    OnClick="btnAddUser_Click" />
+                    OnClick="btnSave_Click" />
 
             </div>
 

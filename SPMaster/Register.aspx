@@ -209,11 +209,6 @@
                             Value="Female">
                         </asp:ListItem>
 
-                        <asp:ListItem
-                            Text="Prefer not to say"
-                            Value="Prefer not to say">
-                        </asp:ListItem>
-
                     </asp:DropDownList>
 
                     <asp:RequiredFieldValidator
