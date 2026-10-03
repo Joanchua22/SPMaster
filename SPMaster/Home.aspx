@@ -1,8 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="SPMaster.Home" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Master/Site.Master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="SPMaster.Home" %>
 <asp:Content ID="HomeHead" ContentPlaceHolderID="head" runat="server">
+    <link href="<%= ResolveUrl("~/Content/Home.css") %>?v=2" rel="stylesheet" type="text/css" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link runat="server" href="~/Content/Home.css" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID ="HomeContent" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
