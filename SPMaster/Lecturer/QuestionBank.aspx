@@ -5,12 +5,19 @@
     CodeBehind="QuestionBank.aspx.cs"
     Inherits="SPMaster.Lecturer.QuestionBank" %>
 
+
 <asp:Content
     ID="QuestionBankHead"
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/QuestionBank.css") %>?v=1" rel="stylesheet" type="text/css" />
+    <link href="<%= ResolveUrl("~/Content/QuestionBank.css") %>?v=2"
+          rel="stylesheet"
+          type="text/css" />
+
+    <link href="<%= ResolveUrl("~/Content/QuestionPreview.css") %>?v=1"
+          rel="stylesheet"
+          type="text/css" />
 
 </asp:Content>
 
@@ -21,6 +28,7 @@
     runat="server">
 
     <div class="question-bank-page">
+
 
         <%-- =========================
              PAGE HEADER
@@ -40,7 +48,8 @@
 
             </div>
 
-            <a href="#"
+
+            <a href="<%= ResolveUrl("~/Lecturer/CreateQuestion.aspx") %>"
                class="add-question-button">
 
                 <i class="bi bi-plus-circle"
@@ -53,102 +62,132 @@
         </section>
 
 
+
         <%-- =========================
              SEARCH AND FILTERS
              ========================= --%>
 
         <section class="question-filter-card">
 
+
+            <%-- SEARCH --%>
+
             <div class="question-search">
 
-                <span class="search-icon"
-                      aria-hidden="true">
-
-                    <svg viewBox="0 0 24 24">
-
-                        <circle cx="11"
-                                cy="11"
-                                r="6"></circle>
-
-                        <path d="M16 16l4 4"></path>
-
-                    </svg>
-
-                </span>
+                <i class="bi bi-search search-icon"
+                   aria-hidden="true"></i>
 
                 <input type="text"
-                       placeholder="Search by question text or syllabus keyword..."
+                       placeholder="Search by question text or keyword..."
                        aria-label="Search questions" />
 
             </div>
 
 
-            <select class="question-filter"
-                    aria-label="Filter by subject">
 
-                <option>
-                    All Subjects
-                </option>
+            <%-- SUBJECT FILTER --%>
 
-                <option>
-                    Mathematics
-                </option>
+            <div class="question-filter-wrapper">
 
-                <option>
-                    Sejarah
-                </option>
+                <select class="question-filter"
+                        aria-label="Filter by subject">
 
-                <option>
-                    English
-                </option>
+                    <option>
+                        All Subjects
+                    </option>
 
-                <option>
-                    Bahasa Melayu
-                </option>
+                    <option>
+                        Mathematics
+                    </option>
 
-            </select>
+                    <option>
+                        Sejarah
+                    </option>
 
+                    <option>
+                        English
+                    </option>
 
-            <select class="question-filter"
-                    aria-label="Filter by question type">
+                    <option>
+                        Bahasa Melayu
+                    </option>
 
-                <option>
-                    All Types
-                </option>
+                    <option>
+                        Science
+                    </option>
 
-                <option>
-                    MCQ
-                </option>
-
-                <option>
-                    Subjective
-                </option>
-
-            </select>
+                </select>
 
 
-            <select class="question-filter"
-                    aria-label="Filter by difficulty">
+                <i class="bi bi-caret-down-fill filter-arrow"
+                   aria-hidden="true"></i>
 
-                <option>
-                    All Difficulties
-                </option>
+            </div>
 
-                <option>
-                    Easy
-                </option>
 
-                <option>
-                    Medium
-                </option>
 
-                <option>
-                    Hard
-                </option>
+            <%-- QUESTION TYPE FILTER --%>
 
-            </select>
+            <div class="question-filter-wrapper">
+
+                <select class="question-filter"
+                        aria-label="Filter by question type">
+
+                    <option>
+                        All Types
+                    </option>
+
+                    <option>
+                        MCQ
+                    </option>
+
+                    <option>
+                        Subjective
+                    </option>
+
+                </select>
+
+
+                <i class="bi bi-caret-down-fill filter-arrow"
+                   aria-hidden="true"></i>
+
+            </div>
+
+
+
+            <%-- DIFFICULTY FILTER --%>
+
+            <div class="question-filter-wrapper">
+
+                <select class="question-filter"
+                        aria-label="Filter by difficulty">
+
+                    <option>
+                        All Difficulties
+                    </option>
+
+                    <option>
+                        Easy
+                    </option>
+
+                    <option>
+                        Medium
+                    </option>
+
+                    <option>
+                        Hard
+                    </option>
+
+                </select>
+
+
+                <i class="bi bi-caret-down-fill filter-arrow"
+                   aria-hidden="true"></i>
+
+            </div>
 
         </section>
+
 
 
         <%-- =========================
@@ -164,6 +203,7 @@
 
             </button>
 
+
             <button type="button"
                     class="question-tab">
 
@@ -174,6 +214,7 @@
         </div>
 
 
+
         <%-- =========================
              QUESTION LIST
              ========================= --%>
@@ -182,7 +223,7 @@
 
 
             <%-- =====================================
-                 QUESTION 1
+                 QUESTION 1 - CREATED BY CURRENT USER
                  ===================================== --%>
 
             <article class="question-card">
@@ -215,16 +256,18 @@
                         <button type="button"
                                 class="question-action">
 
-                            Preview
+                            Edit
 
                         </button>
+
 
                         <button type="button"
                                 class="question-action">
 
-                            Edit
+                            Archive
 
                         </button>
+
 
                         <button type="button"
                                 class="question-action question-action-danger">
@@ -268,7 +311,7 @@
 
 
             <%-- =====================================
-                 QUESTION 2
+                 QUESTION 2 - CREATED BY CURRENT USER
                  ===================================== --%>
 
             <article class="question-card">
@@ -290,7 +333,12 @@
                         </span>
 
                         <span class="question-tag media-tag">
-                            ▣ Image attached
+
+                            <i class="bi bi-image"
+                               aria-hidden="true"></i>
+
+                            Image attached
+
                         </span>
 
                         <span class="question-owner">
@@ -305,21 +353,23 @@
                         <button type="button"
                                 class="question-action">
 
-                            Preview
+                            Edit
 
                         </button>
 
-                        <button type="button"
-                                class="question-action">
-
-                            Duplicate
-
-                        </button>
 
                         <button type="button"
                                 class="question-action">
 
                             Archive
+
+                        </button>
+
+
+                        <button type="button"
+                                class="question-action question-action-danger">
+
+                            Delete
 
                         </button>
 
@@ -358,7 +408,7 @@
 
 
             <%-- =====================================
-                 QUESTION 3 - SHARED
+                 QUESTION 3 - SHARED QUESTION
                  ===================================== --%>
 
             <article class="question-card">
@@ -388,12 +438,36 @@
 
                     <div class="question-actions">
 
+                        <%-- Preview is available because
+                             this question belongs to another lecturer. --%>
+
                         <button type="button"
-                                class="question-action">
+                                class="question-action preview-question-button"
+
+                                data-preview-question
+
+                                data-subject="English"
+
+                                data-difficulty="Easy"
+
+                                data-type="MCQ"
+
+                                data-question="Identify the most suitable synonym for the word &quot;resilient&quot; in paragraph 3 of the SPM Reading passage."
+
+                                data-option-a="Strong"
+
+                                data-option-b="Adaptable &amp; Tough"
+
+                                data-option-c="Careless"
+
+                                data-option-d="Weak"
+
+                                data-correct-option="B">
 
                             Preview
 
                         </button>
+
 
                         <button type="button"
                                 class="question-action question-action-primary">
@@ -438,12 +512,205 @@
 
     </div>
 
+
+
+    <%-- =========================================================
+         QUESTION PREVIEW MODAL
+         Reused with QuestionPreview.css / QuestionPreview.js
+         ========================================================= --%>
+
+    <div id="questionPreviewModal"
+         class="question-preview-modal"
+         hidden>
+
+
+        <%-- OVERLAY --%>
+
+        <div id="previewOverlay"
+             class="question-preview-overlay"
+             data-preview-close>
+        </div>
+
+
+
+        <%-- MODAL DIALOG --%>
+
+        <div class="question-preview-dialog"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="previewTitle">
+
+
+            <%-- HEADER --%>
+
+            <div class="question-preview-header">
+
+                <div>
+
+                    <span class="preview-label">
+                        Question Preview
+                    </span>
+
+                    <h2 id="previewTitle">
+                        Student View
+                    </h2>
+
+                </div>
+
+
+                <button type="button"
+                        id="btnClosePreview"
+                        class="preview-close-button"
+                        data-preview-close
+                        aria-label="Close preview">
+
+                    <i class="bi bi-x-lg"
+                       aria-hidden="true"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <%-- BODY --%>
+
+            <div class="question-preview-body">
+
+
+                <%-- TAGS --%>
+
+                <div class="preview-tags">
+
+                    <span id="previewSubject"
+                          class="preview-tag">
+                    </span>
+
+                    <span id="previewDifficulty"
+                          class="preview-tag">
+                    </span>
+
+                    <span id="previewType"
+                          class="preview-tag">
+                    </span>
+
+                </div>
+
+
+
+                <%-- QUESTION TEXT --%>
+
+                <h3 id="previewQuestionText"
+                    class="preview-question-text">
+                </h3>
+
+
+
+                <%-- OPTIONAL IMAGE --%>
+
+                <div id="previewImageArea"
+                     class="preview-image-area"
+                     hidden>
+
+                    <img id="previewImage"
+                         src=""
+                         alt="Question stimulus preview" />
+
+                </div>
+
+
+
+                <%-- MCQ ANSWERS --%>
+
+                <div id="previewMcqAnswers"
+                     class="preview-answer-list">
+
+                    <div class="preview-answer"
+                         data-preview-option="A">
+
+                        <span>
+                            A
+                        </span>
+
+                        <p id="previewOptionA">
+                        </p>
+
+                    </div>
+
+
+                    <div class="preview-answer"
+                         data-preview-option="B">
+
+                        <span>
+                            B
+                        </span>
+
+                        <p id="previewOptionB">
+                        </p>
+
+                    </div>
+
+
+                    <div class="preview-answer"
+                         data-preview-option="C">
+
+                        <span>
+                            C
+                        </span>
+
+                        <p id="previewOptionC">
+                        </p>
+
+                    </div>
+
+
+                    <div class="preview-answer"
+                         data-preview-option="D">
+
+                        <span>
+                            D
+                        </span>
+
+                        <p id="previewOptionD">
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <%-- SUBJECTIVE MODEL ANSWER --%>
+
+                <div id="previewSubjectiveAnswer"
+                     class="preview-subjective"
+                     hidden>
+
+                    <label>
+                        Model Answer / Scoring Guide
+                    </label>
+
+                    <p id="previewModelAnswer">
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </asp:Content>
+
 
 
 <asp:Content
     ID="QuestionBankScripts"
     ContentPlaceHolderID="PortalScripts"
     runat="server">
+
+    <script src="<%= ResolveUrl("~/Scripts/QuestionPreview.js") %>?v=1">
+    </script>
 
 </asp:Content>

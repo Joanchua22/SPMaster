@@ -74,21 +74,25 @@
     <Content Include="App_Data\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\CreateQuestion.css" />
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\Home.css" />
     <Content Include="Content\LecturerPortal.css" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\QuestionBank.css" />
+    <Content Include="Content\QuestionPreview.css" />
     <Content Include="Content\Register.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
+    <Content Include="Lecturer\CreateQuestion.aspx" />
     <Content Include="Lecturer\Portal.aspx" />
     <Content Include="Lecturer\QuestionBank.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Scripts\Dashboard.js" />
     <Content Include="Content\Portal.css" />
+    <Content Include="Scripts\QuestionPreview.js" />
     <Content Include="Student\Portal.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -113,6 +117,13 @@
     </Compile>
     <Compile Include="Admin\UserManagement.aspx.designer.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuestion.aspx.cs">
+      <DependentUpon>CreateQuestion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuestion.aspx.designer.cs">
+      <DependentUpon>CreateQuestion.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\Portal.aspx.cs">
       <DependentUpon>Portal.aspx</DependentUpon>

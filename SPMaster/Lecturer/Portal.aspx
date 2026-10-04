@@ -54,20 +54,8 @@
 
                 <div class="lecturer-stat-icon icon-purple">
 
-                    <svg viewBox="0 0 24 24"
-                         aria-hidden="true">
-
-                        <rect x="5"
-                              y="4"
-                              width="14"
-                              height="16"
-                              rx="2"></rect>
-
-                        <path d="M8 8h8"></path>
-                        <path d="M8 11h8"></path>
-                        <path d="M8 14h5"></path>
-
-                    </svg>
+                    <i class="bi bi-card-text"
+                       aria-hidden="true"></i>
 
                 </div>
 
@@ -97,16 +85,8 @@
 
                 <div class="lecturer-stat-icon icon-purple">
 
-                    <svg viewBox="0 0 24 24"
-                         aria-hidden="true">
-
-                        <circle cx="12"
-                                cy="12"
-                                r="8"></circle>
-
-                        <path d="M8.5 12.5l2.2 2.2 4.8-5.3"></path>
-
-                    </svg>
+                    <i class="bi bi-check2-circle"
+                       aria-hidden="true"></i>
 
                 </div>
 
@@ -136,28 +116,8 @@
 
                 <div class="lecturer-stat-icon icon-purple">
 
-                    <svg viewBox="0 0 24 24"
-                         aria-hidden="true">
-
-                        <circle cx="12"
-                                cy="8"
-                                r="2"></circle>
-
-                        <circle cx="6"
-                                cy="11"
-                                r="2"></circle>
-
-                        <circle cx="18"
-                                cy="11"
-                                r="2"></circle>
-
-                        <path d="M8 18c0-2 1.6-3.5 4-3.5s4 1.5 4 3.5"></path>
-
-                        <path d="M2.5 17c0-1.5 1.3-2.7 3.5-2.7"></path>
-
-                        <path d="M21.5 17c0-1.5-1.3-2.7-3.5-2.7"></path>
-
-                    </svg>
+                    <i class="bi bi-people-fill"
+                       aria-hidden="true"></i>
 
                 </div>
 
@@ -187,18 +147,8 @@
 
                 <div class="lecturer-stat-icon icon-red">
 
-                    <svg viewBox="0 0 24 24"
-                         aria-hidden="true">
-
-                        <path d="M7 17l10-10"></path>
-
-                        <path d="M5 7l2-2 3 3-2 2"></path>
-
-                        <path d="M14 16l3 3 2-2-3-3"></path>
-
-                        <path d="M5 19l4-1-3-3z"></path>
-
-                    </svg>
+                    <i class="bi bi-pen"
+                       aria-hidden="true"></i>
 
                 </div>
 
@@ -243,11 +193,6 @@
                     <div class="dashboard-card-header">
 
                         <h2>
-
-                            <span class="heading-icon"
-                                  aria-hidden="true">
-                                ▣
-                            </span>
 
                             My Recent Quizzes
 
@@ -443,11 +388,6 @@
                     <div class="dashboard-card-header">
 
                         <h2>
-
-                            <span class="heading-icon"
-                                  aria-hidden="true">
-                                ⌁
-                            </span>
 
                             Active Classroom Sessions
 
