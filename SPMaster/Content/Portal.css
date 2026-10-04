@@ -38,7 +38,7 @@
     .portal-body input,
     .portal-body select,
     .portal-body textarea {
-        font: inherit;
+        font-family: inherit;
     }
 
     .portal-body [hidden] {
