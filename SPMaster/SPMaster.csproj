@@ -76,11 +76,15 @@
     </Content>
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\Home.css" />
+    <Content Include="Content\LecturerPortal.css" />
     <Content Include="Content\Login.css" />
+    <Content Include="Content\QuestionBank.css" />
     <Content Include="Content\Register.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
+    <Content Include="Lecturer\Portal.aspx" />
+    <Content Include="Lecturer\QuestionBank.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Scripts\Dashboard.js" />
@@ -109,6 +113,20 @@
     </Compile>
     <Compile Include="Admin\UserManagement.aspx.designer.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Portal.aspx.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Portal.aspx.designer.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\QuestionBank.aspx.cs">
+      <DependentUpon>QuestionBank.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\QuestionBank.aspx.designer.cs">
+      <DependentUpon>QuestionBank.aspx</DependentUpon>
     </Compile>
     <Compile Include="Master\Dashboard.Master.cs">
       <DependentUpon>Dashboard.Master</DependentUpon>
@@ -173,9 +191,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lecturer\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
