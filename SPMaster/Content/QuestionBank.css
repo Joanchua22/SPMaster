@@ -23,7 +23,7 @@
 
     .question-bank-header h1 {
         margin: 0;
-        font-size: 28px;
+        font-size: 30px;
         line-height: 1.2;
         letter-spacing: -0.6px;
     }
@@ -164,26 +164,60 @@
 .question-tabs {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     margin-top: 20px;
-    padding-bottom: 9px;
+    margin-bottom: 18px;
 }
 
-.question-tab {
-    padding: 6px 15px;
-    border: 0;
-    border-radius: 999px;
-    background: #f1eaff;
-    color: var(--portal-navy);
-    font-size: var(--qb-button-font-size);
-    font-weight: 700;
-    cursor: pointer;
-}
 
-    .question-tab.active {
-        background: #7b2ce9;
-        color: white;
+    /* ASP:LinkButton renders as <a> */
+    .question-tabs .question-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        min-height: 40px;
+        padding: 8px 18px;
+        border: 0;
+        border-radius: 999px;
+        background: #f1eaff;
+        color: var(--portal-navy) !important;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none !important;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
+
+
+        /* Normal tab hover */
+        .question-tabs .question-tab:hover {
+            background: #e6d8ff;
+            color: var(--portal-navy) !important;
+        }
+
+
+        /* Selected tab */
+        .question-tabs .question-tab.active {
+            background: #7c28ef;
+            color: #ffffff !important;
+        }
+
+
+            /* Selected tab hover */
+            .question-tabs .question-tab.active:hover {
+                background: #6920d4;
+                color: #ffffff !important;
+            }
+
+
+        /* Remove browser focus underline */
+        .question-tabs .question-tab:focus {
+            text-decoration: none !important;
+        }
 
 
 /* =========================
@@ -316,7 +350,7 @@
 
 .question-action-primary {
     background: #792ce5;
-    color: white;
+    color: white !important;
 }
 
     .question-action-primary:hover {

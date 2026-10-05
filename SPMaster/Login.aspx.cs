@@ -177,11 +177,11 @@ namespace SPMaster
             switch (role.ToLower())
             {
                 case "student":
-                    Response.Redirect("~/Student/Dashboard.aspx");
+                    Response.Redirect("~/Student/Portal.aspx");
                     break;
 
                 case "lecturer":
-                    Response.Redirect("~/Lecturer/Dashboard.aspx");
+                    Response.Redirect("~/Lecturer/Portal.aspx");
                     break;
 
                 case "admin":
