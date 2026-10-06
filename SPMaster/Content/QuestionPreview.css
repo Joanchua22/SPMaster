@@ -231,6 +231,63 @@
         line-height: 1.6;
     }
 
+
+/* =========================================================
+   PREVIEW TAG COLORS
+   Matches Question Bank
+   ========================================================= */
+
+.preview-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+
+/* SUBJECT */
+
+.preview-subject {
+    background: #eadcff;
+    color: #6416c9;
+}
+
+
+/* EASY */
+
+.preview-difficulty-easy {
+    background: #dceaff;
+    color: #2459a9;
+}
+
+
+/* MEDIUM */
+
+.preview-difficulty-medium {
+    background: #fff0a8;
+    color: #8a6500;
+}
+
+
+/* HARD */
+
+.preview-difficulty-hard {
+    background: #ffd8d3;
+    color: #c23a2b;
+}
+
+
+/* QUESTION TYPE */
+
+.preview-type {
+    background: #eee8f8;
+    color: #382f63;
+}
+
 /* =========================
    MOBILE
    ========================= */

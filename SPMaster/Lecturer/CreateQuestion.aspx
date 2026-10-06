@@ -29,6 +29,17 @@
     runat="server">
 
     <div class="create-question-page">
+               
+        <asp:HiddenField
+            ID="hfExistingMediaPath"
+            runat="server"
+            ClientIDMode="Static" />
+
+        <asp:HiddenField
+            ID="hfRemoveExistingImage"
+            runat="server"
+            ClientIDMode="Static"
+            Value="false" />
 
 
         <%-- =========================
@@ -40,11 +51,17 @@
             <div>
 
                 <h1>
-                    Create New Question
+                    <asp:Literal
+                        ID="litPageTitle"
+                        runat="server">
+                    </asp:Literal>
                 </h1>
 
                 <p>
-                    Add an SPM standardized question to your institutional bank
+                    <asp:Literal
+                        ID="litPageSubtitle"
+                        runat="server">
+                    </asp:Literal>
                 </p>
 
             </div>
@@ -85,30 +102,12 @@
 
                     <div class="cq-select-wrapper">
 
-                        <select id="ddlSubject"
-                                class="cq-select">
-
-                            <option>
-                                Mathematics
-                            </option>
-
-                            <option>
-                                Sejarah
-                            </option>
-
-                            <option>
-                                English
-                            </option>
-
-                            <option>
-                                Bahasa Melayu
-                            </option>
-
-                            <option>
-                                Science
-                            </option>
-
-                        </select>
+                        <asp:DropDownList
+                            ID="ddlSubject"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-select">
+                        </asp:DropDownList>
 
 
                         <i class="bi bi-caret-down-fill cq-select-arrow"
@@ -130,18 +129,23 @@
 
                     <div class="cq-select-wrapper">
 
-                        <select id="ddlQuestionType"
-                                class="cq-select">
+                        <asp:DropDownList
+                            ID="ddlQuestionType"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-select">
 
-                            <option value="MCQ">
-                                Single Choice (MCQ)
-                            </option>
+                            <asp:ListItem
+                                Text="Single Choice (MCQ)"
+                                Value="MCQ">
+                            </asp:ListItem>
 
-                            <option value="Subjective">
-                                Subjective (Open-ended)
-                            </option>
+                            <asp:ListItem
+                                Text="Subjective (Open-ended)"
+                                Value="Subjective">
+                            </asp:ListItem>
 
-                        </select>
+                        </asp:DropDownList>
 
 
                         <i class="bi bi-caret-down-fill cq-select-arrow"
@@ -163,22 +167,29 @@
 
                     <div class="cq-select-wrapper">
 
-                        <select id="ddlDifficulty"
-                                class="cq-select">
+                        <asp:DropDownList
+                            ID="ddlDifficulty"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-select">
 
-                            <option>
-                                Easy
-                            </option>
+                            <asp:ListItem
+                                Text="Easy"
+                                Value="Easy">
+                            </asp:ListItem>
 
-                            <option selected>
-                                Medium
-                            </option>
+                            <asp:ListItem
+                                Text="Medium"
+                                Value="Medium"
+                                Selected="True">
+                            </asp:ListItem>
 
-                            <option>
-                                Hard
-                            </option>
+                            <asp:ListItem
+                                Text="Hard"
+                                Value="Hard">
+                            </asp:ListItem>
 
-                        </select>
+                        </asp:DropDownList>
 
 
                         <i class="bi bi-caret-down-fill cq-select-arrow"
@@ -209,9 +220,14 @@
                 </label>
 
 
-                <textarea id="txtQuestion"
-                          class="cq-textarea cq-question-textarea"
-                          placeholder="Enter the examination question here..."></textarea>
+                <asp:TextBox
+                    ID="txtQuestion"
+                    runat="server"
+                    ClientIDMode="Static"
+                    CssClass="cq-textarea cq-question-textarea"
+                    TextMode="MultiLine"
+                    placeholder="Enter the examination question here...">
+                </asp:TextBox>
 
             </div>
 
@@ -270,10 +286,12 @@
                                 </label>
 
 
-                                <input type="file"
-                                       id="questionImage"
-                                       accept=".png,.jpg,.jpeg,.webp"
-                                       hidden />
+                                <asp:FileUpload
+                                    ID="questionImage"
+                                    runat="server"
+                                    ClientIDMode="Static"
+                                    accept=".png,.jpg,.jpeg,.webp"
+                                    style="display:none;" />
 
 
                                 <button type="button"
@@ -287,9 +305,12 @@
                             </div>
 
 
-                            <span id="selectedFileName"
-                                  class="cq-file-name">
-                            </span>
+                            <asp:Label
+                                ID="selectedFileName"
+                                runat="server"
+                                ClientIDMode="Static"
+                                CssClass="cq-file-name">
+                            </asp:Label>
 
                         </div>
 
@@ -336,6 +357,8 @@
 
                     <input type="radio"
                            id="correctA"
+                           runat="server"
+                           ClientIDMode="Static"
                            name="correctOption"
                            value="A"
                            checked />
@@ -349,10 +372,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtOptionA"
-                           class="cq-option-input"
-                           placeholder="Enter option A" />
+                    <asp:TextBox
+                        ID="txtOptionA"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-option-input"
+                        placeholder="Enter option A">
+                    </asp:TextBox>
 
                 </div>
 
@@ -364,6 +390,8 @@
 
                     <input type="radio"
                            id="correctB"
+                           runat="server"
+                           ClientIDMode="Static"
                            name="correctOption"
                            value="B" />
 
@@ -376,10 +404,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtOptionB"
-                           class="cq-option-input"
-                           placeholder="Enter option B" />
+                    <asp:TextBox
+                        ID="txtOptionB"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-option-input"
+                        placeholder="Enter option B">
+                    </asp:TextBox>
 
                 </div>
 
@@ -391,6 +422,8 @@
 
                     <input type="radio"
                            id="correctC"
+                           runat="server"
+                           ClientIDMode="Static"
                            name="correctOption"
                            value="C" />
 
@@ -403,10 +436,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtOptionC"
-                           class="cq-option-input"
-                           placeholder="Enter option C" />
+                    <asp:TextBox
+                        ID="txtOptionC"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-option-input"
+                        placeholder="Enter option C">
+                    </asp:TextBox>
 
                 </div>
 
@@ -418,6 +454,8 @@
 
                     <input type="radio"
                            id="correctD"
+                           runat="server"
+                           ClientIDMode="Static"
                            name="correctOption"
                            value="D" />
 
@@ -430,10 +468,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtOptionD"
-                           class="cq-option-input"
-                           placeholder="Enter option D" />
+                    <asp:TextBox
+                        ID="txtOptionD"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-option-input"
+                        placeholder="Enter option D">
+                    </asp:TextBox>
 
                 </div>
 
@@ -463,9 +504,14 @@
                     </label>
 
 
-                    <textarea id="txtModelAnswer"
-                              class="cq-textarea cq-model-textarea"
-                              placeholder="Enter facts, descriptions or key points used as the grading reference..."></textarea>
+                    <asp:TextBox
+                        ID="txtModelAnswer"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-textarea cq-model-textarea"
+                        TextMode="MultiLine"
+                        placeholder="Enter facts, descriptions or key points used as the grading reference...">
+                    </asp:TextBox>
 
                 </div>
 
@@ -502,10 +548,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtHint"
-                           class="cq-input"
-                           placeholder="e.g. Use the discriminant formula b² - 4ac = 0" />
+                    <asp:TextBox
+                        ID="txtHint"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-input"
+                        placeholder="e.g. Use the discriminant formula b² - 4ac = 0">
+                    </asp:TextBox>
 
                 </div>
 
@@ -526,10 +575,13 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtExplanation"
-                           class="cq-input"
-                           placeholder="Enter a short explanation of the solution..." />
+                    <asp:TextBox
+                        ID="txtExplanation"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="cq-input"
+                        placeholder="Enter a short explanation of the solution...">
+                    </asp:TextBox>
 
                 </div>
 
@@ -553,12 +605,12 @@
                 </button>
 
 
-                <button type="button"
-                        class="cq-save-button">
-
-                    Save to Bank
-
-                </button>
+                <asp:Button
+                    ID="btnSaveQuestion"
+                    runat="server"
+                    CssClass="cq-save-button"
+                    Text="Save to Bank"
+                    OnClick="btnSaveQuestion_Click" />
 
             </div>
 
@@ -869,18 +921,21 @@
 
             imageInput.addEventListener(
                 "change",
-                function () {
+                function() {
 
                     if (imageInput.files.length > 0) {
 
                         selectedFileName.textContent =
                             imageInput.files[0].name;
 
+                        document.getElementById(
+                            "hfRemoveExistingImage"
+                        ).value = "false";
+
                     } else {
 
                         selectedFileName.textContent = "";
                     }
-
                 }
             );
 
@@ -892,11 +947,15 @@
 
             removeImageButton.addEventListener(
                 "click",
-                function () {
+                function() {
 
                     imageInput.value = "";
 
                     selectedFileName.textContent = "";
+
+                    document.getElementById(
+                        "hfRemoveExistingImage"
+                    ).value = "true";
                 }
             );
 
@@ -916,9 +975,12 @@
 
 
                     const correctAnswer =
-                        document.querySelector(
-                            'input[name="correctOption"]:checked'
-                        );
+                        [
+                            document.getElementById("correctA"),
+                            document.getElementById("correctB"),
+                            document.getElementById("correctC"),
+                            document.getElementById("correctD")
+                        ].find(option => option.checked);
 
 
                     let imageUrl = "";

@@ -78,7 +78,9 @@ namespace SPMaster.Lecturer
                 BindSubjects();
                 BindQuestionCounts();
                 BindQuestions();
+                BindDraftQuizzes();
             }
+
 
             UpdateTabStyle();
         }
@@ -272,11 +274,6 @@ namespace SPMaster.Lecturer
 
                 case "DeleteQuestion":
                     DeleteQuestion(questionId);
-                    break;
-
-
-                case "AddToQuiz":
-                    Response.Redirect("~/Lecturer/CreateQuiz.aspx?questionId=" + questionId);
                     break;
             }
         }
@@ -529,6 +526,174 @@ namespace SPMaster.Lecturer
             string safeMessage = HttpUtility.JavaScriptStringEncode(message);
 
             ClientScript.RegisterStartupScript(GetType(),Guid.NewGuid().ToString(),"alert('" + safeMessage + "');", true);
+        }
+
+        private void BindDraftQuizzes()
+        {
+            const string sql = @"
+        SELECT
+            q.QuizId,
+            q.Title,
+            q.Description,
+            COUNT(qq.QuizQuestionId) AS QuestionCount
+        FROM Quizzes q
+        LEFT JOIN QuizQuestions qq
+            ON q.QuizId = qq.QuizId
+        WHERE
+            q.CreatedByUserId = @UserId
+            AND q.IsPublished = 0
+            AND q.IsArchived = 0
+        GROUP BY
+            q.QuizId,
+            q.Title,
+            q.Description,
+            q.CreatedAt
+        ORDER BY q.CreatedAt DESC;
+    ";
+
+
+            DataTable table =
+                new DataTable();
+
+
+            using (SqlConnection connection =
+                new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand command =
+                    new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add(
+                        "@UserId",
+                        SqlDbType.Int
+                    ).Value = CurrentUserId;
+
+
+                    using (SqlDataAdapter adapter =
+                        new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(table);
+                    }
+                }
+            }
+
+
+            rptDraftQuizzes.DataSource = table;
+            rptDraftQuizzes.DataBind();
+
+
+            bool hasDrafts = table.Rows.Count > 0;
+
+            pnlNoDraftQuiz.Visible = !hasDrafts;
+            btnAddSelectedQuiz.Visible = hasDrafts;
+        }
+
+        protected void btnAddSelectedQuiz_Click(object sender, EventArgs e)
+        {
+            int questionId;
+            int quizId;
+
+            // =========================================
+            // QUESTION VALIDATION
+            // =========================================
+
+            if (!int.TryParse(hfSelectedQuestionId.Value,out questionId))
+            {
+                ShowMessage("Unable to identify the selected question.");
+                return;
+            }
+
+            // =========================================
+            // QUIZ VALIDATION
+            // =========================================
+
+            if (
+                !int.TryParse(
+                    hfSelectedQuizId.Value,
+                    out quizId
+                )
+            )
+            {
+                ShowMessage(
+                    "Please select a draft quiz."
+                );
+
+                return;
+            }
+
+
+            // =========================================
+            // DUPLICATE CHECK
+            // =========================================
+
+            if (QuestionAlreadyExistsInQuiz(quizId,questionId))
+            {
+                ShowMessage("This question is already included in the selected quiz.");
+                return;
+            }
+
+
+            // =========================================
+            // INSERT
+            // =========================================
+
+            const string sql = @"INSERT INTO QuizQuestions(QuizId,QuestionId,QuestionOrder,MaxMarks) SELECT @QuizId,@QuestionId,
+                                ISNULL((SELECT MAX(QuestionOrder) FROM QuizQuestions WHERE QuizId = @QuizId), 0) + 1, 1 WHERE EXISTS
+                                (SELECT 1 FROM Quizzes WHERE QuizId = @QuizId AND CreatedByUserId = @UserId AND IsPublished = 0 AND IsArchived = 0);";
+
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+                    command.Parameters.Add("@UserId",SqlDbType.Int).Value = CurrentUserId;
+
+                    connection.Open();
+
+                    int rows = command.ExecuteNonQuery();
+
+                    if (rows == 0)
+                    {
+                        ShowMessage("Unable to add the question to this quiz.");
+                        return;
+                    }
+                }
+            }
+
+            ShowMessage("Question added to quiz successfully.");
+        }
+
+        private bool QuestionAlreadyExistsInQuiz(int quizId, int questionId)
+        {
+            const string sql = @"SELECT COUNT(*) FROM QuizQuestions WHERE QuizId = @QuizId AND QuestionId = @QuestionId;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@QuestionId", SqlDbType.Int ).Value = questionId;
+
+                    connection.Open();
+
+                    return Convert.ToInt32(command.ExecuteScalar() ) > 0;
+                }
+            }
+        }
+
+        protected void btnCreateNewQuiz_Click(object sender, EventArgs e)
+        {
+            int questionId;
+
+            if (!int.TryParse(hfSelectedQuestionId.Value,out questionId))
+            {
+                ShowMessage("Unable to identify the selected question.");
+                return;
+            }
+
+            Response.Redirect("~/Lecturer/CreateQuiz.aspx?questionId="+ questionId
+            );
         }
     }
 }

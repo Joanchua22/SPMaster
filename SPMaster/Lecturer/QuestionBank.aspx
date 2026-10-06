@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="Question Bank" Language="C#" MasterPageFile="~/Master/Portal.Master" AutoEventWireup="true" CodeBehind="QuestionBank.aspx.cs" Inherits="SPMaster.Lecturer.QuestionBank" %>
 
 <asp:Content ID="QuestionBankHead" ContentPlaceHolderID="PortalHead" runat="server">
-    <link href="<%= ResolveUrl("~/Content/QuestionBank.css") %>?v=3" rel="stylesheet" type="text/css" />
-    <link href="<%= ResolveUrl("~/Content/QuestionPreview.css") %>?v=1" rel="stylesheet" type="text/css" />
+    <link href="<%= ResolveUrl("~/Content/QuestionBank.css") %>?v=4" rel="stylesheet" type="text/css" />
+    <link href="<%= ResolveUrl("~/Content/QuestionPreview.css") %>?v=3" rel="stylesheet" type="text/css" />
 </asp:Content>
 
 <asp:Content ID="QuestionBankContent" ContentPlaceHolderID="PortalContent" runat="server">
@@ -164,39 +164,38 @@
 
                                 <%-- OTHER LECTURER'S QUESTION --%>
 
-                                <asp:PlaceHolder runat="server" Visible='<%# !Convert.ToBoolean(Eval("IsOwner")) %>'>
+                                <asp:PlaceHolder
+                                    runat="server"
+                                    Visible='<%# !Convert.ToBoolean(Eval("IsOwner")) %>'>
 
-                                    <button type="button"class="question-action preview-question-button"
-
+                                    <button type="button"
+                                            class="question-action preview-question-button"
                                             data-preview-question
-
                                             data-subject='<%# AttributeEncode(Eval("SubjectName")) %>'
-
                                             data-difficulty='<%# AttributeEncode(Eval("Difficulty")) %>'
-
                                             data-type='<%# AttributeEncode(Eval("QuestionType")) %>'
-
                                             data-question='<%# AttributeEncode(Eval("QuestionText")) %>'
-
                                             data-option-a='<%# AttributeEncode(Eval("OptionA")) %>'
-
                                             data-option-b='<%# AttributeEncode(Eval("OptionB")) %>'
-
                                             data-option-c='<%# AttributeEncode(Eval("OptionC")) %>'
-
                                             data-option-d='<%# AttributeEncode(Eval("OptionD")) %>'
-
                                             data-correct-option='<%# AttributeEncode(Eval("CorrectOption")) %>'
-
                                             data-model-answer='<%# AttributeEncode(Eval("ModelAnswer")) %>'
-
                                             data-image-url='<%# AttributeEncode(GetMediaUrl(Eval("MediaPath"))) %>'>
 
                                         Preview
 
                                     </button>
 
-                                    <asp:LinkButton runat="server" CssClass="question-action question-action-primary" CommandName="AddToQuiz" CommandArgument='<%# Eval("QuestionId") %>'>Add to My Quiz</asp:LinkButton>
+
+                                    <button type="button"
+                                            class="question-action question-action-primary"
+                                            data-add-to-quiz
+                                            data-question-id='<%# Eval("QuestionId") %>'>
+
+                                        Add to My Quiz
+
+                                    </button>
 
                                 </asp:PlaceHolder>
 
@@ -404,6 +403,170 @@
 
     </div>
 
+    <%-- =========================================================
+         ADD TO QUIZ MODAL
+         ========================================================= --%>
+
+    <asp:HiddenField
+        ID="hfSelectedQuestionId"
+        runat="server"
+        ClientIDMode="Static" />
+
+
+    <div id="addToQuizModal"
+         class="add-quiz-modal"
+         hidden>
+
+        <div class="add-quiz-overlay"
+             data-add-quiz-close>
+        </div>
+
+
+        <div class="add-quiz-dialog"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="addQuizTitle">
+
+
+            <%-- HEADER --%>
+
+            <div class="add-quiz-header">
+
+                <div>
+
+                    <span class="add-quiz-label">
+                        Shared Question
+                    </span>
+
+                    <h2 id="addQuizTitle">
+                        Add Question to Quiz
+                    </h2>
+
+                    <p>
+                        Choose one of your draft quizzes
+                    </p>
+
+                </div>
+
+
+                <button type="button"
+                        class="add-quiz-close"
+                        data-add-quiz-close
+                        aria-label="Close">
+
+                    <i class="bi bi-x-lg"
+                       aria-hidden="true"></i>
+
+                </button>
+
+            </div>
+
+
+            <%-- DRAFT QUIZZES --%>
+
+            <div class="draft-quiz-section">
+
+            <asp:HiddenField
+                ID="hfSelectedQuizId"
+                runat="server"
+                ClientIDMode="Static" />
+
+
+            <div class="draft-quiz-list">
+
+                <asp:Repeater
+                    ID="rptDraftQuizzes"
+                    runat="server">
+
+                    <ItemTemplate>
+
+                        <label class="draft-quiz-card">
+
+                            <input type="radio"
+                                   name="draftQuizChoice"
+                                   class="draft-quiz-radio"
+                                   value='<%# Eval("QuizId") %>' />
+
+                            <div class="draft-quiz-content">
+
+                                <div class="draft-quiz-top">
+
+                                    <h3 class="draft-quiz-title">
+                                        <%#: Eval("Title") %>
+                                    </h3>
+
+                                    <span class="draft-quiz-meta">
+                                        <%#: Eval("QuestionCount") %> Questions
+                                    </span>
+
+                                </div>
+
+                                <p class="draft-quiz-description">
+                                    <%#: Eval("Description") %>
+                                </p>
+
+                            </div>
+
+                        </label>
+
+                    </ItemTemplate>
+
+                </asp:Repeater>
+
+            </div>
+
+
+                <asp:Panel
+                    ID="pnlNoDraftQuiz"
+                    runat="server"
+                    Visible="false"
+                    CssClass="no-draft-message">
+
+                    You do not have any draft quizzes yet.
+
+                </asp:Panel>
+
+            </div>
+
+
+            <%-- FOOTER --%>
+
+            <div class="add-quiz-footer">
+
+                <asp:Button
+                    ID="btnCreateNewQuiz"
+                    runat="server"
+                    CssClass="create-new-quiz-button"
+                    Text="+ Create New Quiz"
+                    OnClick="btnCreateNewQuiz_Click" />
+
+
+                <div class="add-quiz-footer-right">
+
+                    <button type="button"
+                            class="add-quiz-cancel"
+                            data-add-quiz-close>
+
+                        Cancel
+
+                    </button>
+
+
+                    <asp:Button
+                        ID="btnAddSelectedQuiz"
+                        runat="server"
+                        CssClass="add-selected-quiz-button"
+                        Text="Add to Quiz"
+                        OnClick="btnAddSelectedQuiz_Click" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </asp:Content>
 
 
@@ -411,6 +574,374 @@
 <asp:Content ID="QuestionBankScripts" ContentPlaceHolderID="PortalScripts" runat="server">
 
     <script src="<%= ResolveUrl("~/Scripts/QuestionPreview.js") %>?v=1">
+    </script>
+
+    <script>
+
+        (function () {
+
+            /* =====================================================
+               ELEMENTS
+               ===================================================== */
+
+            const modal =
+                document.getElementById(
+                    "addToQuizModal"
+                );
+
+
+            const selectedQuestion =
+                document.getElementById(
+                    "hfSelectedQuestionId"
+                );
+
+
+            const selectedQuiz =
+                document.getElementById(
+                    "hfSelectedQuizId"
+                );
+
+
+            if (
+                !modal ||
+                !selectedQuestion ||
+                !selectedQuiz
+            ) {
+                return;
+            }
+
+
+            /* =====================================================
+               RESET QUIZ SELECTION
+               ===================================================== */
+
+            function resetQuizSelection() {
+
+                selectedQuiz.value = "";
+
+
+                const radios =
+                    modal.querySelectorAll(
+                        ".draft-quiz-radio"
+                    );
+
+
+                radios.forEach(
+                    function (radio) {
+
+                        radio.checked = false;
+
+                    }
+                );
+
+
+                const cards =
+                    modal.querySelectorAll(
+                        ".draft-quiz-card"
+                    );
+
+
+                cards.forEach(
+                    function (card) {
+
+                        card.classList.remove(
+                            "is-selected"
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               OPEN MODAL
+               ===================================================== */
+
+            function openModal(
+                questionId
+            ) {
+
+                selectedQuestion.value =
+                    questionId;
+
+
+                resetQuizSelection();
+
+
+                modal.hidden =
+                    false;
+
+
+                document.body.style.overflow =
+                    "hidden";
+
+
+                const closeButton =
+                    modal.querySelector(
+                        ".add-quiz-close"
+                    );
+
+
+                if (closeButton) {
+
+                    closeButton.focus();
+
+                }
+
+            }
+
+
+            /* =====================================================
+               CLOSE MODAL
+               ===================================================== */
+
+            function closeModal() {
+
+                modal.hidden =
+                    true;
+
+
+                document.body.style.overflow =
+                    "";
+
+            }
+
+
+            /* =====================================================
+               ADD TO MY QUIZ BUTTON
+               ===================================================== */
+
+            document.addEventListener(
+                "click",
+                function (event) {
+
+                    const button =
+                        event.target.closest(
+                            "[data-add-to-quiz]"
+                        );
+
+
+                    if (!button) {
+                        return;
+                    }
+
+
+                    const questionId =
+                        button.dataset.questionId;
+
+
+                    if (!questionId) {
+                        return;
+                    }
+
+
+                    openModal(
+                        questionId
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               SELECT DRAFT QUIZ
+               ===================================================== */
+
+            document.addEventListener(
+                "change",
+                function (event) {
+
+                    const radio =
+                        event.target.closest(
+                            ".draft-quiz-radio"
+                        );
+
+
+                    if (!radio) {
+                        return;
+                    }
+
+
+                    /* -----------------------------------------
+                       Save selected QuizId
+                       ----------------------------------------- */
+
+                    selectedQuiz.value =
+                        radio.value;
+
+
+                    /* -----------------------------------------
+                       Remove existing selected card style
+                       ----------------------------------------- */
+
+                    const cards =
+                        modal.querySelectorAll(
+                            ".draft-quiz-card"
+                        );
+
+
+                    cards.forEach(
+                        function (card) {
+
+                            card.classList.remove(
+                                "is-selected"
+                            );
+
+                        }
+                    );
+
+
+                    /* -----------------------------------------
+                       Highlight selected card
+                       ----------------------------------------- */
+
+                    const selectedCard =
+                        radio.closest(
+                            ".draft-quiz-card"
+                        );
+
+
+                    if (selectedCard) {
+
+                        selectedCard.classList.add(
+                            "is-selected"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               CLICK CARD TO SELECT QUIZ
+               ===================================================== */
+
+            document.addEventListener(
+                "click",
+                function (event) {
+
+                    const card =
+                        event.target.closest(
+                            ".draft-quiz-card"
+                        );
+
+
+                    if (!card) {
+                        return;
+                    }
+
+
+                    const radio =
+                        card.querySelector(
+                            ".draft-quiz-radio"
+                        );
+
+
+                    if (!radio) {
+                        return;
+                    }
+
+
+                    /*
+                       Do not manually trigger again
+                       when user directly clicked radio.
+                    */
+
+                    if (
+                        event.target === radio
+                    ) {
+                        return;
+                    }
+
+
+                    radio.checked =
+                        true;
+
+
+                    selectedQuiz.value =
+                        radio.value;
+
+
+                    const cards =
+                        modal.querySelectorAll(
+                            ".draft-quiz-card"
+                        );
+
+
+                    cards.forEach(
+                        function (quizCard) {
+
+                            quizCard.classList.remove(
+                                "is-selected"
+                            );
+
+                        }
+                    );
+
+
+                    card.classList.add(
+                        "is-selected"
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               CLOSE BUTTON / OVERLAY / CANCEL
+               ===================================================== */
+
+            document.addEventListener(
+                "click",
+                function (event) {
+
+                    const closeElement =
+                        event.target.closest(
+                            "[data-add-quiz-close]"
+                        );
+
+
+                    if (!closeElement) {
+                        return;
+                    }
+
+
+                    closeModal();
+
+                }
+            );
+
+
+            /* =====================================================
+               ESCAPE KEY
+               ===================================================== */
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key !== "Escape"
+                    ) {
+                        return;
+                    }
+
+
+                    if (
+                        !modal.hidden
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+            );
+
+        })();
+
     </script>
 
 </asp:Content>
