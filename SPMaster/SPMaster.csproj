@@ -77,7 +77,10 @@
     <Content Include="Content\CreateQuestion.css" />
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\Home.css" />
+    <Content Include="Content\LecturerCreateQuiz.css" />
     <Content Include="Content\LecturerPortal.css" />
+    <Content Include="Content\LecturerPreviewQuiz.css" />
+    <Content Include="Content\LecturerQuizzes.css" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\QuestionBank.css" />
     <Content Include="Content\QuestionPreview.css" />
@@ -86,8 +89,11 @@
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
+    <Content Include="Lecturer\CreateQuiz.aspx" />
     <Content Include="Lecturer\Portal.aspx" />
+    <Content Include="Lecturer\PreviewQuiz.aspx" />
     <Content Include="Lecturer\QuestionBank.aspx" />
+    <Content Include="Lecturer\Quizzes.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Scripts\Dashboard.js" />
@@ -125,6 +131,13 @@
     <Compile Include="Lecturer\CreateQuestion.aspx.designer.cs">
       <DependentUpon>CreateQuestion.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Lecturer\CreateQuiz.aspx.cs">
+      <DependentUpon>CreateQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuiz.aspx.designer.cs">
+      <DependentUpon>CreateQuiz.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Lecturer\Portal.aspx.cs">
       <DependentUpon>Portal.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -132,12 +145,26 @@
     <Compile Include="Lecturer\Portal.aspx.designer.cs">
       <DependentUpon>Portal.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Lecturer\PreviewQuiz.aspx.cs">
+      <DependentUpon>PreviewQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\PreviewQuiz.aspx.designer.cs">
+      <DependentUpon>PreviewQuiz.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Lecturer\QuestionBank.aspx.cs">
       <DependentUpon>QuestionBank.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Lecturer\QuestionBank.aspx.designer.cs">
       <DependentUpon>QuestionBank.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Quizzes.aspx.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Quizzes.aspx.designer.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
     </Compile>
     <Compile Include="Master\Dashboard.Master.cs">
       <DependentUpon>Dashboard.Master</DependentUpon>

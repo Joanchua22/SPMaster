@@ -256,6 +256,38 @@ window.QuestionPreview = (function () {
 
     }
 
+    function getSubjectClass(subject) {
+
+        return "preview-subject";
+    }
+
+
+    function getDifficultyClass(difficulty) {
+
+        const value =
+            (difficulty || "")
+                .toLowerCase();
+
+
+        switch (value) {
+
+            case "easy":
+                return "preview-difficulty-easy";
+
+            case "hard":
+                return "preview-difficulty-hard";
+
+            default:
+                return "preview-difficulty-medium";
+        }
+    }
+
+
+    function getTypeClass() {
+
+        return "preview-type";
+    }
+
 
 
     /* =====================================================
@@ -298,6 +330,27 @@ window.QuestionPreview = (function () {
             data.questionText ||
             "No question entered yet.";
 
+        /* =========================================
+           TAG COLORS
+           ========================================= */
+
+        elements.subject.className =
+            "preview-tag " +
+            getSubjectClass(
+                data.subject
+            );
+
+
+        elements.difficulty.className =
+            "preview-tag " +
+            getDifficultyClass(
+                data.difficulty
+            );
+
+
+        elements.type.className =
+            "preview-tag " +
+            getTypeClass();
 
 
         /* -------------------------
@@ -530,7 +583,7 @@ document.addEventListener(
 
             type:
                 type === "MCQ"
-                    ? "Single Choice (MCQ)"
+                    ? "Single Choice"
                     : type,
 
             questionText:
