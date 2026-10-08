@@ -1,0 +1,540 @@
+﻿/* =========================
+   CREATE QUESTION PAGE
+   ========================= */
+
+.create-question-page {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    color: var(--portal-navy);
+}
+
+
+/* =========================
+   PAGE HEADER
+   ========================= */
+
+.create-question-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+    .create-question-header h1 {
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .create-question-header p {
+        margin: 4px 0 0;
+        color: var(--portal-muted);
+        font-size: 13px;
+    }
+
+.cq-cancel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 6px 17px;
+    border-radius: 999px;
+    background: var(--portal-white);
+    color: var(--portal-navy);
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .cq-cancel-button:hover {
+        background: var(--portal-lavender);
+        transform: translateY(-1px);
+    }
+
+
+/* =========================
+   FORM CARD
+   ========================= */
+
+.create-question-card {
+    padding: 24px;
+    border-radius: 18px;
+    background: var(--portal-white);
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.06);
+}
+
+
+/* =========================
+   FIELD LABELS
+   ========================= */
+
+.cq-full-field,
+.cq-answer-section,
+.cq-support-grid {
+    margin-top: 16px;
+}
+
+.cq-field {
+    min-width: 0;
+}
+
+    .cq-field > label,
+    .cq-answer-heading > label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--portal-navy);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+.required-mark {
+    color: #d92d28;
+}
+
+.optional-text {
+    color: var(--portal-muted);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   TOP DETAILS
+   ========================= */
+
+.cq-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+
+/* =========================
+   SELECT DROPDOWN
+   ========================= */
+
+.cq-select-wrapper {
+    position: relative;
+    min-width: 0;
+}
+
+.cq-select {
+    width: 100%;
+    height: 40px;
+    padding: 7px 32px 7px 13px;
+    border: 0;
+    border-radius: 999px;
+    outline: none;
+    background: #f3ecff;
+    color: var(--portal-navy);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+    .cq-select:focus {
+        box-shadow: 0 0 0 2px var(--portal-purple);
+    }
+
+.cq-select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    color: var(--portal-navy);
+    font-size: 9px;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+
+/* =========================
+   INPUTS
+   ========================= */
+
+.cq-input,
+.cq-option-input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: #f3ecff;
+    color: var(--portal-navy);
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.cq-input {
+    height: 40px;
+    padding: 8px 14px;
+    border-radius: 999px;
+}
+
+    .cq-input:focus,
+    .cq-option-input:focus {
+        box-shadow: 0 0 0 2px var(--portal-purple);
+    }
+
+    .cq-input::placeholder,
+    .cq-option-input::placeholder,
+    .cq-textarea::placeholder {
+        color: #a39aae;
+    }
+
+
+/* =========================
+   TEXT AREA
+   ========================= */
+
+.cq-full-field {
+    width: 100%;
+}
+
+.cq-textarea {
+    display: block;
+    width: 100%;
+    padding: 13px 15px;
+    border: 0;
+    border-radius: 22px;
+    outline: none;
+    resize: vertical;
+    background: #f3ecff;
+    color: var(--portal-navy);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+    .cq-textarea:focus {
+        box-shadow: 0 0 0 2px var(--portal-purple);
+    }
+
+.cq-question-textarea {
+    min-height: 120px;
+}
+
+.cq-model-textarea {
+    min-height: 120px;
+}
+
+
+/* =========================
+   IMAGE UPLOAD
+   ========================= */
+
+.cq-upload-area {
+    margin-top: 6px;
+    padding: 14px;
+    border-radius: 24px;
+    background: #f3ecff;
+}
+
+.cq-upload-inner {
+    display: flex;
+    align-items: center;
+    min-height: 100px;
+    padding: 14px 18px;
+    border-radius: 20px;
+    background: var(--portal-white);
+}
+
+.cq-upload-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    margin-right: 18px;
+    border-radius: 16px;
+    background: #e8dcff;
+    color: var(--portal-navy);
+    font-size: 24px;
+}
+
+.cq-upload-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+    .cq-upload-details strong {
+        font-size: 12px;
+    }
+
+    .cq-upload-details > span {
+        color: var(--portal-muted);
+        font-size: 10px;
+    }
+
+.cq-upload-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.cq-file-button,
+.cq-remove-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 29px;
+    padding: 5px 11px;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cq-file-button {
+    background: var(--portal-purple);
+    color: white;
+}
+
+.cq-remove-button {
+    background: var(--portal-lavender);
+    color: var(--portal-navy);
+}
+
+.cq-file-name {
+    margin-top: 5px;
+    color: var(--portal-purple-dark) !important;
+    font-size: 10px !important;
+}
+
+
+/* =========================
+   ANSWERS
+   ========================= */
+
+.cq-answer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 7px;
+}
+
+    .cq-answer-heading > label {
+        margin: 0;
+    }
+
+    .cq-answer-heading > span {
+        color: var(--portal-muted);
+        font-size: 10px;
+    }
+
+
+/* =========================
+   MCQ OPTIONS
+   ========================= */
+
+.cq-option-row {
+    display: grid;
+    grid-template-columns: auto 26px minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    min-height: 46px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 18px;
+    background: #f3ecff;
+}
+
+    .cq-option-row input[type="radio"] {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--portal-purple);
+        cursor: pointer;
+    }
+
+.cq-option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    margin: 0 !important;
+    border-radius: 50%;
+    background: var(--portal-white);
+    color: var(--portal-navy);
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+}
+
+.cq-option-input {
+    height: 34px;
+    padding: 6px 9px;
+    border-radius: 10px;
+}
+
+
+/* =========================
+   SUBJECTIVE
+   ========================= */
+
+.cq-model-note {
+    margin: 8px 0 0;
+    color: var(--portal-muted);
+    font-size: 10px;
+}
+
+
+/* =========================
+   HINT + EXPLANATION
+   ========================= */
+
+.cq-support-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+
+.cq-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.cq-preview-button,
+.cq-save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.cq-preview-button {
+    background: var(--portal-lavender);
+    color: var(--portal-navy);
+}
+
+.cq-save-button {
+    background: var(--portal-purple);
+    color: var(--portal-white);
+}
+
+.cq-preview-button:hover {
+    background: #e4d7fa;
+    transform: translateY(-1px);
+}
+
+.cq-save-button:hover {
+    background: var(--portal-purple-dark);
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   TABLET
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .cq-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .create-question-header {
+        align-items: flex-start;
+    }
+
+        .create-question-header h1 {
+            font-size: 26px;
+        }
+
+    .create-question-card {
+        padding: 18px;
+    }
+
+    .cq-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cq-support-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cq-upload-inner {
+        align-items: flex-start;
+    }
+
+    .cq-upload-icon {
+        width: 50px;
+        height: 50px;
+        margin-right: 12px;
+    }
+}
+
+
+/* =========================
+   SMALL MOBILE
+   ========================= */
+
+@media (max-width: 430px) {
+
+    .create-question-header {
+        flex-direction: column;
+    }
+
+    .cq-cancel-button {
+        align-self: flex-end;
+    }
+
+    .cq-upload-inner {
+        flex-direction: column;
+    }
+
+    .cq-upload-icon {
+        margin: 0 0 12px;
+    }
+
+    .cq-answer-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .cq-form-actions {
+        flex-direction: column;
+    }
+
+    .cq-preview-button,
+    .cq-save-button {
+        width: 100%;
+    }
+}

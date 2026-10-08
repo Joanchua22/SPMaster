@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SPMaster.Student
+namespace SPMaster.Lecturer
 {
 
 
-    public partial class Dashboard
+    public partial class Portal
     {
     }
 }

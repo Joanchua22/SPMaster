@@ -75,18 +75,32 @@
     <Content Include="App_Data\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\CreateQuestion.css" />
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\Home.css" />
+    <Content Include="Content\LecturerCreateQuiz.css" />
+    <Content Include="Content\LecturerPortal.css" />
+    <Content Include="Content\LecturerPreviewQuiz.css" />
+    <Content Include="Content\LecturerQuizzes.css" />
     <Content Include="Content\Login.css" />
+    <Content Include="Content\QuestionBank.css" />
+    <Content Include="Content\QuestionPreview.css" />
     <Content Include="Content\Register.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
-    <Content Include="Lecturer\Dashboard.aspx" />
+    <Content Include="Lecturer\CreateQuestion.aspx" />
+    <Content Include="Lecturer\CreateQuiz.aspx" />
+    <Content Include="Lecturer\Portal.aspx" />
+    <Content Include="Lecturer\PreviewQuiz.aspx" />
+    <Content Include="Lecturer\QuestionBank.aspx" />
+    <Content Include="Lecturer\Quizzes.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Scripts\Dashboard.js" />
-    <Content Include="Student\Dashboard.aspx" />
+    <Content Include="Content\Portal.css" />
+    <Content Include="Scripts\QuestionPreview.js" />
+    <Content Include="Student\Portal.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +132,48 @@
     <Compile Include="Admin\UserManagement.aspx.designer.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Lecturer\CreateQuestion.aspx.cs">
+      <DependentUpon>CreateQuestion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuestion.aspx.designer.cs">
+      <DependentUpon>CreateQuestion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuiz.aspx.cs">
+      <DependentUpon>CreateQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\CreateQuiz.aspx.designer.cs">
+      <DependentUpon>CreateQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Portal.aspx.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Portal.aspx.designer.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\PreviewQuiz.aspx.cs">
+      <DependentUpon>PreviewQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\PreviewQuiz.aspx.designer.cs">
+      <DependentUpon>PreviewQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\QuestionBank.aspx.cs">
+      <DependentUpon>QuestionBank.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\QuestionBank.aspx.designer.cs">
+      <DependentUpon>QuestionBank.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Quizzes.aspx.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Quizzes.aspx.designer.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Master\Dashboard.Master.cs">
       <DependentUpon>Dashboard.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -132,19 +188,19 @@
     <Compile Include="Home.aspx.designer.cs">
       <DependentUpon>Home.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Lecturer\Dashboard.aspx.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Lecturer\Dashboard.aspx.designer.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Master\Portal.Master.cs">
+      <DependentUpon>Portal.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Master\Portal.Master.designer.cs">
+      <DependentUpon>Portal.Master</DependentUpon>
     </Compile>
     <Compile Include="Master\Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
@@ -161,17 +217,18 @@
     <Compile Include="Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Student\Dashboard.aspx.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
+    <Compile Include="Student\Portal.aspx.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Student\Dashboard.aspx.designer.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
+    <Compile Include="Student\Portal.aspx.designer.cs">
+      <DependentUpon>Portal.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Master\Dashboard.Master" />
     <Content Include="Master\Site.Master" />
+    <Content Include="Master\Portal.Master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
