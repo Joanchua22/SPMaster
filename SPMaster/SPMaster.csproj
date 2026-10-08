@@ -68,8 +68,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Admin\AddUser.aspx" />
+    <Content Include="Admin\ContentAudit.aspx" />
     <Content Include="Admin\Dashboard.aspx" />
     <Content Include="Admin\EditUser.aspx" />
+    <Content Include="Admin\FeedbackReports.aspx" />
+    <Content Include="Admin\RespondFeedback.aspx" />
+    <Content Include="Admin\ReviewContent.aspx" />
     <Content Include="Admin\UserManagement.aspx" />
     <Content Include="App_Data\Database.mdf" />
     <Content Include="App_Data\Database_log.ldf">
@@ -111,6 +115,13 @@
     <Compile Include="Admin\AddUser.aspx.designer.cs">
       <DependentUpon>AddUser.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\ContentAudit.aspx.cs">
+      <DependentUpon>ContentAudit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\ContentAudit.aspx.designer.cs">
+      <DependentUpon>ContentAudit.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Admin\Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -124,6 +135,27 @@
     </Compile>
     <Compile Include="Admin\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\FeedbackReports.aspx.cs">
+      <DependentUpon>FeedbackReports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\FeedbackReports.aspx.designer.cs">
+      <DependentUpon>FeedbackReports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\RespondFeedback.aspx.cs">
+      <DependentUpon>RespondFeedback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\RespondFeedback.aspx.designer.cs">
+      <DependentUpon>RespondFeedback.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\ReviewContent.aspx.cs">
+      <DependentUpon>ReviewContent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\ReviewContent.aspx.designer.cs">
+      <DependentUpon>ReviewContent.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\UserManagement.aspx.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
