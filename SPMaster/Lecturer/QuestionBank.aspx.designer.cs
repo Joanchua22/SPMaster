@@ -96,6 +96,24 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.HiddenField hfSelectedQuestionId;
 
         /// <summary>
+        /// hfSelectedQuestionSubjectId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedQuestionSubjectId;
+
+        /// <summary>
+        /// hfSelectedQuestionSubjectName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedQuestionSubjectName;
+
+        /// <summary>
         /// hfSelectedQuizId control.
         /// </summary>
         /// <remarks>
@@ -103,6 +121,24 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfSelectedQuizId;
+
+        /// <summary>
+        /// pnlAddQuizSuccess control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAddQuizSuccess;
+
+        /// <summary>
+        /// lblAddQuizSuccess control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAddQuizSuccess;
 
         /// <summary>
         /// rptDraftQuizzes control.

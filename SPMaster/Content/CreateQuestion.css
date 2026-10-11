@@ -450,6 +450,95 @@
     transform: translateY(-1px);
 }
 
+/* =========================================================
+   QUESTION SUCCESS MESSAGE
+   ========================================================= */
+
+.cq-save-message {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border: 1px solid #b9e7c5;
+    border-radius: 14px;
+    background: #e9f8ed;
+    color: #26733b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+    .cq-save-message i {
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+
+
+/* =========================================================
+   GENERAL ERROR MESSAGE
+   ========================================================= */
+
+.cq-error-message {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border: 1px solid #ffc3bd;
+    border-radius: 14px;
+    background: #ffe2df;
+    color: #b72f28;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+    .cq-error-message i {
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+
+
+/* =========================================================
+   FIELD VALIDATION
+   ========================================================= */
+
+.cq-validation-error {
+    display: block;
+    margin-top: 6px;
+    color: #ff334b;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   MCQ VALIDATION GROUP
+   ========================================================= */
+
+.cq-option-validation-group {
+    width: 100%;
+}
+
+.cq-option-validation {
+    margin-left: 52px;
+    margin-bottom: 6px;
+}
+
+
+/* =========================================================
+   HIDDEN FILE INPUT
+   ========================================================= */
+
+.cq-hidden-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
 
 /* =========================
    TABLET

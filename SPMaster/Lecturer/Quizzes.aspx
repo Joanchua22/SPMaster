@@ -11,7 +11,7 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/LecturerQuizzes.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/LecturerQuizzes.css") %>?v=3  "
           rel="stylesheet"
           type="text/css" />
 
@@ -27,16 +27,16 @@
     <div class="lecturer-quizzes-page">
 
 
-        <%-- =========================
+        <%-- =====================================================
              PAGE HEADER
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="quiz-page-header">
 
             <div>
 
                 <h1>
-                    Quiz Management
+                    Quizzes
                 </h1>
 
                 <p>
@@ -58,340 +58,347 @@
 
         </section>
 
+        <%-- =====================================================
+             SEARCH
+             ===================================================== --%>
+
+        <section class="quiz-search-card">
+
+            <div class="quiz-search">
+
+                <i class="bi bi-search quiz-search-icon"
+                   aria-hidden="true"></i>
+
+                <asp:TextBox
+                    ID="txtSearch"
+                    runat="server"
+                    CssClass="quiz-search-input"
+                    AutoPostBack="true"
+                    OnTextChanged="FilterChanged"
+                    placeholder="Search by quiz title or keyword..."
+                    aria-label="Search quizzes">
+                </asp:TextBox>
+
+            </div>
+
+        </section>
 
 
-        <%-- =========================
+
+        <%-- =====================================================
              QUIZ TABS
-             ========================= --%>
+             ===================================================== --%>
 
         <div class="quiz-tabs">
 
-            <button type="button"
-                    class="quiz-tab active">
+            <asp:LinkButton
+                ID="btnMyQuizzes"
+                runat="server"
+                CssClass="quiz-tab active"
+                OnClick="btnMyQuizzes_Click">
+            </asp:LinkButton>
 
-                My Quizzes (8)
 
-            </button>
-
-
-            <button type="button"
-                    class="quiz-tab">
-
-                Public Quiz Library (24)
-
-            </button>
+            <asp:LinkButton
+                ID="btnPublicLibrary"
+                runat="server"
+                CssClass="quiz-tab"
+                OnClick="btnPublicLibrary_Click">
+            </asp:LinkButton>
 
         </div>
 
 
 
-        <%-- =========================
+        <%-- =====================================================
              QUIZ LIST
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="quiz-card-grid">
 
 
-            <%-- =====================================
-                 QUIZ 1
-                 MATHEMATICS - PUBLISHED
-                 ===================================== --%>
+            <asp:Repeater
+                ID="rptQuizzes"
+                runat="server"
+                OnItemCommand="rptQuizzes_ItemCommand">
 
-            <article class="quiz-management-card">
-
-
-                <%-- CARD TOP --%>
-
-                <div class="quiz-card-top">
-
-                    <span class="quiz-subject-tag subject-purple">
-                        Mathematics
-                    </span>
+                <ItemTemplate>
 
 
-                    <span class="quiz-status-tag status-published">
-                        Published
-                    </span>
-
-                </div>
+                    <article class="quiz-management-card">
 
 
+                        <%-- =========================
+                             CARD TOP
+                             ========================= --%>
 
-                <%-- QUIZ INFORMATION --%>
+                        <div class="quiz-card-top">
 
-                <div class="quiz-card-content">
+                            <div class="quiz-card-tags">
 
-                    <h2>
-                        Mathematics Final-Year Practice
-                    </h2>
-
-
-                    <p class="quiz-description">
-
-                        Full SPM Paper 1 &amp; 2 preparation with quadratics,
-                        matrices, and coordinate geometry.
-
-                    </p>
+                                <span class='quiz-subject-tag <%# GetSubjectCss(Eval("SubjectName")) %>'>
+                                    <%#: Eval("SubjectName") %>
+                                </span>
 
 
-                    <div class="quiz-information">
+                                <span class="quiz-form-tag">
+                                    <%#: Eval("FormName") %>
+                                </span>
 
-                        <span>
-                            25 Questions
-                        </span>
+                            </div>
 
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
 
-                        <span>
-                            50 Total Marks
-                        </span>
+                            <span class='quiz-status-tag <%# GetStatusCss(Eval("IsPublished")) %>'>
 
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
+                                <%#: GetStatusText(Eval("IsPublished")) %>
 
-                        <span>
-                            45 Mins
-                        </span>
+                            </span>
+
+                        </div>
+
+
+
+                        <%-- =========================
+                             QUIZ INFORMATION
+                             ========================= --%>
+
+                        <div class="quiz-card-content">
+
+
+                            <h2>
+                                <%#: Eval("Title") %>
+                            </h2>
+
+
+                            <p class="quiz-description">
+
+                                <%#: GetDescription(Eval("Description")) %>
+
+                            </p>
+
+
+                            <div class="quiz-information">
+
+
+                                <span>
+                                    <%#: Eval("QuestionCount") %>
+                                    Questions
+                                </span>
+
+
+                                <span class="quiz-info-dot">
+                                    •
+                                </span>
+
+
+                                <span>
+                                    <%#: Eval("TotalMarks") %>
+                                    Total Marks
+                                </span>
+
+
+                                <span class="quiz-info-dot">
+                                    •
+                                </span>
+
+
+                                <span>
+                                    <%#: Eval("TimeLimitMinutes") %>
+                                    Mins
+                                </span>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <%-- =========================
+                             CARD ACTIONS
+                             ========================= --%>
+
+                        <div class="quiz-card-actions">
+
+
+                            <%-- =================================
+                                 MY QUIZ
+                                 ================================= --%>
+
+                            <asp:PlaceHolder
+                                runat="server"
+                                Visible='<%# Convert.ToBoolean(Eval("IsOwner")) %>'>
+
+
+                                <%-- PUBLISHED --%>
+
+                                <asp:PlaceHolder
+                                    runat="server"
+                                    Visible='<%# Convert.ToBoolean(Eval("IsPublished")) %>'>
+
+
+                                    <a href='<%# ResolveUrl(
+                                        "~/Lecturer/Sessions.aspx?quizId="
+                                        + Eval("QuizId")) %>'
+                                       class="quiz-action-button quiz-action-primary">
+
+                                        Create Session
+
+                                    </a>
+
+
+                                    <a href='<%# ResolveUrl(
+                                        "~/Lecturer/PreviewQuiz.aspx?id="
+                                        + Eval("QuizId")
+                                        + "&from=mine") %>'
+                                       class="quiz-action-button quiz-action-light">
+
+                                        Preview
+
+                                    </a>
+
+
+                                    <asp:LinkButton
+                                        runat="server"
+                                        CssClass="quiz-action-button quiz-action-light"
+                                        CommandName="ArchiveQuiz"
+                                        CommandArgument='<%# Eval("QuizId") %>'
+                                        OnClientClick="return confirm('Archive this quiz?');">
+
+                                        Archive
+
+                                    </asp:LinkButton>
+
+
+                                </asp:PlaceHolder>
+
+
+
+                                <%-- DRAFT --%>
+
+                                <asp:PlaceHolder
+                                    runat="server"
+                                    Visible='<%# !Convert.ToBoolean(Eval("IsPublished")) %>'>
+
+
+                                    <a href='<%# ResolveUrl(
+                                        "~/Lecturer/CreateQuiz.aspx?id="
+                                        + Eval("QuizId")) %>'
+                                       class="quiz-action-button quiz-action-primary">
+
+                                        Edit Draft
+
+                                    </a>
+
+
+                                    <a href='<%# ResolveUrl(
+                                        "~/Lecturer/PreviewQuiz.aspx?id="
+                                        + Eval("QuizId")
+                                        + "&from=mine") %>'
+                                       class="quiz-action-button quiz-action-light">
+
+                                        Preview
+
+                                    </a>
+
+
+                                    <asp:LinkButton
+                                        runat="server"
+                                        CssClass="quiz-action-button quiz-action-danger"
+                                        CommandName="DeleteQuiz"
+                                        CommandArgument='<%# Eval("QuizId") %>'
+                                        OnClientClick="return confirm('Permanently delete this draft quiz?');">
+
+                                        Delete
+
+                                    </asp:LinkButton>
+
+
+                                </asp:PlaceHolder>
+
+
+                            </asp:PlaceHolder>
+
+
+
+                            <%-- =================================
+                                 PUBLIC LIBRARY QUIZ
+                                 ================================= --%>
+
+                            <asp:PlaceHolder
+                                runat="server"
+                                Visible='<%# !Convert.ToBoolean(Eval("IsOwner")) %>'>
+
+
+                                <a href='<%# ResolveUrl(
+                                    "~/Lecturer/Sessions.aspx?quizId="
+                                    + Eval("QuizId")) %>'
+                                   class="quiz-action-button quiz-action-primary">
+
+                                    Host My Session
+
+                                </a>
+
+
+                                <a href='<%# ResolveUrl(
+                                    "~/Lecturer/PreviewQuiz.aspx?id="
+                                    + Eval("QuizId")
+                                    + "&from=public") %>'
+                                   class="quiz-action-button quiz-action-light">
+
+                                    Preview
+
+                                </a>
+
+
+                            </asp:PlaceHolder>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                </ItemTemplate>
+
+            </asp:Repeater>
+
+
+
+            <%-- =================================================
+                 NO QUIZZES
+                 ================================================= --%>
+
+            <asp:Panel
+                ID="pnlNoQuizzes"
+                runat="server"
+                Visible="false">
+
+                <article class="quiz-management-card">
+
+                    <div class="quiz-card-content">
+
+                        <h2>
+                            No quizzes found.
+                        </h2>
+
+                        <p class="quiz-description">
+
+                            No quizzes are currently available in this section.
+
+                        </p>
 
                     </div>
 
-                </div>
+                </article>
 
+            </asp:Panel>
 
-
-                <%-- CARD ACTIONS --%>
-
-                <div class="quiz-card-actions">
-
-                    <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                       class="quiz-action-button quiz-action-primary">
-
-                        Create Session
-
-                    </a>
-
-
-                    <button type="button"
-                            class="quiz-action-button quiz-action-light">
-
-                        Preview
-
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <%-- =====================================
-                 QUIZ 2
-                 SEJARAH - PUBLISHED
-                 ===================================== --%>
-
-            <article class="quiz-management-card">
-
-
-                <%-- CARD TOP --%>
-
-                <div class="quiz-card-top">
-
-                    <span class="quiz-subject-tag subject-yellow">
-                        Sejarah
-                    </span>
-
-
-                    <span class="quiz-status-tag status-published">
-                        Published
-                    </span>
-
-                </div>
-
-
-
-                <%-- QUIZ INFORMATION --%>
-
-                <div class="quiz-card-content">
-
-                    <h2>
-                        Sejarah Kertas 2: Kedaulatan Negara
-                    </h2>
-
-
-                    <p class="quiz-description">
-
-                        Focuses on Form 4 and Form 5 national sovereignty topics
-                        with subjective evaluation criteria.
-
-                    </p>
-
-
-                    <div class="quiz-information">
-
-                        <span>
-                            10 Questions
-                        </span>
-
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
-
-                        <span>
-                            40 Total Marks
-                        </span>
-
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
-
-                        <span>
-                            60 Mins
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <%-- CARD ACTIONS --%>
-
-                <div class="quiz-card-actions">
-
-                    <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                       class="quiz-action-button quiz-action-primary">
-
-                        Create Session
-
-                    </a>
-
-
-                    <button type="button"
-                            class="quiz-action-button quiz-action-light">
-
-                        Preview
-
-                    </button>
-
-
-                    <button type="button"
-                            class="quiz-action-button quiz-action-light">
-
-                        Archive
-
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <%-- =====================================
-                 QUIZ 3
-                 BAHASA MELAYU - DRAFT
-                 ===================================== --%>
-
-            <article class="quiz-management-card">
-
-
-                <%-- CARD TOP --%>
-
-                <div class="quiz-card-top">
-
-                    <span class="quiz-subject-tag subject-blue">
-                        Bahasa Melayu
-                    </span>
-
-
-                    <span class="quiz-status-tag status-draft">
-                        Draft
-                    </span>
-
-                </div>
-
-
-
-                <%-- QUIZ INFORMATION --%>
-
-                <div class="quiz-card-content">
-
-                    <h2>
-                        Bahasa Melayu Sintaksis Kilat
-                    </h2>
-
-
-                    <p class="quiz-description">
-
-                        Draft exercise for accelerated Form 5 grammar drills.
-                        Still needs 5 more questions.
-
-                    </p>
-
-
-                    <div class="quiz-information">
-
-                        <span>
-                            15 Questions
-                        </span>
-
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
-
-                        <span>
-                            30 Total Marks
-                        </span>
-
-                        <span class="quiz-info-dot">
-                            •
-                        </span>
-
-                        <span>
-                            30 Mins
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <%-- CARD ACTIONS --%>
-
-                <div class="quiz-card-actions">
-                        
-                    <a href="<%= ResolveUrl("~/Lecturer/CreateQuiz.aspx") %>"
-                       class="quiz-action-button quiz-action-primary">
-
-                        Edit Draft
-
-                    </a>
-
-
-                    <button type="button"
-                            class="quiz-action-button quiz-action-light">
-
-                        Preview
-
-                    </button>
-
-
-                    <button type="button"
-                            class="quiz-action-button quiz-action-danger">
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-            </article>
 
         </section>
+
 
     </div>
 
