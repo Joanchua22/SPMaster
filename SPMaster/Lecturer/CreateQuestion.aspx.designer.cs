@@ -15,22 +15,13 @@ namespace SPMaster.Lecturer
     {
 
         /// <summary>
-        /// hfExistingMediaPath control.
+        /// hfQuestionDirty control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfExistingMediaPath;
-
-        /// <summary>
-        /// hfRemoveExistingImage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfRemoveExistingImage;
+        protected global::System.Web.UI.WebControls.HiddenField hfQuestionDirty;
 
         /// <summary>
         /// litPageTitle control.
@@ -51,6 +42,69 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.Literal litPageSubtitle;
 
         /// <summary>
+        /// pnlQuestionSuccess control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlQuestionSuccess;
+
+        /// <summary>
+        /// lblQuestionSuccess control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQuestionSuccess;
+
+        /// <summary>
+        /// pnlQuestionError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlQuestionError;
+
+        /// <summary>
+        /// lblQuestionError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQuestionError;
+
+        /// <summary>
+        /// hfExistingMediaPath control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfExistingMediaPath;
+
+        /// <summary>
+        /// hfExistingMediaUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfExistingMediaUrl;
+
+        /// <summary>
+        /// hfRemoveExistingImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfRemoveExistingImage;
+
+        /// <summary>
         /// ddlSubject control.
         /// </summary>
         /// <remarks>
@@ -58,6 +112,15 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlSubject;
+
+        /// <summary>
+        /// valSubject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valSubject;
 
         /// <summary>
         /// ddlQuestionType control.
@@ -69,6 +132,15 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.DropDownList ddlQuestionType;
 
         /// <summary>
+        /// valQuestionType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valQuestionType;
+
+        /// <summary>
         /// ddlDifficulty control.
         /// </summary>
         /// <remarks>
@@ -78,6 +150,15 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.DropDownList ddlDifficulty;
 
         /// <summary>
+        /// valDifficulty control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valDifficulty;
+
+        /// <summary>
         /// txtQuestion control.
         /// </summary>
         /// <remarks>
@@ -85,6 +166,15 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtQuestion;
+
+        /// <summary>
+        /// valQuestion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valQuestion;
 
         /// <summary>
         /// questionImage control.
@@ -105,13 +195,22 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.Label selectedFileName;
 
         /// <summary>
+        /// valImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valImage;
+
+        /// <summary>
         /// correctA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton correctA;
+        protected global::System.Web.UI.WebControls.RadioButton correctA;
 
         /// <summary>
         /// txtOptionA control.
@@ -123,13 +222,22 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.TextBox txtOptionA;
 
         /// <summary>
+        /// valOptionA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valOptionA;
+
+        /// <summary>
         /// correctB control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton correctB;
+        protected global::System.Web.UI.WebControls.RadioButton correctB;
 
         /// <summary>
         /// txtOptionB control.
@@ -141,13 +249,22 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.TextBox txtOptionB;
 
         /// <summary>
+        /// valOptionB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valOptionB;
+
+        /// <summary>
         /// correctC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton correctC;
+        protected global::System.Web.UI.WebControls.RadioButton correctC;
 
         /// <summary>
         /// txtOptionC control.
@@ -159,13 +276,22 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.TextBox txtOptionC;
 
         /// <summary>
+        /// valOptionC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valOptionC;
+
+        /// <summary>
         /// correctD control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton correctD;
+        protected global::System.Web.UI.WebControls.RadioButton correctD;
 
         /// <summary>
         /// txtOptionD control.
@@ -177,6 +303,24 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.TextBox txtOptionD;
 
         /// <summary>
+        /// valOptionD control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valOptionD;
+
+        /// <summary>
+        /// valCorrectOption control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valCorrectOption;
+
+        /// <summary>
         /// txtModelAnswer control.
         /// </summary>
         /// <remarks>
@@ -184,6 +328,15 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtModelAnswer;
+
+        /// <summary>
+        /// valModelAnswer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valModelAnswer;
 
         /// <summary>
         /// txtHint control.

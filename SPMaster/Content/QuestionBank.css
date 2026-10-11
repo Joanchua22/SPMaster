@@ -340,12 +340,14 @@
 
 
 .question-action-danger {
-    background: #ffe6e4;
-    color: #d92d28;
+    background: #ffe2df;
+    color: #d92d28 !important;
 }
 
     .question-action-danger:hover {
-        background: #ffd4d1;
+        background: #ffd2cd;
+        color: #d92d28 !important;
+        transform: translateY(-1px);
     }
 
 .question-action-primary {
@@ -487,6 +489,52 @@
     cursor: pointer;
 }
 
+/* =========================================================
+   ADD TO QUIZ INLINE ERROR
+   ========================================================= */
+
+.add-quiz-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 10px 13px;
+    border: 1px solid #ffc3bd;
+    border-radius: 12px;
+    background: #ffe7e4;
+    color: #c63630;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+    .add-quiz-error[hidden] {
+        display: none;
+    }
+
+    .add-quiz-error i {
+        flex-shrink: 0;
+        font-size: 14px;
+    }
+
+.add-quiz-success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 10px 13px;
+    border: 1px solid #b9e7c5;
+    border-radius: 12px;
+    background: #e9f8ed;
+    color: #26733b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+    .add-quiz-success[hidden] {
+        display: none;
+    }
+
 
 /* =========================
    DRAFT QUIZ LIST
@@ -566,6 +614,36 @@
     color: var(--portal-muted);
     font-size: 12px;
     text-align: center;
+}
+
+/* =========================================================
+   ALREADY ADDED QUIZ
+   ========================================================= */
+
+.draft-quiz-card.is-unavailable {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+    .draft-quiz-card.is-unavailable:hover {
+        border-color: transparent;
+        transform: none;
+    }
+
+.draft-quiz-card-right {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.draft-already-added {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #ddd2ec;
+    color: #594e67;
+    font-size: 10px;
+    font-weight: 700;
 }
 
 
