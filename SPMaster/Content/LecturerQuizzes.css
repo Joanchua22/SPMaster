@@ -1,6 +1,6 @@
-﻿/* =========================
+﻿/* =========================================================
    LECTURER QUIZZES PAGE
-   ========================= */
+   ========================================================= */
 
 .lecturer-quizzes-page {
     --quiz-button-font-size: 13px;
@@ -9,9 +9,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    PAGE HEADER
-   ========================= */
+   ========================================================= */
 
 .quiz-page-header {
     display: flex;
@@ -41,9 +41,9 @@
     }
 
 
-/* =========================
+/* =========================================================
    CREATE QUIZ BUTTON
-   ========================= */
+   ========================================================= */
 
 .create-quiz-button {
     display: inline-flex;
@@ -56,12 +56,14 @@
     border: 0;
     border-radius: 999px;
     background: #7c28ef;
-    color: var(--portal-white) !important;
+    color: #ffffff !important;
     font-family: inherit;
     font-size: var(--quiz-button-font-size);
     font-weight: 700;
     line-height: 1;
+    text-decoration: none !important;
     white-space: nowrap;
+    cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -72,24 +74,77 @@
 
     .create-quiz-button:hover {
         background: #6920d4;
+        color: #ffffff !important;
+        text-decoration: none !important;
         transform: translateY(-1px);
     }
 
-
 /* =========================
-   QUIZ TABS
+   QUIZ SEARCH
    ========================= */
+
+.quiz-search-card {
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+
+.quiz-search {
+    position: relative;
+    width: 100%;
+}
+
+
+.quiz-search-input {
+    width: 100%;
+    height: 48px;
+    padding: 10px 18px 10px 44px;
+    border: 0;
+    border-radius: 16px;
+    outline: none;
+    background: var(--portal-white);
+    color: var(--portal-navy);
+    font-family: inherit;
+    font-size: 13px;
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.05);
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+
+    .quiz-search-input::placeholder {
+        color: #9a92a6;
+    }
+
+
+    .quiz-search-input:focus {
+        box-shadow: 0 0 0 2px rgba(124, 40, 239, 0.18);
+    }
+
+
+.quiz-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 17px;
+    z-index: 1;
+    color: var(--portal-muted);
+    font-size: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   QUIZ TABS
+   ========================================================= */
 
 .quiz-tabs {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.65);
     margin-bottom: 22px;
+    padding-bottom: 14px;
 }
-
 
 .quiz-tab {
     display: inline-flex;
@@ -100,30 +155,41 @@
     border: 0;
     border-radius: 999px;
     background: var(--portal-white);
-    color: var(--portal-navy);
+    color: var(--portal-navy) !important;
     font-family: inherit;
     font-size: var(--quiz-button-font-size);
     font-weight: 700;
+    line-height: 1;
+    text-decoration: none !important;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-
     .quiz-tab:hover {
         background: #eee4ff;
+        color: var(--portal-navy) !important;
+        text-decoration: none !important;
         transform: translateY(-1px);
     }
 
-
     .quiz-tab.active {
         background: #7c28ef;
-        color: var(--portal-white);
+        color: #ffffff !important;
+    }
+
+        .quiz-tab.active:hover {
+            background: #6920d4;
+            color: #ffffff !important;
+        }
+
+    .quiz-tab:focus {
+        text-decoration: none !important;
     }
 
 
-/* =========================
+/* =========================================================
    QUIZ CARD GRID
-   ========================= */
+   ========================================================= */
 
 .quiz-card-grid {
     display: grid;
@@ -133,9 +199,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUIZ CARD
-   ========================= */
+   ========================================================= */
 
 .quiz-management-card {
     display: flex;
@@ -149,16 +215,15 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
     .quiz-management-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 7px 16px rgba(41, 32, 82, 0.09);
     }
 
 
-/* =========================
+/* =========================================================
    CARD TOP
-   ========================= */
+   ========================================================= */
 
 .quiz-card-top {
     display: flex;
@@ -169,9 +234,21 @@
 }
 
 
-/* =========================
+/* =========================================================
+   CARD TAG GROUP
+   ========================================================= */
+
+.quiz-card-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+/* =========================================================
    SUBJECT TAG
-   ========================= */
+   ========================================================= */
 
 .quiz-subject-tag {
     display: inline-flex;
@@ -184,28 +261,42 @@
     line-height: 1.2;
 }
 
-
 .subject-purple {
     background: #eadfff;
     color: #501798;
 }
-
 
 .subject-yellow {
     background: #fff16f;
     color: #4e4000;
 }
 
-
 .subject-blue {
     background: #e7e4ff;
     color: #43318b;
 }
 
+/* =========================================================
+   FORM LEVEL TAG
+   ========================================================= */
 
-/* =========================
+.quiz-form-tag {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f1eaff;
+    color: #62517d;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+
+/* =========================================================
    STATUS TAG
-   ========================= */
+   ========================================================= */
 
 .quiz-status-tag {
     display: inline-flex;
@@ -219,12 +310,10 @@
     line-height: 1.2;
 }
 
-
 .status-published {
     background: #eee4ff;
     color: var(--portal-purple-dark);
 }
-
 
 .status-draft {
     background: #ddd2ec;
@@ -232,15 +321,14 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUIZ CONTENT
-   ========================= */
+   ========================================================= */
 
 .quiz-card-content {
     flex: 1;
     min-width: 0;
 }
-
 
     .quiz-card-content h2 {
         margin: 0 0 7px;
@@ -249,7 +337,6 @@
         font-weight: 700;
         line-height: 1.35;
     }
-
 
 .quiz-description {
     min-height: 40px;
@@ -260,9 +347,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUIZ INFORMATION
-   ========================= */
+   ========================================================= */
 
 .quiz-information {
     display: flex;
@@ -274,16 +361,15 @@
     font-weight: 600;
 }
 
-
 .quiz-info-dot {
     color: var(--portal-muted);
     font-size: 9px;
 }
 
 
-/* =========================
+/* =========================================================
    CARD ACTIONS
-   ========================= */
+   ========================================================= */
 
 .quiz-card-actions {
     display: flex;
@@ -296,9 +382,9 @@
 }
 
 
-/* =========================
-   QUIZ ACTION BUTTONS
-   ========================= */
+/* =========================================================
+   QUIZ ACTION BUTTON
+   ========================================================= */
 
 .quiz-action-button {
     display: inline-flex;
@@ -311,62 +397,112 @@
     font-family: inherit;
     font-size: var(--quiz-button-font-size);
     font-weight: 700;
+    line-height: 1;
+    text-decoration: none !important;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 
-/* =========================
-   PRIMARY BUTTON
-   ========================= */
+/* =========================================================
+   PRIMARY ACTION
+   ========================================================= */
 
 .quiz-action-primary {
     background: #7c28ef;
-    color: var(--portal-white) !important;
+    color: #ffffff !important;
 }
 
-
     .quiz-action-primary:hover {
-        background: var(--portal-purple-dark);
+        background: #6920d4;
+        color: #ffffff !important;
         transform: translateY(-1px);
     }
 
 
-/* =========================
-   LIGHT BUTTON
-   ========================= */
+/* =========================================================
+   LIGHT ACTION
+   ========================================================= */
 
 .quiz-action-light {
     background: var(--portal-lavender);
     color: var(--portal-navy) !important;
 }
 
-
     .quiz-action-light:hover {
         background: #e4d7fa;
+        color: var(--portal-navy) !important;
         transform: translateY(-1px);
     }
 
 
-/* =========================
-   DANGER BUTTON
-   ========================= */
+/* =========================================================
+   DANGER ACTION
+   ========================================================= */
 
 .quiz-action-danger {
     background: #ffe2df;
     color: #d92d28 !important;
 }
 
-
     .quiz-action-danger:hover {
         background: #ffd2cd;
+        color: #d92d28 !important;
         transform: translateY(-1px);
     }
 
 
-/* =========================
+/* =========================================================
+   EMPTY QUIZ LIST
+   ========================================================= */
+
+.quiz-empty-state {
+    grid-column: 1 / -1;
+    padding: 30px 24px;
+    border-radius: 18px;
+    background: var(--portal-white);
+    text-align: center;
+}
+
+    .quiz-empty-state h2 {
+        margin: 0 0 6px;
+        color: var(--portal-navy);
+        font-size: 17px;
+    }
+
+    .quiz-empty-state p {
+        margin: 0;
+        color: var(--portal-muted);
+        font-size: 13px;
+    }
+
+/* =========================================================
+   SAVE SUCCESS MESSAGE
+   ========================================================= */
+
+.quiz-save-message {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border: 1px solid #b9e7c5;
+    border-radius: 14px;
+    background: #e9f8ed;
+    color: forestgreen;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+    .quiz-save-message i {
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+
+
+/* =========================================================
    TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 900px) {
 
@@ -376,9 +512,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
 
@@ -387,16 +523,13 @@
         flex-direction: column;
     }
 
-
         .quiz-page-header h1 {
             font-size: 26px;
         }
 
-
     .create-quiz-button {
         align-self: flex-end;
     }
-
 
     .quiz-management-card {
         min-height: 0;
@@ -405,9 +538,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    SMALL MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 430px) {
 
@@ -420,7 +553,6 @@
         display: grid;
         grid-template-columns: 1fr;
     }
-
 
     .quiz-tab {
         width: 100%;
@@ -446,7 +578,6 @@
         display: grid;
         grid-template-columns: 1fr;
     }
-
 
     .quiz-action-button {
         width: 100%;

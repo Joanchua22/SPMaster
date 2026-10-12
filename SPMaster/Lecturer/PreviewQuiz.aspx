@@ -11,7 +11,7 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/LecturerPreviewQuiz.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/LecturerPreviewQuiz.css") %>?v=2"
           rel="stylesheet"
           type="text/css" />
 
@@ -27,61 +27,104 @@
     <div class="quiz-preview-page">
 
 
-        <%-- =========================
+        <%-- =====================================================
              PAGE HEADER
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="quiz-preview-header">
 
 
             <%-- LEFT SIDE --%>
 
-            <div class="quiz-preview-heading-group">
+            <div class="quiz-preview-heading">
 
-                <a href="<%= ResolveUrl("~/Lecturer/CreateQuiz.aspx") %>"
-                   class="quiz-preview-back-button"
-                   aria-label="Back to Quiz Editor">
+                <span class="quiz-preview-context">
 
-                    <i class="bi bi-arrow-left"
-                       aria-hidden="true"></i>
+                    <asp:Literal
+                        ID="litQuizContext"
+                        runat="server">
+                    </asp:Literal>
 
-                </a>
+                </span>
 
 
-                <div class="quiz-preview-heading">
+                <h1>
 
-                    <span class="quiz-preview-context">
-                        Sejarah • Form 4
-                    </span>
+                    <asp:Literal
+                        ID="litQuizTitle"
+                        runat="server">
+                    </asp:Literal>
 
-                    <h1>
-                        Sejarah Kertas 2: Kedaulatan Negara
-                    </h1>
-
-                </div>
+                </h1>
 
             </div>
 
 
 
-            <%-- PUBLISH BUTTON --%>
+            <%-- RIGHT SIDE ACTIONS --%>
 
-            <button type="button"
-                    class="publish-quiz-button">
+            <div class="quiz-preview-header-actions">
 
-                Publish Quiz Now
 
-            </button>
+                <%-- BACK BUTTON --%>
+
+                <asp:HyperLink
+                    ID="lnkBack"
+                    runat="server"
+                    CssClass="quiz-preview-back-text-button">
+
+                    Back
+
+                </asp:HyperLink>
+
+
+
+                <%-- PUBLISH BUTTON --%>
+
+                <asp:Button
+                    ID="btnPublishQuiz"
+                    runat="server"
+                    CssClass="publish-quiz-button"
+                    Text="Publish Quiz Now"
+                    OnClientClick="return confirm('Are you sure you want to publish this quiz? Once published, it will become available for use.');"
+                    OnClick="btnPublishQuiz_Click" />
+
+            </div>
 
         </section>
 
 
 
-        <%-- =========================
+        <%-- =====================================================
+             PAGE MESSAGE
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlPreviewMessage"
+            runat="server"
+            Visible="false"
+            CssClass="preview-message preview-message-error">
+
+            <i class="bi bi-exclamation-circle-fill"
+               aria-hidden="true"></i>
+
+            <asp:Label
+                ID="lblPreviewMessage"
+                runat="server">
+            </asp:Label>
+
+        </asp:Panel>
+
+
+
+        <%-- =====================================================
              QUIZ SUMMARY
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="quiz-preview-summary">
+
+
+            <%-- TOTAL QUESTIONS --%>
 
             <div class="quiz-summary-item">
 
@@ -90,7 +133,12 @@
                 </strong>
 
                 <span>
-                    2
+
+                    <asp:Literal
+                        ID="litTotalQuestions"
+                        runat="server">
+                    </asp:Literal>
+
                 </span>
 
             </div>
@@ -100,6 +148,9 @@
                 •
             </span>
 
+
+
+            <%-- TOTAL MARKS --%>
 
             <div class="quiz-summary-item">
 
@@ -108,7 +159,12 @@
                 </strong>
 
                 <span>
-                    8 Marks
+
+                    <asp:Literal
+                        ID="litTotalMarks"
+                        runat="server">
+                    </asp:Literal>
+
                 </span>
 
             </div>
@@ -119,6 +175,9 @@
             </span>
 
 
+
+            <%-- TIME LIMIT --%>
+
             <div class="quiz-summary-item">
 
                 <strong>
@@ -126,7 +185,38 @@
                 </strong>
 
                 <span>
-                    60 mins
+
+                    <asp:Literal
+                        ID="litTimeLimit"
+                        runat="server">
+                    </asp:Literal>
+
+                </span>
+
+            </div>
+
+
+
+            <%-- PASS PERCENTAGE --%>
+
+            <span class="quiz-summary-dot">
+                •
+            </span>
+
+
+            <div class="quiz-summary-item">
+
+                <strong>
+                    Pass Percentage:
+                </strong>
+
+                <span>
+
+                    <asp:Literal
+                        ID="litPassPercentage"
+                        runat="server">
+                    </asp:Literal>
+
                 </span>
 
             </div>
@@ -135,164 +225,257 @@
 
 
 
-        <%-- =========================
+        <%-- =====================================================
+             QUIZ INSTRUCTIONS
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlQuizInstructions"
+            runat="server"
+            Visible="false"
+            CssClass="quiz-preview-instructions">
+
+            <strong>
+                Instructions:
+            </strong>
+
+            <asp:Label
+                ID="lblQuizInstructions"
+                runat="server">
+            </asp:Label>
+
+        </asp:Panel>
+
+
+
+        <%-- =====================================================
              QUESTION LIST
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="quiz-preview-question-list">
 
 
-            <%-- =====================================
-                 QUESTION 1 - MCQ
-                 ===================================== --%>
+            <asp:Repeater
+                ID="rptPreviewQuestions"
+                runat="server">
 
-            <article class="quiz-preview-question-card">
+                <ItemTemplate>
 
 
-                <%-- QUESTION HEADER --%>
+                    <article class="quiz-preview-question-card">
 
-                <div class="preview-question-header">
 
-                    <span class="preview-question-number">
+                        <%-- =========================================
+                             QUESTION HEADER
+                             ========================================= --%>
 
-                        Question 1 of 2
-                        (Single Choice)
+                        <div class="preview-question-header">
 
-                    </span>
 
+                            <span class="preview-question-number">
 
-                    <span class="preview-question-marks">
-                        4 Marks
-                    </span>
+                                Question
+                                <%# Eval("QuestionOrder") %>
+                                of
+                                <%# Eval("TotalQuestions") %>
 
-                </div>
+                                (<%# GetQuestionTypeDisplay(
+                                    Eval("QuestionType")
+                                ) %>)
 
+                            </span>
 
 
-                <%-- QUESTION TEXT --%>
 
-                <h2 class="preview-question-title">
+                            <span class="preview-question-marks">
 
-                    Apakah faktor utama yang mendorong pembentukan
-                    Jawatankuasa Setia Kawan Malaysia (JSKM)
-                    pada Julai 1961?
+                                <%# Eval("MaxMarks") %>
+                                <%# Convert.ToDecimal(
+                                        Eval("MaxMarks")
+                                    ) == 1
+                                        ? "Mark"
+                                        : "Marks" %>
 
-                </h2>
+                            </span>
 
+                        </div>
 
 
-                <%-- MCQ OPTIONS --%>
 
-                <div class="preview-option-grid">
+                        <%-- =========================================
+                             QUESTION TEXT
+                             ========================================= --%>
 
+                        <h2 class="preview-question-title">
 
-                    <%-- OPTION A --%>
+                            <%#: Eval("QuestionText") %>
 
-                    <div class="preview-option">
+                        </h2>
 
-                        <span class="preview-option-letter">
-                            A.
-                        </span>
 
-                        <span>
-                            Menggubal perlembagaan baharu
-                        </span>
 
-                    </div>
+                        <%-- =========================================
+                             OPTIONAL QUESTION IMAGE
+                             ========================================= --%>
 
+                        <asp:PlaceHolder
+                            runat="server"
+                            Visible='<%# HasValue(
+                                Eval("MediaPath")
+                            ) %>'>
 
+                            <div class="preview-question-image-wrapper">
 
-                    <%-- OPTION B - CORRECT --%>
+                                <img
+                                    src='<%# GetMediaUrl(
+                                        Eval("MediaPath")
+                                    ) %>'
+                                    class="preview-question-image"
+                                    alt="Question stimulus" />
 
-                    <div class="preview-option">
+                            </div>
 
-                        <span class="preview-option-letter">
-                            B.
-                        </span>
+                        </asp:PlaceHolder>
 
-                        <span>
-                            Meyakinkan penduduk Sabah &amp; Sarawak
-                        </span>
 
-                    </div>
 
+                        <%-- =========================================
+                             MCQ OPTIONS
+                             ========================================= --%>
 
+                        <asp:PlaceHolder
+                            runat="server"
+                            Visible='<%# IsMcq(
+                                Eval("QuestionType")
+                            ) %>'>
 
-                    <%-- OPTION C --%>
 
-                    <div class="preview-option">
+                            <div class="preview-option-grid">
 
-                        <span class="preview-option-letter">
-                            C.
-                        </span>
 
-                        <span>
-                            Membubarkan Majlis Perundangan Singapura
-                        </span>
+                                <%-- OPTION A --%>
 
-                    </div>
+                                <div class="preview-option">
 
+                                    <span class="preview-option-letter">
+                                        A.
+                                    </span>
 
+                                    <span>
+                                        <%#: Eval("OptionA") %>
+                                    </span>
 
-                    <%-- OPTION D --%>
+                                </div>
 
-                    <div class="preview-option">
 
-                        <span class="preview-option-letter">
-                            D.
-                        </span>
 
-                        <span>
-                            Menyerahkan kuasa pertahanan kepada British
-                        </span>
+                                <%-- OPTION B --%>
 
-                    </div>
+                                <div class="preview-option">
 
-                </div>
+                                    <span class="preview-option-letter">
+                                        B.
+                                    </span>
 
-            </article>
+                                    <span>
+                                        <%#: Eval("OptionB") %>
+                                    </span>
 
+                                </div>
 
 
-            <%-- =====================================
-                 QUESTION 2 - SUBJECTIVE
-                 ===================================== --%>
 
-            <article class="quiz-preview-question-card">
+                                <%-- OPTION C --%>
 
+                                <div class="preview-option">
 
-                <%-- QUESTION HEADER --%>
+                                    <span class="preview-option-letter">
+                                        C.
+                                    </span>
 
-                <div class="preview-question-header">
+                                    <span>
+                                        <%#: Eval("OptionC") %>
+                                    </span>
 
-                    <span class="preview-question-number">
+                                </div>
 
-                        Question 2 of 2
-                        (Subjective)
 
-                    </span>
 
+                                <%-- OPTION D --%>
 
-                    <span class="preview-question-marks">
-                        4 Marks
-                    </span>
+                                <div class="preview-option">
 
-                </div>
+                                    <span class="preview-option-letter">
+                                        D.
+                                    </span>
 
+                                    <span>
+                                        <%#: Eval("OptionD") %>
+                                    </span>
 
+                                </div>
 
-                <%-- QUESTION TEXT --%>
+                            </div>
 
-                <h2 class="preview-question-title">
+                        </asp:PlaceHolder>
 
-                    Jelaskan dua faktor pembentukan
-                    Gagasan Malaysia pada tahun 1961.
 
-                </h2>
 
-            </article>
+                        <%-- =========================================
+                             SUBJECTIVE STUDENT ANSWER AREA
+                             ========================================= --%>
+
+                        <asp:PlaceHolder
+                            runat="server"
+                            Visible='<%# !IsMcq(
+                                Eval("QuestionType")
+                            ) %>'>
+
+                            <div class="preview-subjective-answer-area">
+
+                                <span>
+                                    Student written answer area
+                                </span>
+
+                            </div>
+
+                        </asp:PlaceHolder>
+
+
+                    </article>
+
+                </ItemTemplate>
+
+            </asp:Repeater>
+
+
+
+            <%-- =================================================
+                 NO QUESTIONS
+                 ================================================= --%>
+
+            <asp:Panel
+                ID="pnlNoPreviewQuestions"
+                runat="server"
+                Visible="false"
+                CssClass="quiz-preview-empty">
+
+                <i class="bi bi-question-circle"
+                   aria-hidden="true"></i>
+
+                <h3>
+                    No questions found.
+                </h3>
+
+                <p>
+                    Return to the Quiz Editor and add at least one question.
+                </p>
+
+            </asp:Panel>
+
 
         </section>
+
 
     </div>
 

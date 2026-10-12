@@ -11,9 +11,33 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/LecturerCreateQuiz.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/LecturerCreateQuiz.css") %>?v=3"
           rel="stylesheet"
           type="text/css" />
+
+
+    <%-- Validation styling --%>
+
+    <style>
+
+        .quiz-validation-error {
+            display: block;
+            margin-top: 6px;
+
+            color: #ff334b;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.35;
+        }
+
+
+        .allocation-validation-error {
+            margin: 0 0 14px;
+        }
+
+    </style>
 
 </asp:Content>
 
@@ -24,14 +48,28 @@
     ContentPlaceHolderID="PortalContent"
     runat="server">
 
+
     <div class="create-quiz-page">
 
 
-        <%-- =========================
+        <%-- =====================================================
+             UNSAVED CHANGES
+             ===================================================== --%>
+
+        <asp:HiddenField
+            ID="hfQuizDirty"
+            runat="server"
+            ClientIDMode="Static"
+            Value="false" />
+
+
+
+        <%-- =====================================================
              PAGE HEADER
-             ========================= --%>
+             ===================================================== --%>
 
         <section class="create-quiz-header">
+
 
             <div>
 
@@ -46,30 +84,78 @@
             </div>
 
 
+
             <div class="create-quiz-header-actions">
 
+
+                <%-- CANCEL --%>
+
                 <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>"
-                   class="create-quiz-cancel-button">
+                   class="create-quiz-cancel-button"
+                   onclick="return window.confirmCancelQuiz();">
 
                     Cancel
 
                 </a>
 
 
-                <a href="<%= ResolveUrl("~/Lecturer/PreviewQuiz.aspx") %>"
-                   class="create-quiz-publish-button">
+
+                <%-- SAVE DRAFT --%>
+
+                <asp:Button
+                    ID="btnSaveDraft"
+                    runat="server"
+                    CssClass="create-quiz-cancel-button"
+                    Text="Save Draft"
+                    CausesValidation="true"
+                    ValidationGroup="QuizValidation"
+                    OnClick="btnSaveDraft_Click" />
+
+
+
+                <%-- PREVIEW AND PUBLISH --%>
+
+                <asp:LinkButton
+                    ID="btnPreviewPublish"
+                    runat="server"
+                    CssClass="create-quiz-publish-button"
+                    CausesValidation="true"
+                    ValidationGroup="QuizValidation"
+                    OnClick="btnPreviewPublish_Click">
 
                     Preview &amp; Publish
 
                     <i class="bi bi-arrow-right"
                        aria-hidden="true"></i>
 
-                </a>
+                </asp:LinkButton>
+
 
             </div>
 
+
         </section>
 
+
+        <%-- =====================================================
+             SAVE SUCCESS MESSAGE
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlSaveSuccess"
+            runat="server"
+            Visible="false"
+            CssClass="quiz-save-message">
+
+            <i class="bi bi-check-circle-fill"
+               aria-hidden="true"></i>
+
+            <asp:Label
+                ID="lblSaveSuccess"
+                runat="server">
+            </asp:Label>
+
+        </asp:Panel>
 
 
         <%-- =====================================================
@@ -77,6 +163,7 @@
              ===================================================== --%>
 
         <section class="create-quiz-card">
+
 
             <div class="create-quiz-section-heading">
 
@@ -87,12 +174,16 @@
             </div>
 
 
+
             <div class="quiz-general-grid">
 
 
-                <%-- QUIZ TITLE --%>
+                <%-- =================================================
+                     QUIZ TITLE
+                     ================================================= --%>
 
                 <div class="quiz-field quiz-field-wide">
+
 
                     <label for="txtQuizTitle">
 
@@ -105,19 +196,38 @@
                     </label>
 
 
-                    <input type="text"
-                           id="txtQuizTitle"
-                           class="quiz-input"
-                           value="Sejarah Kertas 2: Kedaulatan Negara"
-                           placeholder="Enter quiz title" />
+                    <asp:TextBox
+                        ID="txtQuizTitle"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="quiz-input"
+                        placeholder="Enter quiz title">
+                    </asp:TextBox>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valQuizTitle"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="txtQuizTitle"
+                        ErrorMessage="Quiz title is required."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RequiredFieldValidator>
+
 
                 </div>
 
 
 
-                <%-- SUBJECT --%>
+                <%-- =================================================
+                     SUBJECT
+                     ================================================= --%>
 
                 <div class="quiz-field">
+
 
                     <label for="ddlQuizSubject">
 
@@ -132,44 +242,50 @@
 
                     <div class="quiz-select-wrapper">
 
-                        <select id="ddlQuizSubject"
-                                class="quiz-select">
 
-                            <option>
-                                Mathematics
-                            </option>
-
-                            <option selected>
-                                Sejarah
-                            </option>
-
-                            <option>
-                                English
-                            </option>
-
-                            <option>
-                                Bahasa Melayu
-                            </option>
-
-                            <option>
-                                Science
-                            </option>
-
-                        </select>
+                        <asp:DropDownList
+                            ID="ddlQuizSubject"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="quiz-select"
+                            AutoPostBack="true"
+                            CausesValidation="false"
+                            onchange="if (!window.confirmSubjectChange(this)) { return false; }"
+                            OnSelectedIndexChanged="ddlQuizSubject_SelectedIndexChanged">
+                        </asp:DropDownList>
 
 
                         <i class="bi bi-caret-down-fill quiz-select-arrow"
                            aria-hidden="true"></i>
 
+
                     </div>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valQuizSubject"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="ddlQuizSubject"
+                        InitialValue=""
+                        ErrorMessage="Please select a subject."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RequiredFieldValidator>
+
 
                 </div>
 
 
 
-                <%-- FORM LEVEL --%>
+                <%-- =================================================
+                     FORM LEVEL
+                     ================================================= --%>
 
                 <div class="quiz-field">
+
 
                     <label for="ddlFormLevel">
 
@@ -184,32 +300,46 @@
 
                     <div class="quiz-select-wrapper">
 
-                        <select id="ddlFormLevel"
-                                class="quiz-select">
 
-                            <option>
-                                Form 4
-                            </option>
-
-                            <option selected>
-                                Form 5
-                            </option>
-
-                        </select>
+                        <asp:DropDownList
+                            ID="ddlFormLevel"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="quiz-select">
+                        </asp:DropDownList>
 
 
                         <i class="bi bi-caret-down-fill quiz-select-arrow"
                            aria-hidden="true"></i>
 
+
                     </div>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valFormLevel"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="ddlFormLevel"
+                        InitialValue=""
+                        ErrorMessage="Please select a form level."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RequiredFieldValidator>
+
 
                 </div>
 
 
 
-                <%-- TIME LIMIT --%>
+                <%-- =================================================
+                     TIME LIMIT
+                     ================================================= --%>
 
                 <div class="quiz-field">
+
 
                     <label for="txtTimeLimit">
 
@@ -222,19 +352,56 @@
                     </label>
 
 
-                    <input type="number"
-                           id="txtTimeLimit"
-                           class="quiz-input"
-                           value="60"
-                           min="1" />
+                    <asp:TextBox
+                        ID="txtTimeLimit"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="quiz-input"
+                        TextMode="Number"
+                        min="1"
+                        placeholder="e.g. 30">
+                    </asp:TextBox>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valTimeLimitRequired"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="txtTimeLimit"
+                        ErrorMessage="Time limit is required."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RequiredFieldValidator>
+
+
+                    <asp:RangeValidator
+                        ID="valTimeLimitRange"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="txtTimeLimit"
+                        Type="Integer"
+                        MinimumValue="1"
+                        MaximumValue="1440"
+                        ErrorMessage="Time limit must be between 1 and 1440 minutes."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RangeValidator>
+
 
                 </div>
 
 
 
-                <%-- PASS PERCENTAGE --%>
+                <%-- =================================================
+                     PASS PERCENTAGE
+                     ================================================= --%>
 
                 <div class="quiz-field">
+
 
                     <label for="txtPassPercentage">
 
@@ -249,41 +416,89 @@
 
                     <div class="quiz-percentage-input">
 
-                        <input type="number"
-                               id="txtPassPercentage"
-                               class="quiz-input"
-                               value="50"
-                               min="0"
-                               max="100" />
+
+                        <asp:TextBox
+                            ID="txtPassPercentage"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="quiz-input"
+                            TextMode="Number"
+                            min="0"
+                            max="100"
+                            placeholder="50">
+                        </asp:TextBox>
+
 
                         <span>
                             %
                         </span>
 
+
                     </div>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valPassPercentageRequired"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="txtPassPercentage"
+                        ErrorMessage="Pass percentage is required."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RequiredFieldValidator>
+
+
+                    <asp:RangeValidator
+                        ID="valPassPercentageRange"
+                        runat="server"
+                        ClientIDMode="Static"
+                        ControlToValidate="txtPassPercentage"
+                        Type="Double"
+                        MinimumValue="0"
+                        MaximumValue="100"
+                        ErrorMessage="Pass percentage must be between 0 and 100."
+                        CssClass="quiz-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuizValidation">
+                    </asp:RangeValidator>
+
 
                 </div>
 
 
 
-                <%-- INSTRUCTIONS --%>
+                <%-- =================================================
+                     INSTRUCTIONS
+                     OPTIONAL
+                     ================================================= --%>
 
                 <div class="quiz-field quiz-field-instructions">
 
+
                     <label for="txtQuizInstructions">
+
                         Instructions for Students
+
                     </label>
 
 
-                    <input type="text"
-                           id="txtQuizInstructions"
-                           class="quiz-input"
-                           value="Jawab semua soalan objektif dan berikan penjelasan bertulis bagi soalan subjektif."
-                           placeholder="Enter instructions for students" />
+                    <asp:TextBox
+                        ID="txtQuizInstructions"
+                        runat="server"
+                        ClientIDMode="Static"
+                        CssClass="quiz-input"
+                        placeholder="Enter instructions for students">
+                    </asp:TextBox>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
@@ -296,9 +511,12 @@
         <section class="create-quiz-card questions-allocation-card">
 
 
-            <%-- SECTION HEADER --%>
+            <%-- =================================================
+                 SECTION HEADER
+                 ================================================= --%>
 
             <div class="question-allocation-header">
+
 
                 <div>
 
@@ -313,11 +531,20 @@
                 </div>
 
 
+
                 <div class="question-allocation-actions">
 
-                    <span class="quiz-summary-pill">
-                        3 Questions • 12 Total Marks
+
+                    <span id="quizSummaryPill"
+                          class="quiz-summary-pill">
+
+                        <asp:Literal
+                            ID="litQuizSummary"
+                            runat="server">
+                        </asp:Literal>
+
                     </span>
+
 
 
                     <button type="button"
@@ -331,200 +558,178 @@
 
                     </button>
 
+
                 </div>
+
 
             </div>
 
 
 
-            <%-- =========================
-                 QUESTION 1
-                 ========================= --%>
+            <%-- =================================================
+                 QUESTION-LEVEL VALIDATION
+                 ================================================= --%>
 
-            <article class="allocated-question-row">
-
-                <div class="question-order">
-                    1
-                </div>
-
-
-                <div class="allocated-question-content">
-
-                    <div class="allocated-question-tags">
-
-                        <span class="allocated-type-tag type-mcq">
-                            Single Choice
-                        </span>
-
-                        <span class="allocated-question-source">
-                            Sejarah Bab 5
-                        </span>
-
-                    </div>
-
-
-                    <h3>
-                        Apakah faktor utama yang mendorong pembentukan
-                        Jawatankuasa Setia Kawan Malaysia (JSKM) pada Julai 1961?
-                    </h3>
-
-                </div>
-
-
-                <div class="allocated-question-controls">
-
-                    <label for="marksQuestion1">
-                        Marks:
-                    </label>
-
-
-                    <input type="number"
-                           id="marksQuestion1"
-                           class="question-marks-input"
-                           value="4"
-                           min="1" />
-
-
-                    <button type="button"
-                            class="remove-question-button"
-                            aria-label="Remove question">
-
-                        <i class="bi bi-trash3"
-                           aria-hidden="true"></i>
-
-                    </button>
-
-                </div>
-
-            </article>
+            <asp:Label
+                ID="lblQuestionValidation"
+                runat="server"
+                Visible="false"
+                CssClass="quiz-validation-error allocation-validation-error">
+            </asp:Label>
 
 
 
-            <%-- =========================
-                 QUESTION 2
-                 ========================= --%>
+            <%-- =================================================
+                 ALLOCATED QUESTIONS
+                 ================================================= --%>
 
-            <article class="allocated-question-row">
-
-                <div class="question-order">
-                    2
-                </div>
-
-
-                <div class="allocated-question-content">
-
-                    <div class="allocated-question-tags">
-
-                        <span class="allocated-type-tag type-subjective">
-                            Subjective
-                        </span>
-
-                        <span class="allocated-question-source">
-                            Sejarah Kertas 2
-                        </span>
-
-                    </div>
+            <asp:Repeater
+                ID="rptAllocatedQuestions"
+                runat="server"
+                OnItemCommand="rptAllocatedQuestions_ItemCommand">
 
 
-                    <h3>
-                        Jelaskan dua faktor pembentukan Gagasan Malaysia
-                        pada tahun 1961.
-                    </h3>
-
-                </div>
+                <ItemTemplate>
 
 
-                <div class="allocated-question-controls">
-
-                    <label for="marksQuestion2">
-                        Marks:
-                    </label>
+                    <article class="allocated-question-row">
 
 
-                    <input type="number"
-                           id="marksQuestion2"
-                           class="question-marks-input"
-                           value="4"
-                           min="1" />
-
-
-                    <button type="button"
-                            class="remove-question-button"
-                            aria-label="Remove question">
-
-                        <i class="bi bi-trash3"
-                           aria-hidden="true"></i>
-
-                    </button>
-
-                </div>
-
-            </article>
+                        <asp:HiddenField
+                            ID="hfAllocatedQuestionId"
+                            runat="server"
+                            Value='<%# Eval("QuestionId") %>' />
 
 
 
-            <%-- =========================
-                 QUESTION 3
-                 ========================= --%>
+                        <%-- QUESTION ORDER --%>
 
-            <article class="allocated-question-row">
+                        <div class="question-order">
 
-                <div class="question-order">
-                    3
-                </div>
+                            <%#: Eval("QuestionOrder") %>
+
+                        </div>
 
 
-                <div class="allocated-question-content">
 
-                    <div class="allocated-question-tags">
+                        <%-- QUESTION INFORMATION --%>
 
-                        <span class="allocated-type-tag type-mcq">
-                            Single Choice
-                        </span>
+                        <div class="allocated-question-content">
 
-                        <span class="allocated-question-source">
-                            Bank Item
-                        </span>
 
-                    </div>
+                            <div class="allocated-question-tags">
+
+
+                                <span class='allocated-type-tag <%# GetQuestionTypeCss(Eval("QuestionType")) %>'>
+
+                                    <%#: GetQuestionTypeDisplay(Eval("QuestionType")) %>
+
+                                </span>
+
+
+                                <span class="allocated-question-source">
+
+                                    <%#: Eval("SubjectName") %>
+                                    •
+                                    <%#: Eval("Difficulty") %>
+
+                                </span>
+
+
+                            </div>
+
+
+                            <h3>
+
+                                <%#: Eval("QuestionText") %>
+
+                            </h3>
+
+
+                        </div>
+
+
+
+                        <%-- QUESTION CONTROLS --%>
+
+                        <div class="allocated-question-controls">
+
+
+                            <label>
+                                Marks:
+                            </label>
+
+
+                            <asp:TextBox
+                                ID="txtMarks"
+                                runat="server"
+                                CssClass="question-marks-input"
+                                TextMode="Number"
+                                min="1"
+                                Text='<%# Eval("MaxMarks") %>'>
+                            </asp:TextBox>
+
+
+
+                            <asp:LinkButton
+                                runat="server"
+                                CssClass="remove-question-button"
+                                CommandName="RemoveQuestion"
+                                CommandArgument='<%# Eval("QuestionId") %>'
+                                CausesValidation="false"
+                                OnClientClick="window.markQuizDirty();"
+                                aria-label="Remove question">
+
+                                <i class="bi bi-trash3"
+                                   aria-hidden="true"></i>
+
+                            </asp:LinkButton>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                </ItemTemplate>
+
+
+            </asp:Repeater>
+
+
+
+            <%-- =================================================
+                 EMPTY ALLOCATION
+                 ================================================= --%>
+
+            <asp:Panel
+                ID="pnlNoAllocatedQuestions"
+                runat="server"
+                Visible="false">
+
+
+                <div class="empty-questions-state">
 
 
                     <h3>
-                        Apakah matlamat penubuhan Suruhanjaya Reid
-                        pada tahun 1956?
+                        No questions added yet.
                     </h3>
 
+
+                    <p>
+                        Use Add from Bank to choose questions for this quiz.
+                    </p>
+
+
                 </div>
 
 
-                <div class="allocated-question-controls">
+            </asp:Panel>
 
-                    <label for="marksQuestion3">
-                        Marks:
-                    </label>
-
-
-                    <input type="number"
-                           id="marksQuestion3"
-                           class="question-marks-input"
-                           value="4"
-                           min="1" />
-
-
-                    <button type="button"
-                            class="remove-question-button"
-                            aria-label="Remove question">
-
-                        <i class="bi bi-trash3"
-                           aria-hidden="true"></i>
-
-                    </button>
-
-                </div>
-
-            </article>
 
         </section>
+
 
     </div>
 
@@ -539,7 +744,9 @@
          hidden>
 
 
-        <%-- OVERLAY --%>
+        <%-- =====================================================
+             OVERLAY
+             ===================================================== --%>
 
         <div class="question-bank-modal-overlay"
              data-bank-close>
@@ -547,7 +754,9 @@
 
 
 
-        <%-- MODAL --%>
+        <%-- =====================================================
+             MODAL DIALOG
+             ===================================================== --%>
 
         <div class="question-bank-modal-dialog"
              role="dialog"
@@ -555,21 +764,39 @@
              aria-labelledby="questionBankModalTitle">
 
 
-            <%-- HEADER --%>
+            <%-- =================================================
+                 MODAL HEADER
+                 ================================================= --%>
 
             <div class="question-bank-modal-header">
 
+
                 <div>
 
+
                     <h2 id="questionBankModalTitle">
+
                         Choose Questions from Bank
+
                     </h2>
 
+
                     <p>
-                        Matching Sejarah syllabus items
+
+                        Matching
+
+                        <asp:Literal
+                            ID="litBankSubject"
+                            runat="server">
+                        </asp:Literal>
+
+                        questions
+
                     </p>
 
+
                 </div>
+
 
 
                 <button type="button"
@@ -582,114 +809,160 @@
 
                 </button>
 
+
             </div>
 
 
 
-            <%-- QUESTION LIST --%>
+            <%-- =================================================
+                 QUESTION LIST
+                 ================================================= --%>
 
             <div class="bank-question-list">
 
 
-                <%-- BANK QUESTION 1 --%>
-
-                <label class="bank-question-item">
-
-                    <input type="checkbox"
-                           class="bank-question-checkbox" />
+                <asp:Repeater
+                    ID="rptBankQuestions"
+                    runat="server">
 
 
-                    <div>
+                    <ItemTemplate>
 
-                        <div class="bank-question-meta">
 
-                            <span>
-                                Single Choice
-                            </span>
+                        <div class="bank-question-item">
 
-                            <span>
-                                •
-                            </span>
 
-                            <span>
-                                Easy
-                            </span>
+                            <asp:HiddenField
+                                ID="hfBankQuestionId"
+                                runat="server"
+                                Value='<%# Eval("QuestionId") %>' />
+
+
+
+                            <asp:CheckBox
+                                ID="chkSelectQuestion"
+                                runat="server"
+                                CssClass="bank-question-checkbox" />
+
+
+
+                            <div>
+
+
+                                <div class="bank-question-meta">
+
+
+                                    <span>
+
+                                        <%#: GetQuestionTypeDisplay(Eval("QuestionType")) %>
+
+                                    </span>
+
+
+                                    <span>
+                                        •
+                                    </span>
+
+
+                                    <span>
+
+                                        <%#: Eval("Difficulty") %>
+
+                                    </span>
+
+
+                                    <span>
+                                        •
+                                    </span>
+
+
+                                    <span>
+
+                                        <%#: Eval("CreatorName") %>
+
+                                    </span>
+
+
+                                </div>
+
+
+                                <p>
+
+                                    <%#: Eval("QuestionText") %>
+
+                                </p>
+
+
+                            </div>
+
 
                         </div>
 
 
-                        <p>
-                            Apakah matlamat penubuhan Suruhanjaya Reid
-                            pada tahun 1956?
-                        </p>
+                    </ItemTemplate>
+
+
+                </asp:Repeater>
+
+
+
+                <%-- =============================================
+                     NO AVAILABLE QUESTIONS
+                     ============================================= --%>
+
+                <asp:Panel
+                    ID="pnlNoBankQuestions"
+                    runat="server"
+                    Visible="false">
+
+
+                    <div class="bank-question-item">
+
+                        No available questions found for this subject.
 
                     </div>
 
-                </label>
 
+                </asp:Panel>
 
-
-                <%-- BANK QUESTION 2 --%>
-
-                <label class="bank-question-item">
-
-                    <input type="checkbox"
-                           class="bank-question-checkbox" />
-
-
-                    <div>
-
-                        <div class="bank-question-meta">
-
-                            <span>
-                                Subjective
-                            </span>
-
-                            <span>
-                                •
-                            </span>
-
-                            <span>
-                                Hard
-                            </span>
-
-                        </div>
-
-
-                        <p>
-                            Huraikan reaksi parti-parti politik di Sarawak
-                            terhadap cadangan pembentukan Malaysia.
-                        </p>
-
-                    </div>
-
-                </label>
 
             </div>
 
 
 
-            <%-- MODAL FOOTER --%>
+            <%-- =================================================
+                 MODAL FOOTER
+                 ================================================= --%>
 
             <div class="question-bank-modal-footer">
 
+
                 <span>
+
                     Duplicate checking enabled
+
                 </span>
 
-                <button type="button"
-                        id="btnAddToQuiz"
-                        class="add-selected-questions-button">
 
-                    Add to Quiz
 
-                </button>
+                <asp:Button
+                    ID="btnAddToQuiz"
+                    runat="server"
+                    CssClass="add-selected-questions-button"
+                    Text="Add to Quiz"
+                    CausesValidation="false"
+                    OnClientClick="window.markQuizDirty();"
+                    OnClick="btnAddToQuiz_Click" />
+
 
             </div>
 
+
         </div>
 
+
     </div>
+
 
 </asp:Content>
 
@@ -700,14 +973,326 @@
     ContentPlaceHolderID="PortalScripts"
     runat="server">
 
+
     <script>
 
+        /* =========================================================
+           DIRTY / UNSAVED CHANGES
+           ========================================================= */
+
+        const quizDirtyField =
+            document.getElementById(
+                "hfQuizDirty"
+            );
+
+
+        window.markQuizDirty =
+            function () {
+
+                if (quizDirtyField) {
+
+                    quizDirtyField.value =
+                        "true";
+
+                }
+
+            };
+
+
+        window.hasUnsavedChanges =
+            function () {
+
+                return (
+                    quizDirtyField &&
+                    quizDirtyField.value === "true"
+                );
+
+            };
+
+
+
+        /* =========================================================
+           CANCEL CONFIRMATION
+           ========================================================= */
+
+        window.confirmCancelQuiz =
+            function () {
+
+                if (
+                    !window.hasUnsavedChanges()
+                ) {
+
+                    return true;
+
+                }
+
+
+                return window.confirm(
+
+                    "You have unsaved changes to this quiz.\n\n" +
+
+                    "If you leave now, these changes will be lost.\n\n" +
+
+                    "Do you want to continue?"
+
+                );
+
+            };
+
+
+
+        /* =========================================================
+           TRACK GENERAL FORM CHANGES
+           ========================================================= */
+
+        document.addEventListener(
+            "input",
+            function (event) {
+
+                if (
+                    event.target.matches(
+
+                        "#txtQuizTitle, " +
+
+                        "#txtTimeLimit, " +
+
+                        "#txtPassPercentage, " +
+
+                        "#txtQuizInstructions, " +
+
+                        ".question-marks-input"
+
+                    )
+                ) {
+
+                    window.markQuizDirty();
+
+                }
+
+            }
+        );
+
+
+
+        document.addEventListener(
+            "change",
+            function (event) {
+
+                if (
+                    event.target.matches(
+                        "#ddlFormLevel"
+                    )
+                ) {
+
+                    window.markQuizDirty();
+
+                }
+
+            }
+        );
+
+
+
+        /* =========================================================
+           SUBJECT CHANGE CONFIRMATION
+           ========================================================= */
+
+        const subjectDropdown =
+            document.getElementById(
+                "ddlQuizSubject"
+            );
+
+
+        const subjectValidator =
+            document.getElementById(
+                "valQuizSubject"
+            );
+
+
+        let previousSubjectValue =
+            subjectDropdown
+                ? subjectDropdown.value
+                : "";
+
+
+        window.confirmSubjectChange =
+            function (dropdown) {
+
+                const newValue =
+                    dropdown.value;
+
+
+                /* -----------------------------------------
+                   Nothing actually changed
+                   ----------------------------------------- */
+
+                if (
+                    newValue ===
+                    previousSubjectValue
+                ) {
+
+                    return true;
+
+                }
+
+
+                /* -----------------------------------------
+                   Check allocated questions
+                   ----------------------------------------- */
+
+                const allocatedQuestions =
+                    document.querySelectorAll(
+                        ".allocated-question-row"
+                    );
+
+
+                if (
+                    allocatedQuestions.length > 0
+                ) {
+
+                    const confirmed =
+                        window.confirm(
+
+                            "Changing the subject may remove questions " +
+
+                            "that do not match the new subject.\n\n" +
+
+                            "Do you want to continue?"
+
+                        );
+
+
+                    if (!confirmed) {
+
+                        dropdown.value =
+                            previousSubjectValue;
+
+
+                        return false;
+
+                    }
+
+                }
+
+
+                previousSubjectValue =
+                    newValue;
+
+
+                if (
+                    subjectValidator &&
+                    newValue
+                ) {
+
+                    subjectValidator.style.display =
+                        "none";
+
+                }
+
+
+                window.markQuizDirty();
+
+
+                return true;
+
+            };
+
+
+
+        /* =========================================================
+           LIVE MARKS SUMMARY
+           ========================================================= */
+
+        const quizSummary =
+            document.getElementById(
+                "quizSummaryPill"
+            );
+
+
+        function updateQuizSummary() {
+
+            const markInputs =
+                document.querySelectorAll(
+                    ".question-marks-input"
+                );
+
+
+            let totalMarks =
+                0;
+
+
+            markInputs.forEach(
+                function (input) {
+
+                    const marks =
+                        parseInt(
+                            input.value,
+                            10
+                        );
+
+
+                    if (
+                        !isNaN(marks) &&
+                        marks >= 1
+                    ) {
+
+                        totalMarks +=
+                            marks;
+
+                    }
+
+                }
+            );
+
+
+            if (quizSummary) {
+
+                quizSummary.textContent =
+                    markInputs.length +
+                    " Questions • " +
+                    totalMarks +
+                    " Total Marks";
+
+            }
+
+        }
+
+
+
+        document.addEventListener(
+            "input",
+            function (event) {
+
+                if (
+                    event.target.matches(
+                        ".question-marks-input"
+                    )
+                ) {
+
+                    updateQuizSummary();
+
+                }
+
+            }
+        );
+
+
+        updateQuizSummary();
+
+
+
+        /* =========================================================
+           QUESTION BANK MODAL
+           ========================================================= */
+
         (function () {
+
 
             const openButton =
                 document.getElementById(
                     "btnOpenQuestionBank"
                 );
+
 
             const modal =
                 document.getElementById(
@@ -715,45 +1300,107 @@
                 );
 
 
-            /* =========================
-               OPEN MODAL
-               ========================= */
+            if (
+                !openButton ||
+                !modal
+            ) {
+
+                return;
+
+            }
+
+
+
+            /* =====================================================
+               OPEN QUESTION BANK
+               ===================================================== */
 
             openButton.addEventListener(
                 "click",
                 function () {
 
-                    modal.hidden = false;
+
+                    /* -----------------------------------------
+                       Subject must be selected first
+                       ----------------------------------------- */
+
+                    if (
+                        !subjectDropdown ||
+                        !subjectDropdown.value
+                    ) {
+
+                        if (subjectValidator) {
+
+                            subjectValidator.style.display =
+                                "block";
+
+                        }
+
+
+                        if (subjectDropdown) {
+
+                            subjectDropdown.focus();
+
+                        }
+
+
+                        return;
+
+                    }
+
+
+
+                    /* -----------------------------------------
+                       Open modal
+                       ----------------------------------------- */
+
+                    modal.hidden =
+                        false;
+
 
                     document.body.style.overflow =
                         "hidden";
+
 
                     const closeButton =
                         modal.querySelector(
                             ".question-bank-modal-close"
                         );
 
+
                     if (closeButton) {
+
                         closeButton.focus();
+
                     }
 
                 }
             );
 
 
-            /* =========================
+
+            /* =====================================================
                CLOSE MODAL
-               ========================= */
+               ===================================================== */
 
             function closeQuestionBankModal() {
 
-                modal.hidden = true;
+                modal.hidden =
+                    true;
+
 
                 document.body.style.overflow =
                     "";
 
-                openButton.focus();
+
+                if (openButton) {
+
+                    openButton.focus();
+
+                }
+
             }
+
 
 
             document.addEventListener(
@@ -767,15 +1414,17 @@
                     ) {
 
                         closeQuestionBankModal();
+
                     }
 
                 }
             );
 
 
-            /* =========================
-               ESC KEY
-               ========================= */
+
+            /* =====================================================
+               ESCAPE KEY
+               ===================================================== */
 
             document.addEventListener(
                 "keydown",
@@ -787,13 +1436,17 @@
                     ) {
 
                         closeQuestionBankModal();
+
                     }
 
                 }
             );
 
+
         })();
 
+
     </script>
+
 
 </asp:Content>

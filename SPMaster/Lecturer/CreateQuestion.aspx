@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Create New Question"
+﻿<%@ Page Title="Question Editor"
     Language="C#"
     MasterPageFile="~/Master/Portal.Master"
     AutoEventWireup="true"
@@ -11,16 +11,15 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/CreateQuestion.css") %>?v=2"
+    <link href="<%= ResolveUrl("~/Content/CreateQuestion.css") %>?v=5"
           rel="stylesheet"
           type="text/css" />
 
-    <link href="<%= ResolveUrl("~/Content/QuestionPreview.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/QuestionPreview.css") %>?v=3"
           rel="stylesheet"
           type="text/css" />
 
 </asp:Content>
-
 
 
 <asp:Content
@@ -28,10 +27,111 @@
     ContentPlaceHolderID="PortalContent"
     runat="server">
 
+
     <div class="create-question-page">
-               
+
+        <asp:HiddenField
+            ID="hfQuestionDirty"
+            runat="server"
+            ClientIDMode="Static"
+            Value="false" />
+
+
+        <%-- =====================================================
+             PAGE HEADER
+             ===================================================== --%>
+
+        <div class="create-question-header">
+
+            <div>
+
+                <h1>
+                    <asp:Literal
+                        ID="litPageTitle"
+                        runat="server"
+                        Text="Create New Question">
+                    </asp:Literal>
+                </h1>
+
+                <p>
+                    <asp:Literal
+                        ID="litPageSubtitle"
+                        runat="server"
+                        Text="Add an SPM standardized question to your institutional bank">
+                    </asp:Literal>
+                </p>
+
+            </div>
+
+
+            <a href="<%= ResolveUrl("~/Lecturer/QuestionBank.aspx") %>"
+               class="cq-cancel-button"
+               onclick="return confirmCancelQuestion();">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+
+
+        <%-- =====================================================
+             SUCCESS MESSAGE
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlQuestionSuccess"
+            runat="server"
+            Visible="false"
+            CssClass="cq-save-message">
+
+            <i class="bi bi-check-circle-fill"
+               aria-hidden="true"></i>
+
+            <asp:Label
+                ID="lblQuestionSuccess"
+                runat="server">
+            </asp:Label>
+
+        </asp:Panel>
+
+
+
+        <%-- =====================================================
+             GENERAL ERROR
+             Used for unexpected server/database errors only
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlQuestionError"
+            runat="server"
+            Visible="false"
+            CssClass="cq-error-message">
+
+            <i class="bi bi-exclamation-circle-fill"
+               aria-hidden="true"></i>
+
+            <asp:Label
+                ID="lblQuestionError"
+                runat="server">
+            </asp:Label>
+
+        </asp:Panel>
+
+
+
+        <%-- =====================================================
+             EDIT IMAGE STATE
+             ===================================================== --%>
+
         <asp:HiddenField
             ID="hfExistingMediaPath"
+            runat="server"
+            ClientIDMode="Static" />
+
+        <asp:HiddenField
+            ID="hfExistingMediaUrl"
             runat="server"
             ClientIDMode="Static" />
 
@@ -42,63 +142,37 @@
             Value="false" />
 
 
-        <%-- =========================
-             PAGE HEADER
-             ========================= --%>
 
-        <div class="create-question-header">
-
-            <div>
-
-                <h1>
-                    <asp:Literal
-                        ID="litPageTitle"
-                        runat="server">
-                    </asp:Literal>
-                </h1>
-
-                <p>
-                    <asp:Literal
-                        ID="litPageSubtitle"
-                        runat="server">
-                    </asp:Literal>
-                </p>
-
-            </div>
-
-
-            <a href="<%= ResolveUrl("~/Lecturer/QuestionBank.aspx") %>"
-               class="cq-cancel-button">
-
-                Cancel
-
-            </a>
-
-        </div>
-
-
-
-        <%-- =========================
-             CREATE QUESTION FORM
-             ========================= --%>
+        <%-- =====================================================
+             QUESTION FORM
+             ===================================================== --%>
 
         <section class="create-question-card">
 
 
-            <%-- =====================
+            <%-- =================================================
                  BASIC DETAILS
-                 ===================== --%>
+                 ================================================= --%>
 
             <div class="cq-details-grid">
 
 
-                <%-- SUBJECT --%>
+                <%-- =============================================
+                     SUBJECT
+                     ============================================= --%>
 
                 <div class="cq-field">
 
                     <label for="ddlSubject">
+
                         Subject
+
+                        <span class="required-mark">
+                            *
+                        </span>
+
                     </label>
+
 
                     <div class="cq-select-wrapper">
 
@@ -109,23 +183,44 @@
                             CssClass="cq-select">
                         </asp:DropDownList>
 
-
                         <i class="bi bi-caret-down-fill cq-select-arrow"
                            aria-hidden="true"></i>
 
                     </div>
 
+
+                    <asp:RequiredFieldValidator
+                        ID="valSubject"
+                        runat="server"
+                        ControlToValidate="ddlSubject"
+                        InitialValue=""
+                        ErrorMessage="Please select a subject."
+                        CssClass="cq-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuestionValidation">
+                    </asp:RequiredFieldValidator>
+
                 </div>
 
 
 
-                <%-- QUESTION TYPE --%>
+                <%-- =============================================
+                     QUESTION TYPE
+                     ============================================= --%>
 
                 <div class="cq-field">
 
                     <label for="ddlQuestionType">
+
                         Question Type
+
+                        <span class="required-mark">
+                            *
+                        </span>
+
                     </label>
+
 
                     <div class="cq-select-wrapper">
 
@@ -134,6 +229,11 @@
                             runat="server"
                             ClientIDMode="Static"
                             CssClass="cq-select">
+
+                            <asp:ListItem
+                                Text="Select Question Type"
+                                Value="">
+                            </asp:ListItem>
 
                             <asp:ListItem
                                 Text="Single Choice (MCQ)"
@@ -147,23 +247,44 @@
 
                         </asp:DropDownList>
 
-
                         <i class="bi bi-caret-down-fill cq-select-arrow"
                            aria-hidden="true"></i>
 
                     </div>
 
+
+                    <asp:RequiredFieldValidator
+                        ID="valQuestionType"
+                        runat="server"
+                        ControlToValidate="ddlQuestionType"
+                        InitialValue=""
+                        ErrorMessage="Please select a question type."
+                        CssClass="cq-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuestionValidation">
+                    </asp:RequiredFieldValidator>
+
                 </div>
 
 
 
-                <%-- DIFFICULTY --%>
+                <%-- =============================================
+                     DIFFICULTY
+                     ============================================= --%>
 
                 <div class="cq-field">
 
                     <label for="ddlDifficulty">
+
                         Difficulty Level
+
+                        <span class="required-mark">
+                            *
+                        </span>
+
                     </label>
+
 
                     <div class="cq-select-wrapper">
 
@@ -174,14 +295,18 @@
                             CssClass="cq-select">
 
                             <asp:ListItem
+                                Text="Select Difficulty"
+                                Value="">
+                            </asp:ListItem>
+
+                            <asp:ListItem
                                 Text="Easy"
                                 Value="Easy">
                             </asp:ListItem>
 
                             <asp:ListItem
                                 Text="Medium"
-                                Value="Medium"
-                                Selected="True">
+                                Value="Medium">
                             </asp:ListItem>
 
                             <asp:ListItem
@@ -191,11 +316,23 @@
 
                         </asp:DropDownList>
 
-
                         <i class="bi bi-caret-down-fill cq-select-arrow"
                            aria-hidden="true"></i>
 
                     </div>
+
+
+                    <asp:RequiredFieldValidator
+                        ID="valDifficulty"
+                        runat="server"
+                        ControlToValidate="ddlDifficulty"
+                        InitialValue=""
+                        ErrorMessage="Please select a difficulty level."
+                        CssClass="cq-validation-error"
+                        Display="Dynamic"
+                        SetFocusOnError="true"
+                        ValidationGroup="QuestionValidation">
+                    </asp:RequiredFieldValidator>
 
                 </div>
 
@@ -203,9 +340,9 @@
 
 
 
-            <%-- =========================
+            <%-- =================================================
                  QUESTION PROMPT
-                 ========================= --%>
+                 ================================================= --%>
 
             <div class="cq-field cq-full-field">
 
@@ -229,13 +366,25 @@
                     placeholder="Enter the examination question here...">
                 </asp:TextBox>
 
+
+                <asp:RequiredFieldValidator
+                    ID="valQuestion"
+                    runat="server"
+                    ControlToValidate="txtQuestion"
+                    ErrorMessage="Question prompt is required."
+                    CssClass="cq-validation-error"
+                    Display="Dynamic"
+                    SetFocusOnError="true"
+                    ValidationGroup="QuestionValidation">
+                </asp:RequiredFieldValidator>
+
             </div>
 
 
 
-            <%-- =========================
+            <%-- =================================================
                  IMAGE / STIMULUS
-                 ========================= --%>
+                 ================================================= --%>
 
             <div class="cq-field cq-full-field">
 
@@ -254,14 +403,12 @@
 
                     <div class="cq-upload-inner">
 
-
                         <div class="cq-upload-icon">
 
                             <i class="bi bi-image"
                                aria-hidden="true"></i>
 
                         </div>
-
 
 
                         <div class="cq-upload-details">
@@ -271,9 +418,8 @@
                             </strong>
 
                             <span>
-                                PNG, JPG or WebP up to 5MB
+                                PNG, JPG, JPEG or WebP up to 5MB
                             </span>
-
 
 
                             <div class="cq-upload-actions">
@@ -290,8 +436,8 @@
                                     ID="questionImage"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    accept=".png,.jpg,.jpeg,.webp"
-                                    style="display:none;" />
+                                    CssClass="cq-hidden-file"
+                                    accept=".png,.jpg,.jpeg,.webp" />
 
 
                                 <button type="button"
@@ -318,16 +464,28 @@
 
                 </div>
 
+
+                <asp:CustomValidator
+                    ID="valImage"
+                    runat="server"
+                    ErrorMessage=""
+                    CssClass="cq-validation-error"
+                    Display="Dynamic"
+                    OnServerValidate="ValidateImage"
+                    ValidationGroup="QuestionValidation">
+                </asp:CustomValidator>
+
             </div>
 
 
 
-            <%-- =====================================================
+            <%-- =================================================
                  MCQ SECTION
-                 ===================================================== --%>
+                 ================================================= --%>
 
             <div id="mcqSection"
-                 class="cq-answer-section">
+                 class="cq-answer-section"
+                 hidden>
 
 
                 <div class="cq-answer-heading">
@@ -342,7 +500,6 @@
 
                     </label>
 
-
                     <span>
                         Exactly one correct option must be chosen
                     </span>
@@ -351,140 +508,220 @@
 
 
 
-                <%-- OPTION A --%>
+                <%-- =============================================
+                     OPTION A
+                     ============================================= --%>
 
-                <div class="cq-option-row">
+                <div class="cq-option-validation-group">
 
-                    <input type="radio"
-                           id="correctA"
-                           runat="server"
-                           ClientIDMode="Static"
-                           name="correctOption"
-                           value="A"
-                           checked />
+                    <div class="cq-option-row">
 
+                        <asp:RadioButton
+                            ID="correctA"
+                            runat="server"
+                            ClientIDMode="Static"
+                            GroupName="CorrectOption" />
 
-                    <label for="correctA"
-                           class="cq-option-letter">
-
-                        A
-
-                    </label>
+                        <label for="correctA"
+                               class="cq-option-letter">
+                            A
+                        </label>
 
 
-                    <asp:TextBox
-                        ID="txtOptionA"
+                        <asp:TextBox
+                            ID="txtOptionA"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-option-input"
+                            placeholder="Enter option A">
+                        </asp:TextBox>
+
+                    </div>
+
+
+                    <asp:CustomValidator
+                        ID="valOptionA"
                         runat="server"
-                        ClientIDMode="Static"
-                        CssClass="cq-option-input"
-                        placeholder="Enter option A">
-                    </asp:TextBox>
+                        ControlToValidate="txtOptionA"
+                        ValidateEmptyText="true"
+                        ErrorMessage="Option A is required."
+                        CssClass="cq-validation-error cq-option-validation"
+                        Display="Dynamic"
+                        ClientValidationFunction="validateMcqOption"
+                        OnServerValidate="ValidateMcqOption"
+                        ValidationGroup="QuestionValidation">
+                    </asp:CustomValidator>
 
                 </div>
 
 
 
-                <%-- OPTION B --%>
+                <%-- =============================================
+                     OPTION B
+                     ============================================= --%>
 
-                <div class="cq-option-row">
+                <div class="cq-option-validation-group">
 
-                    <input type="radio"
-                           id="correctB"
-                           runat="server"
-                           ClientIDMode="Static"
-                           name="correctOption"
-                           value="B" />
+                    <div class="cq-option-row">
 
+                        <asp:RadioButton
+                            ID="correctB"
+                            runat="server"
+                            ClientIDMode="Static"
+                            GroupName="CorrectOption" />
 
-                    <label for="correctB"
-                           class="cq-option-letter">
-
-                        B
-
-                    </label>
+                        <label for="correctB"
+                               class="cq-option-letter">
+                            B
+                        </label>
 
 
-                    <asp:TextBox
-                        ID="txtOptionB"
+                        <asp:TextBox
+                            ID="txtOptionB"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-option-input"
+                            placeholder="Enter option B">
+                        </asp:TextBox>
+
+                    </div>
+
+
+                    <asp:CustomValidator
+                        ID="valOptionB"
                         runat="server"
-                        ClientIDMode="Static"
-                        CssClass="cq-option-input"
-                        placeholder="Enter option B">
-                    </asp:TextBox>
+                        ControlToValidate="txtOptionB"
+                        ValidateEmptyText="true"
+                        ErrorMessage="Option B is required."
+                        CssClass="cq-validation-error cq-option-validation"
+                        Display="Dynamic"
+                        ClientValidationFunction="validateMcqOption"
+                        OnServerValidate="ValidateMcqOption"
+                        ValidationGroup="QuestionValidation">
+                    </asp:CustomValidator>
 
                 </div>
 
 
 
-                <%-- OPTION C --%>
+                <%-- =============================================
+                     OPTION C
+                     ============================================= --%>
 
-                <div class="cq-option-row">
+                <div class="cq-option-validation-group">
 
-                    <input type="radio"
-                           id="correctC"
-                           runat="server"
-                           ClientIDMode="Static"
-                           name="correctOption"
-                           value="C" />
+                    <div class="cq-option-row">
 
+                        <asp:RadioButton
+                            ID="correctC"
+                            runat="server"
+                            ClientIDMode="Static"
+                            GroupName="CorrectOption" />
 
-                    <label for="correctC"
-                           class="cq-option-letter">
-
-                        C
-
-                    </label>
+                        <label for="correctC"
+                               class="cq-option-letter">
+                            C
+                        </label>
 
 
-                    <asp:TextBox
-                        ID="txtOptionC"
+                        <asp:TextBox
+                            ID="txtOptionC"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-option-input"
+                            placeholder="Enter option C">
+                        </asp:TextBox>
+
+                    </div>
+
+
+                    <asp:CustomValidator
+                        ID="valOptionC"
                         runat="server"
-                        ClientIDMode="Static"
-                        CssClass="cq-option-input"
-                        placeholder="Enter option C">
-                    </asp:TextBox>
+                        ControlToValidate="txtOptionC"
+                        ValidateEmptyText="true"
+                        ErrorMessage="Option C is required."
+                        CssClass="cq-validation-error cq-option-validation"
+                        Display="Dynamic"
+                        ClientValidationFunction="validateMcqOption"
+                        OnServerValidate="ValidateMcqOption"
+                        ValidationGroup="QuestionValidation">
+                    </asp:CustomValidator>
 
                 </div>
 
 
 
-                <%-- OPTION D --%>
+                <%-- =============================================
+                     OPTION D
+                     ============================================= --%>
 
-                <div class="cq-option-row">
+                <div class="cq-option-validation-group">
 
-                    <input type="radio"
-                           id="correctD"
-                           runat="server"
-                           ClientIDMode="Static"
-                           name="correctOption"
-                           value="D" />
+                    <div class="cq-option-row">
 
+                        <asp:RadioButton
+                            ID="correctD"
+                            runat="server"
+                            ClientIDMode="Static"
+                            GroupName="CorrectOption" />
 
-                    <label for="correctD"
-                           class="cq-option-letter">
-
-                        D
-
-                    </label>
+                        <label for="correctD"
+                               class="cq-option-letter">
+                            D
+                        </label>
 
 
-                    <asp:TextBox
-                        ID="txtOptionD"
+                        <asp:TextBox
+                            ID="txtOptionD"
+                            runat="server"
+                            ClientIDMode="Static"
+                            CssClass="cq-option-input"
+                            placeholder="Enter option D">
+                        </asp:TextBox>
+
+                    </div>
+
+
+                    <asp:CustomValidator
+                        ID="valOptionD"
                         runat="server"
-                        ClientIDMode="Static"
-                        CssClass="cq-option-input"
-                        placeholder="Enter option D">
-                    </asp:TextBox>
+                        ControlToValidate="txtOptionD"
+                        ValidateEmptyText="true"
+                        ErrorMessage="Option D is required."
+                        CssClass="cq-validation-error cq-option-validation"
+                        Display="Dynamic"
+                        ClientValidationFunction="validateMcqOption"
+                        OnServerValidate="ValidateMcqOption"
+                        ValidationGroup="QuestionValidation">
+                    </asp:CustomValidator>
 
                 </div>
+
+
+
+                <%-- =============================================
+                     CORRECT OPTION VALIDATION
+                     ============================================= --%>
+
+                <asp:CustomValidator
+                    ID="valCorrectOption"
+                    runat="server"
+                    ErrorMessage="Please select the correct answer."
+                    CssClass="cq-validation-error"
+                    Display="Dynamic"
+                    ClientValidationFunction="validateCorrectOption"
+                    OnServerValidate="ValidateCorrectOption"
+                    ValidationGroup="QuestionValidation">
+                </asp:CustomValidator>
 
             </div>
 
 
 
-            <%-- =====================================================
+            <%-- =================================================
                  SUBJECTIVE SECTION
-                 ===================================================== --%>
+                 ================================================= --%>
 
             <div id="subjectiveSection"
                  class="cq-answer-section"
@@ -513,27 +750,41 @@
                         placeholder="Enter facts, descriptions or key points used as the grading reference...">
                     </asp:TextBox>
 
+
+                    <asp:CustomValidator
+                        ID="valModelAnswer"
+                        runat="server"
+                        ControlToValidate="txtModelAnswer"
+                        ValidateEmptyText="true"
+                        ErrorMessage="Model answer is required for a subjective question."
+                        CssClass="cq-validation-error"
+                        Display="Dynamic"
+                        ClientValidationFunction="validateModelAnswer"
+                        OnServerValidate="ValidateModelAnswer"
+                        ValidationGroup="QuestionValidation">
+                    </asp:CustomValidator>
+
                 </div>
 
 
                 <p class="cq-model-note">
-
                     Note: Marks are allocated when this question is added to a quiz.
-
                 </p>
 
             </div>
 
 
 
-            <%-- =========================
+            <%-- =================================================
                  OPTIONAL SUPPORT
-                 ========================= --%>
+                 ================================================= --%>
 
             <div class="cq-support-grid">
 
 
-                <%-- HINT --%>
+                <%-- =============================================
+                     HINT
+                     ============================================= --%>
 
                 <div class="cq-field">
 
@@ -560,7 +811,9 @@
 
 
 
-                <%-- EXPLANATION --%>
+                <%-- =============================================
+                     EXPLANATION
+                     ============================================= --%>
 
                 <div class="cq-field">
 
@@ -589,9 +842,9 @@
 
 
 
-            <%-- =========================
+            <%-- =================================================
                  FORM ACTIONS
-                 ========================= --%>
+                 ================================================= --%>
 
             <div class="cq-form-actions">
 
@@ -610,6 +863,8 @@
                     runat="server"
                     CssClass="cq-save-button"
                     Text="Save to Bank"
+                    CausesValidation="true"
+                    ValidationGroup="QuestionValidation"
                     OnClick="btnSaveQuestion_Click" />
 
             </div>
@@ -622,7 +877,6 @@
 
     <%-- =========================================================
          QUESTION PREVIEW MODAL
-         Uses QuestionPreview.css + QuestionPreview.js
          ========================================================= --%>
 
     <div id="questionPreviewModal"
@@ -630,23 +884,16 @@
          hidden>
 
 
-        <%-- OVERLAY --%>
-
         <div class="question-preview-overlay"
              data-preview-close>
         </div>
 
-
-
-        <%-- DIALOG --%>
 
         <div class="question-preview-dialog"
              role="dialog"
              aria-modal="true"
              aria-labelledby="previewTitle">
 
-
-            <%-- HEADER --%>
 
             <div class="question-preview-header">
 
@@ -677,12 +924,8 @@
 
 
 
-            <%-- BODY --%>
-
             <div class="question-preview-body">
 
-
-                <%-- QUESTION TAGS --%>
 
                 <div class="preview-tags">
 
@@ -702,15 +945,11 @@
 
 
 
-                <%-- QUESTION TEXT --%>
-
                 <h3 id="previewQuestionText"
                     class="preview-question-text">
                 </h3>
 
 
-
-                <%-- OPTIONAL IMAGE --%>
 
                 <div id="previewImageArea"
                      class="preview-image-area"
@@ -724,8 +963,6 @@
 
 
 
-                <%-- MCQ ANSWERS --%>
-
                 <div id="previewMcqAnswers"
                      class="preview-answer-list">
 
@@ -733,12 +970,9 @@
                     <div class="preview-answer"
                          data-preview-option="A">
 
-                        <span>
-                            A
-                        </span>
+                        <span>A</span>
 
-                        <p id="previewOptionA">
-                        </p>
+                        <p id="previewOptionA"></p>
 
                     </div>
 
@@ -746,12 +980,9 @@
                     <div class="preview-answer"
                          data-preview-option="B">
 
-                        <span>
-                            B
-                        </span>
+                        <span>B</span>
 
-                        <p id="previewOptionB">
-                        </p>
+                        <p id="previewOptionB"></p>
 
                     </div>
 
@@ -759,12 +990,9 @@
                     <div class="preview-answer"
                          data-preview-option="C">
 
-                        <span>
-                            C
-                        </span>
+                        <span>C</span>
 
-                        <p id="previewOptionC">
-                        </p>
+                        <p id="previewOptionC"></p>
 
                     </div>
 
@@ -772,20 +1000,15 @@
                     <div class="preview-answer"
                          data-preview-option="D">
 
-                        <span>
-                            D
-                        </span>
+                        <span>D</span>
 
-                        <p id="previewOptionD">
-                        </p>
+                        <p id="previewOptionD"></p>
 
                     </div>
 
                 </div>
 
 
-
-                <%-- SUBJECTIVE ANSWER --%>
 
                 <div id="previewSubjectiveAnswer"
                      class="preview-subjective"
@@ -795,8 +1018,7 @@
                         Model Answer / Scoring Guide
                     </label>
 
-                    <p id="previewModelAnswer">
-                    </p>
+                    <p id="previewModelAnswer"></p>
 
                 </div>
 
@@ -806,8 +1028,8 @@
 
     </div>
 
-</asp:Content>
 
+</asp:Content>
 
 
 <asp:Content
@@ -816,254 +1038,678 @@
     runat="server">
 
 
-    <%-- Shared question preview JavaScript --%>
+    <%-- Shared Preview --%>
 
-    <script src="<%= ResolveUrl("~/Scripts/QuestionPreview.js") %>?v=1">
+    <script src="<%= ResolveUrl("~/Scripts/QuestionPreview.js") %>?v=3">
     </script>
 
 
 
-    <%-- Create Question page-specific JavaScript --%>
-
     <script>
+
+
+        /* =========================================================
+           CONDITIONAL VALIDATION
+           Must be globally accessible to ASP.NET validators
+           ========================================================= */
+
+        window.validateMcqOption =
+            function (source, args) {
+
+                const questionType =
+                    document.getElementById(
+                        "ddlQuestionType"
+                    );
+
+
+                if (
+                    !questionType ||
+                    questionType.value !== "MCQ"
+                ) {
+                    args.IsValid =
+                        true;
+
+                    return;
+                }
+
+
+                args.IsValid =
+                    args.Value.trim().length > 0;
+            };
+
+
+        window.validateModelAnswer =
+            function (source, args) {
+
+                const questionType =
+                    document.getElementById(
+                        "ddlQuestionType"
+                    );
+
+
+                if (
+                    !questionType ||
+                    questionType.value !== "Subjective"
+                ) {
+                    args.IsValid =
+                        true;
+
+                    return;
+                }
+
+
+                args.IsValid =
+                    args.Value.trim().length > 0;
+            };
+
+
+        window.validateCorrectOption =
+            function (source, args) {
+
+                const questionType =
+                    document.getElementById(
+                        "ddlQuestionType"
+                    );
+
+
+                if (
+                    !questionType ||
+                    questionType.value !== "MCQ"
+                ) {
+                    args.IsValid =
+                        true;
+
+                    return;
+                }
+
+
+                const selected =
+                    document.querySelector(
+                        "#correctA:checked, " +
+                        "#correctB:checked, " +
+                        "#correctC:checked, " +
+                        "#correctD:checked"
+                    );
+
+
+                args.IsValid =
+                    selected !== null;
+            };
+
+
+
+        /* =========================================================
+           PAGE BEHAVIOUR
+           ========================================================= */
 
         (function () {
 
 
-            /* =========================================
-               FORM ELEMENTS
-               ========================================= */
+            /* =====================================================
+               ELEMENTS
+               ===================================================== */
 
             const subject =
-                document.getElementById("ddlSubject");
+                document.getElementById(
+                    "ddlSubject"
+                );
+
 
             const questionType =
-                document.getElementById("ddlQuestionType");
+                document.getElementById(
+                    "ddlQuestionType"
+                );
+
 
             const difficulty =
-                document.getElementById("ddlDifficulty");
+                document.getElementById(
+                    "ddlDifficulty"
+                );
+
 
             const questionText =
-                document.getElementById("txtQuestion");
+                document.getElementById(
+                    "txtQuestion"
+                );
 
 
             const optionA =
-                document.getElementById("txtOptionA");
+                document.getElementById(
+                    "txtOptionA"
+                );
+
 
             const optionB =
-                document.getElementById("txtOptionB");
+                document.getElementById(
+                    "txtOptionB"
+                );
+
 
             const optionC =
-                document.getElementById("txtOptionC");
+                document.getElementById(
+                    "txtOptionC"
+                );
+
 
             const optionD =
-                document.getElementById("txtOptionD");
+                document.getElementById(
+                    "txtOptionD"
+                );
+
+
+            const correctA =
+                document.getElementById(
+                    "correctA"
+                );
+
+
+            const correctB =
+                document.getElementById(
+                    "correctB"
+                );
+
+
+            const correctC =
+                document.getElementById(
+                    "correctC"
+                );
+
+
+            const correctD =
+                document.getElementById(
+                    "correctD"
+                );
 
 
             const modelAnswer =
-                document.getElementById("txtModelAnswer");
+                document.getElementById(
+                    "txtModelAnswer"
+                );
 
 
             const imageInput =
-                document.getElementById("questionImage");
+                document.getElementById(
+                    "questionImage"
+                );
+
 
             const removeImageButton =
-                document.getElementById("removeImageButton");
+                document.getElementById(
+                    "removeImageButton"
+                );
+
 
             const selectedFileName =
-                document.getElementById("selectedFileName");
+                document.getElementById(
+                    "selectedFileName"
+                );
+
+
+            const existingMediaUrl =
+                document.getElementById(
+                    "hfExistingMediaUrl"
+                );
+
+
+            const removeExistingImage =
+                document.getElementById(
+                    "hfRemoveExistingImage"
+                );
 
 
             const previewButton =
-                document.getElementById("btnPreviewQuestion");
+                document.getElementById(
+                    "btnPreviewQuestion"
+                );
 
-
-
-            /* =========================================
-               QUESTION TYPE SECTIONS
-               ========================================= */
 
             const mcqSection =
-                document.getElementById("mcqSection");
+                document.getElementById(
+                    "mcqSection"
+                );
+
 
             const subjectiveSection =
-                document.getElementById("subjectiveSection");
+                document.getElementById(
+                    "subjectiveSection"
+                );
 
 
 
-            /* =========================================
-               MCQ / SUBJECTIVE SWITCHING
-               ========================================= */
+            /* =====================================================
+               QUESTION TYPE SWITCHING
+               ===================================================== */
 
             function updateQuestionType() {
 
+                if (
+                    !questionType ||
+                    !mcqSection ||
+                    !subjectiveSection
+                ) {
+                    return;
+                }
+
+
                 const isMCQ =
-                    questionType.value === "MCQ";
+                    questionType.value ===
+                    "MCQ";
+
+
+                const isSubjective =
+                    questionType.value ===
+                    "Subjective";
+
 
                 mcqSection.hidden =
                     !isMCQ;
 
+
                 subjectiveSection.hidden =
-                    isMCQ;
+                    !isSubjective;
             }
 
 
-            questionType.addEventListener(
-                "change",
-                updateQuestionType
-            );
+            if (questionType) {
+
+                questionType.addEventListener(
+                    "change",
+                    updateQuestionType
+                );
+
+            }
 
 
 
-            /* =========================================
-               IMAGE SELECTION
-               ========================================= */
+            /* =====================================================
+               NEW IMAGE SELECTED
+               ===================================================== */
 
-            imageInput.addEventListener(
-                "change",
-                function() {
+            if (imageInput) {
 
-                    if (imageInput.files.length > 0) {
+                imageInput.addEventListener(
+                    "change",
+                    function () {
 
-                        selectedFileName.textContent =
-                            imageInput.files[0].name;
+                        if (
+                            imageInput.files.length > 0
+                        ) {
 
-                        document.getElementById(
-                            "hfRemoveExistingImage"
-                        ).value = "false";
+                            if (selectedFileName) {
 
-                    } else {
+                                selectedFileName.textContent =
+                                    imageInput.files[0].name;
 
-                        selectedFileName.textContent = "";
+                            }
+
+
+                            if (removeExistingImage) {
+
+                                removeExistingImage.value =
+                                    "false";
+
+                            }
+
+                        }
+
                     }
-                }
-            );
+                );
+
+            }
 
 
 
-            /* =========================================
+            /* =====================================================
                REMOVE IMAGE
-               ========================================= */
+               ===================================================== */
 
-            removeImageButton.addEventListener(
-                "click",
+            if (removeImageButton) {
+
+                removeImageButton.addEventListener(
+                    "click",
+                    function() {
+
+                        if (imageInput) {
+
+                            imageInput.value =
+                                "";
+
+                        }
+
+
+                        if (selectedFileName) {
+
+                            selectedFileName.textContent =
+                                "";
+
+                        }
+
+
+                        if (removeExistingImage) {
+
+                            removeExistingImage.value =
+                                "true";
+
+                        }
+
+
+                        window.markQuestionDirty();
+
+                    }
+                );
+
+            }
+
+
+
+            /* =====================================================
+               GET CORRECT OPTION
+               ===================================================== */
+
+            function getCorrectOption() {
+
+                if (
+                    correctA &&
+                    correctA.checked
+                ) {
+                    return "A";
+                }
+
+
+                if (
+                    correctB &&
+                    correctB.checked
+                ) {
+                    return "B";
+                }
+
+
+                if (
+                    correctC &&
+                    correctC.checked
+                ) {
+                    return "C";
+                }
+
+
+                if (
+                    correctD &&
+                    correctD.checked
+                ) {
+                    return "D";
+                }
+
+
+                return "";
+            }
+
+
+
+            /* =====================================================
+               PREVIEW QUESTION
+               ===================================================== */
+
+            if (previewButton) {
+
+                previewButton.addEventListener(
+                    "click",
+                    function () {
+
+                        let imageUrl =
+                            "";
+
+
+                        /* -----------------------------------------
+                           Newly selected image
+                           ----------------------------------------- */
+
+                        if (
+                            imageInput &&
+                            imageInput.files.length > 0
+                        ) {
+
+                            imageUrl =
+                                URL.createObjectURL(
+                                    imageInput.files[0]
+                                );
+
+                        }
+
+
+                        /* -----------------------------------------
+                           Existing image in Edit mode
+                           ----------------------------------------- */
+
+                        else if (
+                            existingMediaUrl &&
+                            existingMediaUrl.value &&
+                            removeExistingImage &&
+                            removeExistingImage.value !==
+                            "true"
+                        ) {
+
+                            imageUrl =
+                                existingMediaUrl.value;
+
+                        }
+
+
+                        const selectedType =
+                            questionType
+                                ? questionType.value
+                                : "";
+
+
+                        QuestionPreview.open({
+
+                            subject:
+                                subject &&
+                                    subject.selectedIndex >= 0
+                                    ? subject.options[
+                                        subject.selectedIndex
+                                    ].text
+                                    : "",
+
+
+                            difficulty:
+                                difficulty &&
+                                    difficulty.selectedIndex >= 0
+                                    ? difficulty.options[
+                                        difficulty.selectedIndex
+                                    ].text
+                                    : "",
+
+
+                            type:
+                                selectedType === "MCQ"
+                                    ? "Single Choice"
+                                    : selectedType === "Subjective"
+                                        ? "Subjective"
+                                        : "Question",
+
+
+                            questionText:
+                                questionText
+                                    ? questionText.value.trim()
+                                    : "",
+
+
+                            options: [
+
+                                optionA
+                                    ? optionA.value.trim()
+                                    : "",
+
+                                optionB
+                                    ? optionB.value.trim()
+                                    : "",
+
+                                optionC
+                                    ? optionC.value.trim()
+                                    : "",
+
+                                optionD
+                                    ? optionD.value.trim()
+                                    : ""
+
+                            ],
+
+
+                            correctOption:
+                                getCorrectOption(),
+
+
+                            modelAnswer:
+                                modelAnswer
+                                    ? modelAnswer.value.trim()
+                                    : "",
+
+
+                            imageUrl:
+                                imageUrl
+
+                        });
+
+                    }
+                );
+
+            }
+
+            /* =========================================================
+               UNSAVED QUESTION CHANGES
+               ========================================================= */
+
+            const questionDirtyField =
+                document.getElementById(
+                    "hfQuestionDirty"
+                );
+
+
+            window.markQuestionDirty =
                 function() {
 
-                    imageInput.value = "";
+                    if (questionDirtyField) {
 
-                    selectedFileName.textContent = "";
+                        questionDirtyField.value =
+                            "true";
 
-                    document.getElementById(
-                        "hfRemoveExistingImage"
-                    ).value = "true";
-                }
-            );
+                    }
 
+                };
 
 
-            /* =========================================
-               PREVIEW QUESTION
-               ========================================= */
+            window.hasUnsavedQuestionChanges =
+                function() {
 
-            previewButton.addEventListener(
-                "click",
-                function () {
+                    return (
+                        questionDirtyField &&
+                        questionDirtyField.value === "true"
+                    );
 
-
-                    const selectedType =
-                        questionType.value;
+                };
 
 
-                    const correctAnswer =
-                        [
-                            document.getElementById("correctA"),
-                            document.getElementById("correctB"),
-                            document.getElementById("correctC"),
-                            document.getElementById("correctD")
-                        ].find(option => option.checked);
+            window.confirmCancelQuestion =
+                function() {
 
+                    if (
+                        !window.hasUnsavedQuestionChanges()
+                    ) {
 
-                    let imageUrl = "";
+                        return true;
 
-
-                    if (imageInput.files.length > 0) {
-
-                        imageUrl =
-                            URL.createObjectURL(
-                                imageInput.files[0]
-                            );
                     }
 
 
+                    return window.confirm(
 
-                    QuestionPreview.open({
+                        "You have unsaved changes to this question.\n\n" +
 
-                        subject:
-                            subject.options[
-                                subject.selectedIndex
-                            ].text,
+                        "If you leave now, these changes will be lost.\n\n" +
 
-                        difficulty:
-                            difficulty.options[
-                                difficulty.selectedIndex
-                            ].text,
+                        "Do you want to continue?"
 
-                        type:
-                            selectedType === "MCQ"
-                                ? "Single Choice (MCQ)"
-                                : "Subjective (Open-ended)",
+                    );
 
-                        questionText:
-                            questionText.value.trim()
-                            || "No question entered yet.",
+                };
 
+            /* =========================================================
+               TRACK QUESTION FORM CHANGES
+               ========================================================= */
 
-                        options: [
+            document.addEventListener(
+                "input",
+                function(event) {
 
-                            optionA.value.trim()
-                            || "No answer entered",
+                    if (
+                        event.target.matches(
 
-                            optionB.value.trim()
-                            || "No answer entered",
+                            "#txtQuestion, " +
 
-                            optionC.value.trim()
-                            || "No answer entered",
+                            "#txtOptionA, " +
+                            "#txtOptionB, " +
+                            "#txtOptionC, " +
+                            "#txtOptionD, " +
 
-                            optionD.value.trim()
-                            || "No answer entered"
+                            "#txtModelAnswer, " +
 
-                        ],
+                            "#txtHint, " +
+                            "#txtExplanation"
 
+                        )
+                    ) {
 
-                        correctOption:
-                            correctAnswer
-                                ? correctAnswer.value
-                                : "",
+                        window.markQuestionDirty();
 
+                    }
 
-                        modelAnswer:
-                            modelAnswer.value.trim()
-                            || "No model answer entered yet.",
+                }
+            );
 
 
-                        imageUrl:
-                            imageUrl
+            document.addEventListener(
+                "change",
+                function(event) {
 
-                    });
+                    if (
+                        event.target.matches(
+
+                            "#ddlSubject, " +
+
+                            "#ddlQuestionType, " +
+
+                            "#ddlDifficulty, " +
+
+                            "#correctA, " +
+                            "#correctB, " +
+                            "#correctC, " +
+                            "#correctD, " +
+
+                            "#questionImage"
+
+                        )
+                    ) {
+
+                        window.markQuestionDirty();
+
+                    }
 
                 }
             );
 
 
 
-            /* =========================================
-               INITIAL PAGE STATE
-               ========================================= */
+            /* =====================================================
+               INITIAL STATE
+               ===================================================== */
 
             updateQuestionType();
 
+
         })();
 
+
     </script>
+
 
 </asp:Content>

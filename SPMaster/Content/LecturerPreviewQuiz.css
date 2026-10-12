@@ -1,6 +1,6 @@
-﻿/* =========================
+﻿/* =========================================================
    QUIZ PREVIEW PAGE
-   ========================= */
+   ========================================================= */
 
 .quiz-preview-page {
     --quiz-preview-primary: #7c28ef;
@@ -13,9 +13,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    PAGE HEADER
-   ========================= */
+   ========================================================= */
 
 .quiz-preview-header {
     display: flex;
@@ -26,14 +26,6 @@
 }
 
 
-.quiz-preview-heading-group {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-    gap: 12px;
-}
-
-
 .quiz-preview-heading {
     min-width: 0;
 }
@@ -41,7 +33,7 @@
 
 .quiz-preview-context {
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     color: var(--portal-navy);
     font-size: 11px;
     font-weight: 600;
@@ -52,44 +44,57 @@
     margin: 0;
     color: var(--portal-navy);
     font-size: 30px;
+    font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.5px;
 }
 
 
-/* =========================
-   BACK BUTTON
-   ========================= */
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
 
-.quiz-preview-back-button {
-    display: inline-flex;
+.quiz-preview-header-actions {
+    display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--portal-white);
-    color: var(--portal-navy) !important;
-    font-size: 28px;
-    transition: color 0.2s ease, transform 0.2s ease;
+    gap: 10px;
 }
 
 
-    .quiz-preview-back-button i {
-        line-height: 1;
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.quiz-preview-back-text-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--portal-white);
+    color: var(--portal-navy) !important;
+    font-family: inherit;
+    font-size: var(--quiz-preview-button-font-size);
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+
+    .quiz-preview-back-text-button:hover {
+        background: #eee4ff;
+        transform: translateY(-1px);
     }
 
 
-    .quiz-preview-back-button:hover {
-        color: var(--quiz-preview-primary) !important;
-        transform: translateX(-2px);
-    }
-
-
-/* =========================
+/* =========================================================
    PUBLISH BUTTON
-   ========================= */
+   ========================================================= */
 
 .publish-quiz-button {
     display: inline-flex;
@@ -105,6 +110,7 @@
     font-family: inherit;
     font-size: var(--quiz-preview-button-font-size);
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -117,17 +123,68 @@
         box-shadow: 0 4px 10px rgba(124, 40, 239, 0.20);
     }
 
+    /* =========================================================
+   DISABLED PUBLISH BUTTON
+   ========================================================= */
 
-/* =========================
+    .publish-quiz-button-disabled,
+    .publish-quiz-button:disabled {
+        background: #c9b6e8;
+        color: #ffffff;
+        cursor: not-allowed;
+        opacity: 0.75;
+        box-shadow: none;
+        transform: none;
+    }
+
+
+        .publish-quiz-button-disabled:hover,
+        .publish-quiz-button:disabled:hover {
+            background: #c9b6e8;
+            box-shadow: none;
+            transform: none;
+        }
+
+
+/* =========================================================
+   PREVIEW MESSAGE
+   ========================================================= */
+
+.preview-message {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+    .preview-message i {
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+
+
+.preview-message-error {
+    border: 1px solid #ffc3bd;
+    background: #ffe2df;
+    color: #b72f28;
+}
+
+
+/* =========================================================
    QUIZ SUMMARY
-   ========================= */
+   ========================================================= */
 
 .quiz-preview-summary {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 14px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     padding: 14px 18px;
     border-radius: 16px;
     background: var(--portal-white);
@@ -150,14 +207,38 @@
 
 
 .quiz-summary-dot {
-    color: var(--portal-navy);
+    color: var(--portal-muted);
     font-size: 10px;
 }
 
 
-/* =========================
+/* =========================================================
+   QUIZ INSTRUCTIONS
+   ========================================================= */
+
+.quiz-preview-instructions {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 22px;
+    padding: 13px 18px;
+    border-radius: 16px;
+    background: #f1eaff;
+    color: var(--portal-navy);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+    .quiz-preview-instructions strong {
+        flex-shrink: 0;
+        font-weight: 700;
+    }
+
+
+/* =========================================================
    QUESTION LIST
-   ========================= */
+   ========================================================= */
 
 .quiz-preview-question-list {
     display: flex;
@@ -166,9 +247,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUESTION CARD
-   ========================= */
+   ========================================================= */
 
 .quiz-preview-question-card {
     padding: 22px;
@@ -178,9 +259,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUESTION HEADER
-   ========================= */
+   ========================================================= */
 
 .preview-question-header {
     display: flex;
@@ -212,9 +293,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUESTION TITLE
-   ========================= */
+   ========================================================= */
 
 .preview-question-title {
     margin: 0 0 18px;
@@ -225,9 +306,30 @@
 }
 
 
-/* =========================
+/* =========================================================
+   QUESTION IMAGE
+   ========================================================= */
+
+.preview-question-image-wrapper {
+    width: 100%;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+
+.preview-question-image {
+    display: block;
+    max-width: 100%;
+    max-height: 420px;
+    margin: 0 auto;
+    border-radius: 14px;
+    object-fit: contain;
+}
+
+
+/* =========================================================
    MCQ OPTION GRID
-   ========================= */
+   ========================================================= */
 
 .preview-option-grid {
     display: grid;
@@ -236,9 +338,9 @@
 }
 
 
-/* =========================
-   OPTION
-   ========================= */
+/* =========================================================
+   MCQ OPTION
+   ========================================================= */
 
 .preview-option {
     display: flex;
@@ -261,9 +363,64 @@
 }
 
 
-/* =========================
+/* =========================================================
+   SUBJECTIVE ANSWER AREA
+   ========================================================= */
+
+.preview-subjective-answer-area {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 100px;
+    padding: 14px 16px;
+    border: 1px dashed #cfc1e8;
+    border-radius: 14px;
+    background: #faf8ff;
+    color: var(--portal-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   EMPTY QUESTION STATE
+   ========================================================= */
+
+.quiz-preview-empty {
+    padding: 32px 24px;
+    border-radius: 18px;
+    background: var(--portal-white);
+    text-align: center;
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.06);
+}
+
+
+    .quiz-preview-empty i {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--quiz-preview-primary);
+        font-size: 28px;
+    }
+
+
+    .quiz-preview-empty h3 {
+        margin: 0 0 5px;
+        color: var(--portal-navy);
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+
+    .quiz-preview-empty p {
+        margin: 0;
+        color: var(--portal-muted);
+        font-size: 12px;
+    }
+
+
+/* =========================================================
    TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 800px) {
 
@@ -273,9 +430,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
 
@@ -285,18 +442,19 @@
     }
 
 
-    .quiz-preview-heading-group {
+    .quiz-preview-heading {
         width: 100%;
     }
 
 
-    .quiz-preview-heading h1 {
-        font-size: 24px;
-    }
+        .quiz-preview-heading h1 {
+            font-size: 24px;
+        }
 
 
-    .publish-quiz-button {
-        align-self: flex-end;
+    .quiz-preview-header-actions {
+        width: 100%;
+        justify-content: flex-end;
     }
 
 
@@ -311,24 +469,20 @@
 }
 
 
-/* =========================
+/* =========================================================
    SMALL MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 430px) {
 
-    .quiz-preview-heading-group {
-        align-items: flex-start;
+    .quiz-preview-header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 
 
-    .quiz-preview-back-button {
-        width: 34px;
-        height: 34px;
-        font-size: 25px;
-    }
-
-
+    .quiz-preview-back-text-button,
     .publish-quiz-button {
         width: 100%;
     }
@@ -346,6 +500,11 @@
     }
 
 
+    .quiz-preview-instructions {
+        flex-direction: column;
+    }
+
+
     .preview-question-header {
         align-items: flex-start;
     }
@@ -353,5 +512,10 @@
 
     .preview-question-title {
         font-size: 15px;
+    }
+
+
+    .preview-question-image {
+        max-height: 280px;
     }
 }
