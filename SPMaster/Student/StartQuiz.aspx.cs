@@ -178,6 +178,24 @@ namespace SPMaster.Student
             }
         }
 
+        private bool AttemptExpired
+        {
+            get
+            {
+                return ViewState["AttemptExpired"] != null
+                    &&
+                    Convert.ToBoolean(
+                        ViewState["AttemptExpired"]
+                    );
+            }
+
+            set
+            {
+                ViewState["AttemptExpired"] =
+                    value;
+            }
+        }
+
 
         // Used while binding MCQ options
         private int? SelectedOptionId
@@ -212,11 +230,41 @@ namespace SPMaster.Student
                 if (!InitializeAttempt())
                 {
                     Response.Redirect(
-                        "~/Student/Quizzes.aspx"
+                        "~/Student/Quizzes.aspx?tab=attempts"
                     );
 
                     return;
                 }
+
+
+                // =============================================
+                // EXPIRED ATTEMPT
+                // =============================================
+
+                if (AttemptExpired)
+                {
+                    pnlQuizInterface.Visible =
+                        false;
+
+
+                    pnlExpiredAttempt.Visible =
+                        true;
+
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALID ATTEMPT
+                // =============================================
+
+                pnlQuizInterface.Visible =
+                    true;
+
+
+                pnlExpiredAttempt.Visible =
+                    false;
 
 
                 CurrentQuestionIndex =
@@ -425,15 +473,24 @@ namespace SPMaster.Student
                             DateTime.Now
                         )
                         {
-                            reader.Close();
+                            AttemptId =
+                                attemptId;
 
 
-                            FinalizeAttempt();
+                            QuizId =
+                                Convert.ToInt32(
+                                    reader["QuizId"]
+                                );
 
 
-                            return false;
+                            AttemptExpired =
+                                true;
+
+
+                            return true;
                         }
 
+                        AttemptExpired = false;
 
                         return true;
                     }
@@ -2349,5 +2406,216 @@ namespace SPMaster.Student
                 )
             );
         }
+
+        protected void btnLeaveExpiredAttempt_Click(
+            object sender,
+            EventArgs e)
+        {
+            Response.Redirect(
+                "~/Student/Quizzes.aspx?tab=attempts"
+            );
+        }
+
+
+        protected void btnRedoExpiredAttempt_Click(
+            object sender,
+            EventArgs e)
+        {
+            int quizId =
+                QuizId;
+
+
+            DeleteExpiredAttempt();
+
+
+            Response.Redirect(
+                "~/Student/StartQuiz.aspx?quizId="
+                + quizId
+            );
+        }
+
+        private void DeleteExpiredAttempt()
+        {
+            const string verifySql = @"
+        SELECT COUNT(*)
+
+        FROM QuizAttempts
+
+        WHERE
+            AttemptId =
+                @AttemptId
+
+            AND
+            StudentUserId =
+                @StudentUserId
+
+            AND
+            AttemptStatus =
+                'InProgress'
+
+            AND
+            ExpiresAt <=
+                GETDATE();
+    ";
+
+
+            const string deleteAnswersSql = @"
+        DELETE FROM StudentAnswers
+
+        WHERE
+            AttemptId =
+                @AttemptId;
+    ";
+
+
+            const string deleteAttemptSql = @"
+        DELETE FROM QuizAttempts
+
+        WHERE
+            AttemptId =
+                @AttemptId
+
+            AND
+            StudentUserId =
+                @StudentUserId
+
+            AND
+            AttemptStatus =
+                'InProgress'
+
+            AND
+            ExpiresAt <=
+                GETDATE();
+    ";
+
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            {
+                connection.Open();
+
+
+                using (
+                    SqlTransaction transaction =
+                        connection.BeginTransaction()
+                )
+                {
+                    try
+                    {
+                        // =============================================
+                        // VERIFY
+                        // =============================================
+
+                        using (
+                            SqlCommand command =
+                                new SqlCommand(
+                                    verifySql,
+                                    connection,
+                                    transaction
+                                )
+                        )
+                        {
+                            command.Parameters.Add(
+                                "@AttemptId",
+                                SqlDbType.Int
+                            ).Value =
+                                AttemptId;
+
+
+                            command.Parameters.Add(
+                                "@StudentUserId",
+                                SqlDbType.Int
+                            ).Value =
+                                CurrentUserId;
+
+
+                            int count =
+                                Convert.ToInt32(
+                                    command.ExecuteScalar()
+                                );
+
+
+                            if (
+                                count == 0
+                            )
+                            {
+                                transaction.Rollback();
+
+                                return;
+                            }
+                        }
+
+
+                        // =============================================
+                        // DELETE SAVED ANSWERS
+                        // =============================================
+
+                        using (
+                            SqlCommand command =
+                                new SqlCommand(
+                                    deleteAnswersSql,
+                                    connection,
+                                    transaction
+                                )
+                        )
+                        {
+                            command.Parameters.Add(
+                                "@AttemptId",
+                                SqlDbType.Int
+                            ).Value =
+                                AttemptId;
+
+
+                            command.ExecuteNonQuery();
+                        }
+
+
+                        // =============================================
+                        // DELETE OLD ATTEMPT
+                        // =============================================
+
+                        using (
+                            SqlCommand command =
+                                new SqlCommand(
+                                    deleteAttemptSql,
+                                    connection,
+                                    transaction
+                                )
+                        )
+                        {
+                            command.Parameters.Add(
+                                "@AttemptId",
+                                SqlDbType.Int
+                            ).Value =
+                                AttemptId;
+
+
+                            command.Parameters.Add(
+                                "@StudentUserId",
+                                SqlDbType.Int
+                            ).Value =
+                                CurrentUserId;
+
+
+                            command.ExecuteNonQuery();
+                        }
+
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+
+                        throw;
+                    }
+                }
+            }
+        }
+
     }
 }

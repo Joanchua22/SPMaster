@@ -19,11 +19,15 @@
     <title>Quiz - SPMaster</title>
 
 
+    <%-- BOOTSTRAP ICONS --%>
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
 
 
-    <link href="<%= ResolveUrl("~/Content/StudentStartQuiz.css") %>?v=2"
+    <%-- PAGE CSS --%>
+
+    <link href="<%= ResolveUrl("~/Content/StudentStartQuiz.css") %>?v=3"
           rel="stylesheet"
           type="text/css" />
 
@@ -71,51 +75,159 @@
 
 
 
-    <main class="student-start-quiz-page">
+    <%-- =====================================================
+         NORMAL QUIZ INTERFACE
+         ===================================================== --%>
+
+    <asp:Panel
+        ID="pnlQuizInterface"
+        runat="server"
+        Visible="true">
 
 
-        <%-- =================================================
-             QUIZ HEADER
-             ================================================= --%>
-
-        <section class="start-quiz-header">
+        <main class="student-start-quiz-page">
 
 
-            <%-- LEFT --%>
+            <%-- =================================================
+                 QUIZ HEADER
+                 ================================================= --%>
 
-            <div class="start-quiz-header-left">
+            <section class="start-quiz-header">
 
-                <asp:LinkButton
-                    ID="btnExitQuiz"
-                    runat="server"
-                    CssClass="quiz-close-button"
-                    CausesValidation="false"
-                    OnClientClick="return confirmExitQuiz();"
-                    OnClick="btnExitQuiz_Click"
-                    aria-label="Exit quiz">
 
-                    <i class="bi bi-x-lg"
+                <%-- LEFT --%>
+
+                <div class="start-quiz-header-left">
+
+                    <asp:LinkButton
+                        ID="btnExitQuiz"
+                        runat="server"
+                        CssClass="quiz-close-button"
+                        CausesValidation="false"
+                        OnClientClick="return confirmExitQuiz();"
+                        OnClick="btnExitQuiz_Click"
+                        aria-label="Exit quiz">
+
+                        <i class="bi bi-x-lg"
+                           aria-hidden="true"></i>
+
+                    </asp:LinkButton>
+
+
+                    <div class="start-quiz-title">
+
+                        <strong>
+
+                            <asp:Literal
+                                ID="litQuizTitle"
+                                runat="server">
+                            </asp:Literal>
+
+                        </strong>
+
+
+                        <span>
+
+                            <asp:Literal
+                                ID="litCurrentQuestion"
+                                runat="server">
+                            </asp:Literal>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <%-- TIMER --%>
+
+                <div class="quiz-timer">
+
+                    <i class="bi bi-stopwatch"
                        aria-hidden="true"></i>
 
-                </asp:LinkButton>
+                    <span id="quizTimer">
+                        00:00
+                    </span>
+
+                </div>
 
 
-                <div class="start-quiz-title">
 
-                    <strong>
+                <%-- SUBMIT QUIZ --%>
+
+                <button type="button"
+                        class="submit-quiz-button"
+                        onclick="openSubmitModal();">
+
+                    Submit Quiz
+
+                </button>
+
+            </section>
+
+
+
+            <%-- =================================================
+                 QUESTION NUMBER NAVIGATION
+                 ================================================= --%>
+
+            <section class="question-number-navigation">
+
+                <asp:Repeater
+                    ID="rptQuestionNavigation"
+                    runat="server">
+
+                    <ItemTemplate>
+
+                        <button type="button"
+                                class='<%# GetQuestionNavigationCss(
+                                    Eval("QuestionIndex"),
+                                    Eval("IsAnswered")
+                                ) %>'
+                                onclick='goToQuestion(<%# Eval("QuestionIndex") %>);'>
+
+                            <%#: Eval("QuestionNumber") %>
+
+                        </button>
+
+                    </ItemTemplate>
+
+                </asp:Repeater>
+
+            </section>
+
+
+
+            <%-- =================================================
+                 QUESTION CARD
+                 ================================================= --%>
+
+            <section class="student-question-card">
+
+
+                <%-- =============================================
+                     QUESTION HEADER
+                     ============================================= --%>
+
+                <div class="student-question-top">
+
+                    <span class="question-type-badge">
 
                         <asp:Literal
-                            ID="litQuizTitle"
+                            ID="litQuestionType"
                             runat="server">
                         </asp:Literal>
 
-                    </strong>
+                    </span>
 
 
-                    <span>
+                    <span class="question-marks-badge">
 
                         <asp:Literal
-                            ID="litCurrentQuestion"
+                            ID="litQuestionMarks"
                             runat="server">
                         </asp:Literal>
 
@@ -123,311 +235,309 @@
 
                 </div>
 
-            </div>
+
+
+                <%-- =============================================
+                     QUESTION TEXT
+                     ============================================= --%>
+
+                <h1 class="student-question-title">
+
+                    <asp:Literal
+                        ID="litQuestionText"
+                        runat="server">
+                    </asp:Literal>
+
+                </h1>
+
+
+                <p class="student-question-instruction">
+
+                    <asp:Literal
+                        ID="litQuestionInstruction"
+                        runat="server">
+                    </asp:Literal>
+
+                </p>
 
 
 
-            <%-- TIMER --%>
+                <%-- =============================================
+                     OPTIONAL QUESTION IMAGE
+                     ============================================= --%>
 
-            <div class="quiz-timer">
+                <asp:Panel
+                    ID="pnlQuestionImage"
+                    runat="server"
+                    Visible="false"
+                    CssClass="student-question-image">
 
-                <i class="bi bi-stopwatch"
+                    <asp:Image
+                        ID="imgQuestion"
+                        runat="server"
+                        AlternateText="Question image" />
+
+                </asp:Panel>
+
+
+
+                <%-- =================================================
+                     OBJECTIVE / MCQ
+                     ================================================= --%>
+
+                <asp:PlaceHolder
+                    ID="phObjective"
+                    runat="server">
+
+                    <section class="objective-question-section">
+
+                        <asp:Repeater
+                            ID="rptOptions"
+                            runat="server">
+
+                            <ItemTemplate>
+
+                                <label class="student-answer-option">
+
+                                    <input type="radio"
+                                           name="objectiveAnswer"
+                                           value='<%# Eval("OptionId") %>'
+                                           <%# GetOptionChecked(
+                                               Eval("OptionId")
+                                           ) %> />
+
+                                    <span class="answer-option-letter">
+
+                                        <%#: Eval("OptionLetter") %>
+
+                                    </span>
+
+
+                                    <span class="answer-option-text">
+
+                                        <%#: Eval("OptionText") %>
+
+                                    </span>
+
+                                </label>
+
+                            </ItemTemplate>
+
+                        </asp:Repeater>
+
+                    </section>
+
+                </asp:PlaceHolder>
+
+
+
+                <%-- =================================================
+                     SUBJECTIVE
+                     ================================================= --%>
+
+                <asp:PlaceHolder
+                    ID="phSubjective"
+                    runat="server">
+
+                    <section class="subjective-question-section">
+
+
+                        <label for="txtSubjectiveAnswer"
+                               class="subjective-answer-label">
+
+                            Your Answer:
+
+                        </label>
+
+
+                        <asp:TextBox
+                            ID="txtSubjectiveAnswer"
+                            runat="server"
+                            ClientIDMode="Static"
+                            TextMode="MultiLine"
+                            MaxLength="5000"
+                            CssClass="subjective-answer-textarea"
+                            placeholder="Write your answer clearly here...">
+                        </asp:TextBox>
+
+
+                        <div class="subjective-answer-footer">
+
+                            <span>
+
+                                Maximum 5000 characters.
+                                Your lecturer will evaluate your answer
+                                based on the allocated marks.
+
+                            </span>
+
+
+                            <span id="subjectiveCharacterCount">
+                                0 / 5000
+                            </span>
+
+                        </div>
+
+
+                    </section>
+
+                </asp:PlaceHolder>
+
+
+
+                <%-- =================================================
+                     QUESTION FOOTER
+                     ================================================= --%>
+
+                <div class="student-question-footer">
+
+
+                    <%-- CLEAR ANSWER --%>
+
+                    <asp:LinkButton
+                        ID="btnClearAnswer"
+                        runat="server"
+                        CausesValidation="false"
+                        CssClass="clear-answer-button"
+                        OnClick="btnClearAnswer_Click">
+
+                        <i class="bi bi-eraser"
+                           aria-hidden="true"></i>
+
+                        Clear answer
+
+                    </asp:LinkButton>
+
+
+
+                    <%-- PREVIOUS / NEXT --%>
+
+                    <div class="question-navigation-actions">
+
+                        <asp:Button
+                            ID="btnPreviousQuestion"
+                            runat="server"
+                            CausesValidation="false"
+                            CssClass="question-nav-button question-nav-light"
+                            Text="Previous"
+                            OnClick="btnPreviousQuestion_Click" />
+
+
+                        <asp:Button
+                            ID="btnNextQuestion"
+                            runat="server"
+                            CausesValidation="false"
+                            CssClass="question-nav-button question-nav-primary"
+                            Text="Next"
+                            OnClick="btnNextQuestion_Click" />
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+        </main>
+
+
+    </asp:Panel>
+
+
+
+    <%-- =====================================================
+         EXPIRED SESSION
+         IMPORTANT:
+         THIS MUST BE OUTSIDE pnlQuizInterface
+         ===================================================== --%>
+
+    <asp:Panel
+        ID="pnlExpiredAttempt"
+        runat="server"
+        Visible="false"
+        CssClass="expired-attempt-layer">
+
+
+        <%-- DARK OVERLAY --%>
+
+        <div class="expired-attempt-overlay">
+        </div>
+
+
+
+        <%-- MODAL --%>
+
+        <div class="expired-attempt-dialog">
+
+
+            <div class="expired-attempt-icon">
+
+                <i class="bi bi-clock-history"
                    aria-hidden="true"></i>
 
-                <span id="quizTimer">
-                    00:00
-                </span>
-
             </div>
 
 
-
-            <%-- SUBMIT --%>
-
-            <button type="button"
-                    class="submit-quiz-button"
-                    onclick="openSubmitModal();">
-
-                Submit Quiz
-
-            </button>
-
-        </section>
+            <h2>
+                Session Expired
+            </h2>
 
 
+            <p>
 
-        <%-- =================================================
-             QUESTION NUMBER NAVIGATION
-             ================================================= --%>
-
-        <section class="question-number-navigation">
-
-            <asp:Repeater
-                ID="rptQuestionNavigation"
-                runat="server">
-
-                <ItemTemplate>
-
-                    <button type="button"
-                            class='<%# GetQuestionNavigationCss(
-                                Eval("QuestionIndex"),
-                                Eval("IsAnswered")
-                            ) %>'
-                            onclick='goToQuestion(<%# Eval("QuestionIndex") %>);'>
-
-                        <%#: Eval("QuestionNumber") %>
-
-                    </button>
-
-                </ItemTemplate>
-
-            </asp:Repeater>
-
-        </section>
-
-
-
-        <%-- =================================================
-             QUESTION CARD
-             ================================================= --%>
-
-        <section class="student-question-card">
-
-
-            <%-- =============================================
-                 QUESTION HEADER
-                 ============================================= --%>
-
-            <div class="student-question-top">
-
-                <span class="question-type-badge">
-
-                    <asp:Literal
-                        ID="litQuestionType"
-                        runat="server">
-                    </asp:Literal>
-
-                </span>
-
-
-                <span class="question-marks-badge">
-
-                    <asp:Literal
-                        ID="litQuestionMarks"
-                        runat="server">
-                    </asp:Literal>
-
-                </span>
-
-            </div>
-
-
-
-            <%-- =============================================
-                 QUESTION TEXT
-                 ============================================= --%>
-
-            <h1 class="student-question-title">
-
-                <asp:Literal
-                    ID="litQuestionText"
-                    runat="server">
-                </asp:Literal>
-
-            </h1>
-
-
-            <p class="student-question-instruction">
-
-                <asp:Literal
-                    ID="litQuestionInstruction"
-                    runat="server">
-                </asp:Literal>
+                The time limit for this quiz attempt has already
+                expired. You can start the quiz again with a new
+                attempt, or return to My Attempts.
 
             </p>
 
 
 
-            <%-- =============================================
-                 OPTIONAL QUESTION IMAGE
-                 ============================================= --%>
-
-            <asp:Panel
-                ID="pnlQuestionImage"
-                runat="server"
-                Visible="false"
-                CssClass="student-question-image">
-
-                <asp:Image
-                    ID="imgQuestion"
-                    runat="server"
-                    AlternateText="Question image" />
-
-            </asp:Panel>
+            <div class="expired-attempt-actions">
 
 
+                <%-- BACK --%>
 
-            <%-- =================================================
-                 MCQ
-                 ================================================= --%>
-
-            <asp:PlaceHolder
-                ID="phObjective"
-                runat="server">
-
-                <section class="objective-question-section">
-
-                    <asp:Repeater
-                        ID="rptOptions"
-                        runat="server">
-
-                        <ItemTemplate>
-
-                            <label class="student-answer-option">
-
-                                <input type="radio"
-                                       name="objectiveAnswer"
-                                       value='<%# Eval("OptionId") %>'
-                                       <%# GetOptionChecked(
-                                           Eval("OptionId")
-                                       ) %> />
-
-                                <span class="answer-option-letter">
-
-                                    <%#: Eval("OptionLetter") %>
-
-                                </span>
-
-
-                                <span class="answer-option-text">
-
-                                    <%#: Eval("OptionText") %>
-
-                                </span>
-
-                            </label>
-
-                        </ItemTemplate>
-
-                    </asp:Repeater>
-
-                </section>
-
-            </asp:PlaceHolder>
-
-
-
-            <%-- =================================================
-                 SUBJECTIVE
-                 ================================================= --%>
-
-            <asp:PlaceHolder
-                ID="phSubjective"
-                runat="server">
-
-                <section class="subjective-question-section">
-
-                    <label for="txtSubjectiveAnswer"
-                           class="subjective-answer-label">
-
-                        Your Answer:
-
-                    </label>
-
-
-                    <asp:TextBox
-                        ID="txtSubjectiveAnswer"
-                        runat="server"
-                        ClientIDMode="Static"
-                        TextMode="MultiLine"
-                        MaxLength="5000"
-                        CssClass="subjective-answer-textarea"
-                        placeholder="Write your answer clearly here...">
-                    </asp:TextBox>
-
-
-                    <div class="subjective-answer-footer">
-
-                        <span>
-                            Maximum 5000 characters. Your lecturer
-                            will evaluate your answer based on the
-                            allocated marks.
-                        </span>
-
-
-                        <span id="subjectiveCharacterCount">
-                            0 / 5000
-                        </span>
-
-                    </div>
-
-                </section>
-
-            </asp:PlaceHolder>
-
-
-
-            <%-- =================================================
-                 FOOTER
-                 ================================================= --%>
-
-            <div class="student-question-footer">
-
-
-                <asp:LinkButton
-                    ID="btnClearAnswer"
+                <asp:Button
+                    ID="btnLeaveExpiredAttempt"
                     runat="server"
                     CausesValidation="false"
-                    CssClass="clear-answer-button"
-                    OnClick="btnClearAnswer_Click">
-
-                    <i class="bi bi-eraser"
-                       aria-hidden="true"></i>
-
-                    Clear answer
-
-                </asp:LinkButton>
+                    CssClass="expired-attempt-leave"
+                    Text="Back to My Attempts"
+                    OnClick="btnLeaveExpiredAttempt_Click" />
 
 
+                <%-- REDO --%>
 
-                <div class="question-navigation-actions">
+                <asp:Button
+                    ID="btnRedoExpiredAttempt"
+                    runat="server"
+                    CausesValidation="false"
+                    CssClass="expired-attempt-redo"
+                    Text="Redo Quiz"
+                    OnClick="btnRedoExpiredAttempt_Click" />
 
-                    <asp:Button
-                        ID="btnPreviousQuestion"
-                        runat="server"
-                        CausesValidation="false"
-                        CssClass="question-nav-button question-nav-light"
-                        Text="Previous"
-                        OnClick="btnPreviousQuestion_Click" />
-
-
-                    <asp:Button
-                        ID="btnNextQuestion"
-                        runat="server"
-                        CausesValidation="false"
-                        CssClass="question-nav-button question-nav-primary"
-                        Text="Next"
-                        OnClick="btnNextQuestion_Click" />
-
-                </div>
 
             </div>
 
 
-        </section>
+        </div>
 
 
-    </main>
+    </asp:Panel>
 
 
 
     <%-- =====================================================
-         SUBMIT CONFIRMATION
+         SUBMIT CONFIRMATION MODAL
          ===================================================== --%>
 
     <div id="submitQuizModal"
          class="quiz-submit-modal"
          hidden>
+
 
         <div class="quiz-submit-overlay"
              onclick="closeSubmitModal();">
@@ -435,6 +545,7 @@
 
 
         <div class="quiz-submit-dialog">
+
 
             <div class="submit-modal-icon">
 
@@ -450,12 +561,15 @@
 
 
             <p>
+
                 Once submitted, you will not be able
                 to change your answers.
+
             </p>
 
 
             <div class="submit-modal-actions">
+
 
                 <button type="button"
                         class="submit-modal-cancel"
@@ -474,9 +588,12 @@
                     Text="Submit Quiz"
                     OnClick="btnConfirmSubmit_Click" />
 
+
             </div>
 
+
         </div>
+
 
     </div>
 
@@ -493,28 +610,45 @@
 
     function goToQuestion(index) {
 
-        document.getElementById(
-            "hfGoQuestionIndex"
-        ).value =
+        const indexField =
+            document.getElementById(
+                "hfGoQuestionIndex"
+            );
+
+
+        const goButton =
+            document.getElementById(
+                "btnGoQuestionServer"
+            );
+
+
+        if (
+            !indexField ||
+            !goButton
+        ) {
+            return;
+        }
+
+
+        indexField.value =
             index;
 
 
-        document.getElementById(
-            "btnGoQuestionServer"
-        ).click();
+        goButton.click();
     }
 
 
 
     /* =========================================================
-       EXIT
+       EXIT QUIZ
        ========================================================= */
 
     function confirmExitQuiz() {
 
         return confirm(
             "Are you sure you want to leave this quiz? "
-            + "Your current answer will be saved and you can continue later."
+            + "Your current answer will be saved and "
+            + "you can continue later."
         );
     }
 
@@ -530,6 +664,11 @@
             document.getElementById(
                 "submitQuizModal"
             );
+
+
+        if (!modal) {
+            return;
+        }
 
 
         modal.hidden =
@@ -548,6 +687,11 @@
             document.getElementById(
                 "submitQuizModal"
             );
+
+
+        if (!modal) {
+            return;
+        }
 
 
         modal.hidden =
@@ -610,24 +754,56 @@
        TIMER
        ========================================================= */
 
-    let remainingSeconds =
-        parseInt(
-            document.getElementById(
-                "hfRemainingSeconds"
-            ).value || "0"
+    const timerElement =
+        document.getElementById(
+            "quizTimer"
         );
+
+
+    const remainingSecondsField =
+        document.getElementById(
+            "hfRemainingSeconds"
+        );
+
+
+    let remainingSeconds =
+        remainingSecondsField
+
+            ? parseInt(
+                remainingSecondsField.value
+                || "0"
+            )
+
+            : 0;
 
 
     let timerSubmitted =
         false;
 
 
+    let quizTimerInterval =
+        null;
+
+
+
+    // ---------------------------------------------------------
+    // DISPLAY TIMER
+    // ---------------------------------------------------------
+
     function renderTimer() {
+
+        // Expired session page does not render
+        // the normal quiz timer.
+        if (!timerElement) {
+            return;
+        }
+
 
         if (
             remainingSeconds < 0
         ) {
-            remainingSeconds = 0;
+            remainingSeconds =
+                0;
         }
 
 
@@ -641,9 +817,7 @@
             remainingSeconds % 60;
 
 
-        document.getElementById(
-            "quizTimer"
-        ).textContent =
+        timerElement.textContent =
             String(minutes)
                 .padStart(2, "0")
             + ":"
@@ -652,15 +826,30 @@
     }
 
 
+
+    // ---------------------------------------------------------
+    // TIMER TICK
+    // ---------------------------------------------------------
+
     function timerTick() {
 
-        if (remainingSeconds <= 0) {
+        if (!timerElement) {
+            return;
+        }
 
-            remainingSeconds = 0;
+
+        if (
+            remainingSeconds <= 0
+        ) {
+            remainingSeconds =
+                0;
+
 
             renderTimer();
 
+
             submitTimeUp();
+
 
             return;
         }
@@ -672,17 +861,26 @@
         renderTimer();
 
 
-        // Submit immediately when it reaches 00:00
-        if (remainingSeconds <= 0) {
+        // Submit immediately when 00:00 is reached
+        if (
+            remainingSeconds <= 0
+        ) {
+            remainingSeconds =
+                0;
 
-            remainingSeconds = 0;
 
             renderTimer();
+
 
             submitTimeUp();
         }
     }
 
+
+
+    // ---------------------------------------------------------
+    // AUTOMATIC SUBMISSION
+    // ---------------------------------------------------------
 
     function submitTimeUp() {
 
@@ -695,25 +893,45 @@
             true;
 
 
-        clearInterval(
-            quizTimerInterval
-        );
+        if (quizTimerInterval) {
 
+            clearInterval(
+                quizTimerInterval
+            );
 
-        document.getElementById(
-            "btnTimeUp"
-            ).click();
         }
 
 
-    renderTimer();
+        const timeUpButton =
+            document.getElementById(
+                "btnTimeUp"
+            );
 
 
-    const quizTimerInterval =
-        setInterval(
-            timerTick,
-            1000
-        );
+        if (timeUpButton) {
+
+            timeUpButton.click();
+
+        }
+    }
+
+
+
+    // ---------------------------------------------------------
+    // START TIMER ONLY WHEN NORMAL QUIZ EXISTS
+    // ---------------------------------------------------------
+
+    if (timerElement) {
+
+        renderTimer();
+
+
+        quizTimerInterval =
+            setInterval(
+                timerTick,
+                1000
+            );
+    }
 
 </script>
 

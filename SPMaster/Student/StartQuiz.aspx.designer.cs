@@ -60,6 +60,15 @@ namespace SPMaster.Student
         protected global::System.Web.UI.WebControls.Button btnTimeUp;
 
         /// <summary>
+        /// pnlQuizInterface control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlQuizInterface;
+
+        /// <summary>
         /// btnExitQuiz control.
         /// </summary>
         /// <remarks>
@@ -211,6 +220,33 @@ namespace SPMaster.Student
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNextQuestion;
+
+        /// <summary>
+        /// pnlExpiredAttempt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlExpiredAttempt;
+
+        /// <summary>
+        /// btnLeaveExpiredAttempt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnLeaveExpiredAttempt;
+
+        /// <summary>
+        /// btnRedoExpiredAttempt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRedoExpiredAttempt;
 
         /// <summary>
         /// btnConfirmSubmit control.

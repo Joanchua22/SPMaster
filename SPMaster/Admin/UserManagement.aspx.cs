@@ -7,23 +7,63 @@ namespace SPMaster.Admin
 {
     public partial class UserManagement : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            // Always hide the popup first.
-            // This prevents it from appearing again during search/filter postbacks.
-            pnlSuccess.Visible = false;
-
-
-            if (!IsPostBack)
-            {
-                LoadUsers();
-
-
-                // Only show immediately after AddUser redirects here.
-                if (Request.QueryString["added"] == "true")
+        protected void Page_Load(
+            object sender,
+            EventArgs e)
                 {
-                    pnlSuccess.Visible = true;
-                }
+                    pnlSuccess.Visible = false;
+
+
+                    if (!IsPostBack)
+                    {
+                        LoadUsers();
+
+
+                        if (
+                            Request.QueryString["added"]
+                            == "true"
+                        )
+                        {
+                            lblSuccessMessage.Text =
+                                "User created successfully.";
+
+                            pnlSuccess.Visible = true;
+                        }
+
+
+                        else if (
+                            Request.QueryString["updated"]
+                            == "true"
+                        )
+                        {
+                            lblSuccessMessage.Text =
+                                "User updated successfully.";
+
+                            pnlSuccess.Visible = true;
+                        }
+
+
+                        else if (
+                            Request.QueryString["statuschanged"]
+                            == "true"
+                        )
+                        {
+                            lblSuccessMessage.Text =
+                                "User status updated successfully.";
+
+                            pnlSuccess.Visible = true;
+                        }
+
+                        else if (
+                            Request.QueryString["deleted"]
+                            == "true"
+                         )
+                         {
+                             lblSuccessMessage.Text =
+                                 "User deleted successfully.";
+
+                            pnlSuccess.Visible = true;
+                        }
             }
         }
 
@@ -37,22 +77,22 @@ namespace SPMaster.Admin
 
 
             string query = @"
-        SELECT
-            U.UserId,
-            U.FullName,
-            U.Email,
-            U.IsActive,
-            U.CreatedAt,
-            U.RoleId,
-            R.RoleName
+                SELECT
+                    U.UserId,
+                    U.FullName,
+                    U.Email,
+                    U.IsActive,
+                    U.CreatedAt,
+                    U.RoleId,
+                    R.RoleName
 
-        FROM Users U
+                FROM Users U
 
-        INNER JOIN Roles R
-            ON U.RoleId = R.RoleId
+                INNER JOIN Roles R
+                    ON U.RoleId = R.RoleId
 
-        WHERE 1 = 1
-    ";
+                WHERE 1 = 1
+            ";
 
 
             using (SqlConnection connection =
@@ -161,6 +201,200 @@ namespace SPMaster.Admin
                     EventArgs e)
                 {
                     LoadUsers();
+                }
+        protected void ToggleStatus_Command(
+            object sender,
+            System.Web.UI.WebControls.CommandEventArgs e)
+                {
+                    int userId;
+
+                    if (!int.TryParse(
+                        e.CommandArgument.ToString(),
+                        out userId))
+                    {
+                        return;
+                    }
+
+
+                    string connectionString =
+                        ConfigurationManager
+                        .ConnectionStrings[
+                            "SPMasterConnectionString"
+                        ]
+                        .ConnectionString;
+
+
+                    using (SqlConnection connection =
+                           new SqlConnection(connectionString))
+                    {
+                        try
+                        {
+                            connection.Open();
+
+
+                            // Get current status
+                            string statusQuery = @"
+                        SELECT IsActive
+                        FROM Users
+                        WHERE UserId = @UserId
+                    ";
+
+
+                            bool currentStatus;
+
+
+                            using (SqlCommand statusCommand =
+                                   new SqlCommand(
+                                       statusQuery,
+                                       connection))
+                            {
+                                statusCommand.Parameters
+                                    .AddWithValue(
+                                        "@UserId",
+                                        userId
+                                    );
+
+
+                                object result =
+                                    statusCommand.ExecuteScalar();
+
+
+                                if (result == null)
+                                {
+                                    return;
+                                }
+
+
+                                currentStatus =
+                                    Convert.ToBoolean(result);
+                            }
+
+
+                            // Toggle status
+                            bool newStatus =
+                                !currentStatus;
+
+
+                            string updateQuery = @"
+                        UPDATE Users
+                        SET IsActive = @IsActive
+                        WHERE UserId = @UserId
+                    ";
+
+
+                            using (SqlCommand updateCommand =
+                                   new SqlCommand(
+                                       updateQuery,
+                                       connection))
+                            {
+                                updateCommand.Parameters
+                                    .AddWithValue(
+                                        "@IsActive",
+                                        newStatus
+                                    );
+
+
+                                updateCommand.Parameters
+                                    .AddWithValue(
+                                        "@UserId",
+                                        userId
+                                    );
+
+
+                                int rows =
+                                    updateCommand.ExecuteNonQuery();
+
+
+                                if (rows > 0)
+                                {
+                                    Response.Redirect(
+                                        "~/Admin/UserManagement.aspx?statuschanged=true"
+                                    );
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // For now just reload the page.
+                            // We can add an error popup later if needed.
+                            LoadUsers();
+                        }
+                    }
+                }
+
+        protected void DeleteUser_Command(
+            object sender,
+            System.Web.UI.WebControls.CommandEventArgs e)
+                {
+                    int userId;
+
+                    if (!int.TryParse(
+                        e.CommandArgument.ToString(),
+                        out userId))
+                    {
+                        return;
+                    }
+
+
+                    string connectionString =
+                        ConfigurationManager
+                        .ConnectionStrings[
+                            "SPMasterConnectionString"
+                        ]
+                        .ConnectionString;
+
+
+                    using (SqlConnection connection =
+                           new SqlConnection(connectionString))
+                    {
+                        try
+                        {
+                            connection.Open();
+
+
+                            string deleteQuery = @"
+                        DELETE FROM Users
+                        WHERE UserId = @UserId
+                    ";
+
+
+                            using (SqlCommand deleteCommand =
+                                   new SqlCommand(
+                                       deleteQuery,
+                                       connection))
+                            {
+                                deleteCommand.Parameters
+                                    .AddWithValue(
+                                        "@UserId",
+                                        userId
+                                    );
+
+
+                                int rows =
+                                    deleteCommand.ExecuteNonQuery();
+
+
+                                if (rows > 0)
+                                {
+                                    Response.Redirect(
+                                        "~/Admin/UserManagement.aspx?deleted=true"
+                                    );
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // If deletion fails, show the reason.
+                            // For example, foreign-key references may prevent deletion.
+                            lblSuccessMessage.Text =
+                                "Unable to delete user: " + ex.Message;
+
+                            pnlSuccess.CssClass =
+                                "error-popup";
+
+                            pnlSuccess.Visible = true;
+                        }
+                    }
                 }
     }
 }

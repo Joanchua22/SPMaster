@@ -1,6 +1,6 @@
 ﻿<%@ Page Title=""
     Language="C#"
-    MasterPageFile="~/Dashboard.Master"
+    MasterPageFile="~/Master/Dashboard.Master"
     AutoEventWireup="true"
     CodeBehind="AddUser.aspx.cs"
     Inherits="SPMaster.Admin.AddUser" %>
@@ -316,11 +316,6 @@
                             Value="Female">
                         </asp:ListItem>
 
-                        <asp:ListItem
-                            Text="Prefer not to say"
-                            Value="Prefer not to say">
-                        </asp:ListItem>
-
                     </asp:DropDownList>
 
                     <asp:RequiredFieldValidator
@@ -339,23 +334,53 @@
                 <!-- SCHOOL -->
                 <div class="admin-form-group form-group-full">
 
-                    <label for="<%= txtSchool.ClientID %>">
+                    <label for="<%= ddlSchool.ClientID %>">
                         School / Institution
                     </label>
 
-                    <asp:TextBox
-                        ID="txtSchool"
+                    <asp:DropDownList
+                        ID="ddlSchool"
                         runat="server"
-                        CssClass="admin-form-input"
-                        MaxLength="150"
-                        placeholder="Enter school or institution">
-                    </asp:TextBox>
+                        CssClass="admin-form-input">
+
+                        <asp:ListItem
+                            Text="Select school / institution"
+                            Value="">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Asia Pacific University (APU)"
+                            Value="Asia Pacific University">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="SMK"
+                            Value="SMK">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Private School"
+                            Value="Private School">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="International School"
+                            Value="International School">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Other"
+                            Value="Other">
+                        </asp:ListItem>
+
+                    </asp:DropDownList>
 
                     <asp:RequiredFieldValidator
                         ID="rfvSchool"
                         runat="server"
-                        ControlToValidate="txtSchool"
-                        ErrorMessage="School / Institution is required."
+                        ControlToValidate="ddlSchool"
+                        InitialValue=""
+                        ErrorMessage="Please select a school / institution."
                         CssClass="validation-message"
                         Display="Dynamic">
                     </asp:RequiredFieldValidator>

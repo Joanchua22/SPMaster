@@ -1,6 +1,6 @@
 ﻿<%@ Page Title=""
     Language="C#"
-    MasterPageFile="~/Dashboard.Master"
+    MasterPageFile="~/Master/Dashboard.Master"
     AutoEventWireup="true"
     CodeBehind="UserManagement.aspx.cs"
     Inherits="SPMaster.Admin.UserManagement" %>
@@ -160,9 +160,10 @@
                     ✓
                 </span>
 
-                <span>
-                    User created successfully.
-                </span>
+                <asp:Label
+                    ID="lblSuccessMessage"
+                    runat="server">
+                </asp:Label>
 
                 <button
                     type="button"
@@ -386,36 +387,50 @@
                                         <div class="action-buttons">
 
                                             <!-- EDIT -->
-                                            <button
-                                                type="button"
+                                            <a
+                                                href='<%# "EditUser.aspx?id=" + Eval("UserId") %>'
                                                 class="action-button"
                                                 title="Edit">
 
                                                 <i class="bi bi-pencil"></i>
 
-                                            </button>
+                                            </a>
 
 
                                             <!-- ACTIVATE / DEACTIVATE -->
-                                            <button
-                                                type="button"
-                                                class="action-button"
-                                                title="Activate / Deactivate">
+                                            <asp:LinkButton
+                                                ID="btnToggleStatus"
+                                                runat="server"
+                                                CssClass="action-button"
+                                                CommandArgument='<%# Eval("UserId") %>'
+                                                OnCommand="ToggleStatus_Command"
+                                                CausesValidation="false"
+                                                ToolTip="Activate / Deactivate">
 
-                                                <i class="bi bi-person-x"></i>
+                                                <i class='<%#
+                                                    Convert.ToBoolean(Eval("IsActive"))
+                                                    ? "bi bi-person-x"
+                                                    : "bi bi-person-check"
+                                                %>'>
+                                                </i>
 
-                                            </button>
+                                            </asp:LinkButton>
 
 
                                             <!-- DELETE -->
-                                            <button
-                                                type="button"
-                                                class="action-button delete-action"
-                                                title="Delete">
+                                            <asp:LinkButton
+                                                ID="btnDeleteUser"
+                                                runat="server"
+                                                CssClass="action-button delete-action"
+                                                CommandArgument='<%# Eval("UserId") %>'
+                                                OnCommand="DeleteUser_Command"
+                                                CausesValidation="false"
+                                                ToolTip="Delete"
+                                                OnClientClick="return confirm('Are you sure you want to delete this user?');">
 
                                                 <i class="bi bi-trash"></i>
 
-                                            </button>
+                                            </asp:LinkButton>
 
                                         </div>
 
@@ -444,70 +459,6 @@
     ContentPlaceHolderID="DashboardScripts"
     runat="server">
 
-    <script>
-
-        function closeSuccessPopup() {
-
-            const popup =
-                document.querySelector(".success-popup");
-
-            if (popup) {
-                popup.style.display = "none";
-            }
-        }
-
-
-        window.addEventListener(
-            "load",
-            function () {
-
-                const popup =
-                    document.querySelector(".success-popup");
-
-
-                // Remove ?added=true from the URL
-                const url =
-                    new URL(window.location.href);
-
-                if (url.searchParams.get("added") === "true") {
-
-                    url.searchParams.delete("added");
-
-                    window.history.replaceState(
-                        {},
-                        document.title,
-                        url.pathname + url.search
-                    );
-                }
-
-
-                // Auto-hide popup
-                if (popup) {
-
-                    setTimeout(
-                        function () {
-
-                            popup.style.opacity = "0";
-
-                            setTimeout(
-                                function () {
-
-                                    popup.style.display =
-                                        "none";
-
-                                },
-                                300
-                            );
-
-                        },
-                        3000
-                    );
-
-                }
-
-            }
-        );
-
-    </script>
+    <script src="<%= ResolveUrl("~/Scripts/UserManagement.js") %>"></script>
 
 </asp:Content>

@@ -114,13 +114,13 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvGender;
 
         /// <summary>
-        /// txtSchool control.
+        /// ddlSchool control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSchool;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSchool;
 
         /// <summary>
         /// rfvSchool control.

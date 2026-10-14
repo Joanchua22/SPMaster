@@ -43,7 +43,7 @@ namespace SPMaster.Admin
                 ddlGender.SelectedValue;
 
             string schoolName =
-                txtSchool.Text.Trim();
+                ddlSchool.SelectedValue;
 
             string password =
                 txtPassword.Text;

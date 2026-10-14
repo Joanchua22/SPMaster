@@ -1172,8 +1172,10 @@ namespace SPMaster.Student
             }
 
 
-            // Result page will be connected later.
-            return "#";
+            return ResolveUrl(
+                "~/Student/QuizResult.aspx?attemptId="
+                + id
+            );
         }
 
 

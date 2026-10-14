@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
 
 namespace SPMaster
 {
     public partial class Login : System.Web.UI.Page
     {
         protected void Page_Load(
-    object sender,
-    EventArgs e)
+            object sender,
+            EventArgs e)
         {
-
             if (!IsPostBack)
             {
-
                 lblMessage.Visible = false;
-
 
                 if (
                     Request.QueryString["registered"]
                     == "true"
                 )
                 {
-
                     lblMessage.Text =
                         "Account created successfully. You can now log in.";
 
@@ -31,9 +26,7 @@ namespace SPMaster
                         "success-message";
 
                     lblMessage.Visible = true;
-
                 }
-
 
                 if (
                     Request.Cookies[
@@ -41,22 +34,20 @@ namespace SPMaster
                     ] != null
                 )
                 {
-
                     txtEmail.Text =
                         Request.Cookies[
                             "RememberedEmail"
                         ].Value;
 
                     chkRemember.Checked = true;
-
                 }
-
             }
-
         }
 
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void btnLogin_Click(
+            object sender,
+            EventArgs e)
         {
             // Run ASP.NET validation first
             if (!Page.IsValid)
@@ -65,18 +56,27 @@ namespace SPMaster
             }
 
 
-            string email = txtEmail.Text.Trim();
-            string password = txtPassword.Text;
+            string email =
+                txtEmail.Text.Trim();
+
+            string password =
+                txtPassword.Text;
 
 
             string connectionString =
                 ConfigurationManager
-                .ConnectionStrings["SPMasterConnectionString"]
+                .ConnectionStrings[
+                    "SPMasterConnectionString"
+                ]
                 .ConnectionString;
 
 
-            using (SqlConnection connection =
-                   new SqlConnection(connectionString))
+            using (
+                SqlConnection connection =
+                new SqlConnection(
+                    connectionString
+                )
+            )
             {
                 string query = @"
                     SELECT
@@ -86,16 +86,25 @@ namespace SPMaster
                         U.Password,
                         U.RoleId,
                         R.RoleName
+
                     FROM Users U
+
                     INNER JOIN Roles R
                         ON U.RoleId = R.RoleId
-                    WHERE U.Email = @Email
-                      AND U.IsActive = 1
+
+                    WHERE
+                        U.Email = @Email
+                        AND U.IsActive = 1
                 ";
 
 
-                using (SqlCommand command =
-                       new SqlCommand(query, connection))
+                using (
+                    SqlCommand command =
+                    new SqlCommand(
+                        query,
+                        connection
+                    )
+                )
                 {
                     command.Parameters.AddWithValue(
                         "@Email",
@@ -108,49 +117,84 @@ namespace SPMaster
                         connection.Open();
 
 
-                        using (SqlDataReader reader =
-                               command.ExecuteReader())
+                        using (
+                            SqlDataReader reader =
+                            command.ExecuteReader()
+                        )
                         {
                             if (reader.Read())
                             {
                                 string storedPassword =
-                                    reader["Password"].ToString();
+                                    reader["Password"]
+                                    .ToString();
 
 
-                                /*
-                                 * TEMPORARY:
-                                 * This assumes your database currently
-                                 * stores the same password value.
-                                 *
-                                 * Later, replace this with proper
-                                 * password hashing verification.
-                                 */
-
-                                if (VerifyPassword(password, storedPassword))
+                                // TEMPORARY:
+                                // Plain-text password comparison
+                                if (password == storedPassword)
                                 {
                                     Session["UserId"] =
-                                        reader["UserId"].ToString();
+                                        reader["UserId"]
+                                        .ToString();
 
                                     Session["FullName"] =
-                                        reader["FullName"].ToString();
+                                        reader["FullName"]
+                                        .ToString();
 
                                     Session["Email"] =
-                                        reader["Email"].ToString();
+                                        reader["Email"]
+                                        .ToString();
 
                                     Session["RoleId"] =
-                                        reader["RoleId"].ToString();
+                                        reader["RoleId"]
+                                        .ToString();
 
                                     Session["Role"] =
-                                        reader["RoleName"].ToString();
+                                        reader["RoleName"]
+                                        .ToString();
+
 
                                     string role =
-                                        reader["RoleName"].ToString().Trim();
+                                        reader["RoleName"]
+                                        .ToString()
+                                        .Trim();
+
+
+                                    // Remember email
+                                    if (chkRemember.Checked)
+                                    {
+                                        Response.Cookies[
+                                            "RememberedEmail"
+                                        ].Value = email;
+
+                                        Response.Cookies[
+                                            "RememberedEmail"
+                                        ].Expires =
+                                            DateTime.Now.AddDays(30);
+                                    }
+                                    else
+                                    {
+                                        if (
+                                            Request.Cookies[
+                                                "RememberedEmail"
+                                            ] != null
+                                        )
+                                        {
+                                            Response.Cookies[
+                                                "RememberedEmail"
+                                            ].Expires =
+                                                DateTime.Now.AddDays(-1);
+                                        }
+                                    }
+
 
                                     RedirectUser(role);
                                 }
                                 else
                                 {
-                                    ShowError("Incorrect email or password.");
+                                    ShowError(
+                                        "Incorrect email or password."
+                                    );
                                 }
                             }
                             else
@@ -172,123 +216,60 @@ namespace SPMaster
         }
 
 
-        private void RedirectUser(string role)
+        private void RedirectUser(
+            string role)
         {
             switch (role.ToLower())
             {
                 case "student":
-                    Response.Redirect("~/Student/Portal.aspx");
+
+                    Response.Redirect(
+                        "~/Student/Portal.aspx"
+                    );
+
                     break;
+
 
                 case "lecturer":
-                    Response.Redirect("~/Lecturer/Portal.aspx");
+
+                    Response.Redirect(
+                        "~/Lecturer/Portal.aspx"
+                    );
+
                     break;
+
 
                 case "admin":
-                    Response.Redirect("~/Admin/Dashboard.aspx");
+
+                    Response.Redirect(
+                        "~/Admin/Dashboard.aspx"
+                    );
+
                     break;
 
+
                 default:
-                    ShowError("Your account role is not recognised.");
+
+                    ShowError(
+                        "Your account role is not recognised."
+                    );
+
                     break;
             }
         }
 
-        private bool VerifyPassword(
-            string password,
-            string storedPassword)
-                {
 
-                    try
-                    {
-
-                        string[] parts =
-                            storedPassword.Split('.');
-
-
-                        if (parts.Length != 3)
-                        {
-                            return false;
-                        }
-
-
-                        int iterations =
-                            int.Parse(parts[0]);
-
-
-                        byte[] salt =
-                            Convert.FromBase64String(
-                                parts[1]
-                            );
-
-
-                        byte[] storedHash =
-                            Convert.FromBase64String(
-                                parts[2]
-                            );
-
-
-                        byte[] newHash;
-
-
-                        using (
-                            Rfc2898DeriveBytes pbkdf2 =
-                            new Rfc2898DeriveBytes(
-                                password,
-                                salt,
-                                iterations
-                            )
-                        )
-                        {
-
-                            newHash =
-                                pbkdf2.GetBytes(
-                                    storedHash.Length
-                                );
-
-                        }
-
-
-                        if (newHash.Length !=
-                            storedHash.Length)
-                        {
-                            return false;
-                        }
-
-
-                        int difference = 0;
-
-
-                        for (
-                            int i = 0;
-                            i < newHash.Length;
-                            i++
-                        )
-                        {
-
-                            difference |=
-                                newHash[i] ^
-                                storedHash[i];
-
-                        }
-
-
-                        return difference == 0;
-
-                    }
-
-                    catch
-                    {
-
-                        return false;
-
-                    }
-                }
-
-        private void ShowError(string message)
+        private void ShowError(
+            string message)
         {
-            lblMessage.Text = message;
-            lblMessage.Visible = true;
+            lblMessage.Text =
+                message;
+
+            lblMessage.CssClass =
+                "error-message";
+
+            lblMessage.Visible =
+                true;
         }
     }
 }

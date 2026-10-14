@@ -576,6 +576,109 @@ body {
     color: #ffffff;
 }
 
+/* =========================================================
+   EXPIRED ATTEMPT
+   ========================================================= */
+
+.expired-attempt-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+
+.expired-attempt-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(41, 32, 82, 0.45);
+}
+
+
+.expired-attempt-dialog {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    border-radius: 20px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(41, 32, 82, 0.18);
+}
+
+
+.expired-attempt-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    background: #eee4ff;
+    color: #7c28ef;
+    font-size: 25px;
+}
+
+
+.expired-attempt-dialog h2 {
+    margin: 0 0 9px;
+    color: #292052;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+.expired-attempt-dialog p {
+    margin: 0;
+    color: #61596e;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+.expired-attempt-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+
+.expired-attempt-leave,
+.expired-attempt-redo {
+    min-height: 40px;
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+.expired-attempt-leave {
+    background: #f3ecff;
+    color: #292052;
+}
+
+
+.expired-attempt-redo {
+    background: #7c28ef;
+    color: #ffffff;
+}
+
+
+    .expired-attempt-redo:hover {
+        background: #6920d4;
+    }
+
 
 /* =========================================================
    TABLET
@@ -691,6 +794,19 @@ body {
 
 
     .question-nav-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .expired-attempt-actions {
+        flex-direction: column-reverse;
+    }
+
+
+    .expired-attempt-leave,
+    .expired-attempt-redo {
         width: 100%;
     }
 }

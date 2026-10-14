@@ -43,7 +43,7 @@
 .student-quizzes-heading p {
     margin: 0;
     color: var(--student-navy);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -74,7 +74,7 @@
     background: transparent;
     color: var(--student-navy);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -140,7 +140,7 @@
         background: #f3ecff;
         color: var(--student-navy);
         font-family: inherit;
-        font-size: 12px;
+        font-size: 14px;
         box-sizing: border-box;
     }
 
@@ -170,7 +170,7 @@
         background: #f3ecff;
         color: var(--student-navy);
         font-family: inherit;
-        font-size: 11px;
+        font-size: 13px;
         cursor: pointer;
     }
 
@@ -201,7 +201,7 @@
     background: var(--student-yellow);
     color: var(--student-navy);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
@@ -255,7 +255,7 @@
     align-items: center;
     padding: 4px 10px;
     border-radius: 999px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -324,7 +324,7 @@
     border-radius: 999px;
     background: #f3ecff;
     color: #7c28ef;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -346,7 +346,7 @@
     .student-quiz-card-content h2 {
         margin: 0 0 7px;
         color: var(--student-navy);
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 700;
         line-height: 1.3;
     }
@@ -355,7 +355,7 @@
     .student-quiz-card-content p {
         margin: 0;
         color: var(--student-navy);
-        font-size: 11px;
+        font-size: 13px;
         line-height: 1.55;
     }
 
@@ -380,7 +380,7 @@
         border-radius: 5px;
         background: #f3ecff;
         color: #5a4d72;
-        font-size: 10px;
+        font-size: 12px;
     }
 
 
@@ -402,7 +402,7 @@
     align-items: center;
     gap: 8px;
     color: var(--student-navy);
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -413,7 +413,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
 }
 
@@ -441,7 +441,7 @@
     border-radius: 999px;
     background: var(--student-purple);
     color: var(--student-white) !important;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 700;
     text-decoration: none;
     transition: background-color 0.2s ease, transform 0.2s ease;
@@ -469,14 +469,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 
     .student-attempts-header h2 {
         margin: 0;
         color: var(--student-navy);
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 700;
     }
 
@@ -566,7 +566,7 @@
         margin: 0 0 3px;
         overflow: hidden;
         color: var(--student-navy);
-        font-size: 12px;
+        font-size: 15px;
         font-weight: 700;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -576,7 +576,7 @@
     .attempt-info p {
         margin: 0;
         color: #625a70;
-        font-size: 10px;
+        font-size: 13px;
     }
 
 /* =========================
@@ -605,7 +605,7 @@
     border-radius: 50%;
     background: #ffffff;
     color: #c33a4c !important;
-    font-size: 13px;
+    font-size: 14px;
     text-decoration: none;
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
@@ -632,7 +632,7 @@
 
 .attempt-score {
     color: var(--student-navy);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
 }
 
@@ -648,7 +648,7 @@
     justify-content: center;
     padding: 2px 9px;
     border-radius: 999px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -683,7 +683,7 @@
     min-height: 34px;
     padding: 7px 14px;
     border-radius: 999px;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
@@ -733,7 +733,7 @@
     .student-empty-state p {
         margin: 0;
         color: var(--student-muted);
-        font-size: 11px;
+        font-size: 12px;
     }
 
 
@@ -757,81 +757,140 @@
         grid-column: 1 / -1;
     }
 
-        .student-attempts-card {
-            padding: 22px 24px;
-        }
 
+    /* =====================================================
+       MY ATTEMPTS CARD
+       ===================================================== */
 
-        .student-attempt-list {
-            gap: 14px;
-        }
-
-
-        .student-attempt-row {
-            width: 100%;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 105px 105px;
-            align-items: center;
-            column-gap: 10px;
-            padding: 18px 20px;
-            border-radius: 22px;
-            box-sizing: border-box;
-        }
-
-
-        /* LEFT SIDE */
-
-        .attempt-main {
-            min-width: 0;
-        }
-
-
-        .attempt-info {
-            min-width: 0;
-        }
-
-
-            .attempt-info h3 {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-
-        /* RESULT + STATUS */
-
-        .attempt-result {
-            grid-column: auto;
-            display: flex;
-            align-items: flex-end;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 0;
-            padding: 0;
-            text-align: right;
-        }
-
-
-        .attempt-score {
-            white-space: nowrap;
-        }
-
-
-        .attempt-status {
-            white-space: nowrap;
-        }
-
-
-        /* ACTION BUTTON */
-
-        .attempt-action-button {
-            grid-column: auto;
-            justify-self: end;
-            min-width: 90px;
-            margin: 0;
-            box-sizing: border-box;
-        }
+    .student-attempts-card {
+        padding: 22px 24px;
     }
+
+
+    .student-attempt-list {
+        gap: 14px;
+    }
+
+
+    /* =====================================================
+       ATTEMPT ROW
+       ===================================================== */
+
+    .student-attempt-row {
+        width: 100%;
+        display: grid;
+        /*
+           Column 1 = Quiz information
+           Column 2 = Result + status
+           Column 3 = View Result / Continue + Delete
+        */
+        grid-template-columns: minmax(0, 1fr) 120px max-content;
+        align-items: center;
+        column-gap: 12px;
+        padding: 18px 20px;
+        border-radius: 22px;
+        box-sizing: border-box;
+    }
+
+
+    /* =====================================================
+       LEFT SIDE
+       ===================================================== */
+
+    .attempt-main {
+        min-width: 0;
+    }
+
+
+    .attempt-info {
+        min-width: 0;
+    }
+
+
+        .attempt-info h3 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+    /* =====================================================
+       RESULT + STATUS
+       ===================================================== */
+
+    .attempt-result {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        padding: 0;
+        text-align: right;
+    }
+
+
+    .attempt-score {
+        white-space: nowrap;
+    }
+
+
+    .attempt-status {
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       ACTION AREA
+       ===================================================== */
+
+    .attempt-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        justify-self: end;
+        gap: 7px;
+        width: max-content;
+        min-width: 0;
+    }
+
+
+    /* =====================================================
+       ACTION BUTTON
+       ===================================================== */
+
+    .attempt-action-button {
+        justify-self: auto;
+        min-width: 90px;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+
+    /* Keep Continue slightly compact on tablet */
+
+    .attempt-action-primary {
+        min-width: 100px;
+    }
+
+
+    /* View Result can stay wider */
+
+    .attempt-action-light {
+        min-width: 120px;
+    }
+
+
+    /* =====================================================
+       DELETE BUTTON
+       ===================================================== */
+
+    .attempt-delete-button {
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+    }
+}
 
 
 /* =========================================================
@@ -921,12 +980,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 11px;
+            font-size: 13px;
         }
 
 
         .attempt-info p {
-            font-size: 9px;
+            font-size: 11px;
         }
 
 
@@ -957,15 +1016,15 @@
 
     .attempt-score {
         flex-shrink: 0;
-        font-size: 10px;
+        font-size: 12px;
         white-space: nowrap;
     }
 
 
     .attempt-status {
         flex-shrink: 0;
-        padding: 3px 7px;
-        font-size: 8px;
+        padding: 3px 8px;
+        font-size: 10px;
         white-space: nowrap;
     }
 
@@ -977,11 +1036,11 @@
     .attempt-action-button {
         grid-area: action;
         justify-self: end;
-        min-width: 78px;
-        min-height: 30px;
-        padding: 6px 10px;
+        min-width: 82px;
+        min-height: 32px;
+        padding: 6px 11px;
         margin: 0;
-        font-size: 9px;
+        font-size: 11px;
         box-sizing: border-box;
     }
 
