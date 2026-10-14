@@ -133,22 +133,15 @@
                             </div>
 
                             <nav aria-label="Account navigation">
-                                <a href="<%= ResolveUrl(PortalFolder + "Profile.aspx") %>">
+                                <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>">
                                     Profile
                                 </a>
 
-                                <a href="<%= ResolveUrl(PortalFolder + "Settings.aspx") %>">
+                                <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>">
                                     Settings
                                 </a>
 
                             </nav>
-
-                            <%-- Connect to your real logout handler later --%>
-                            <button type="button"
-                                    class="portal-logout"
-                                    disabled>
-                                Log out (coming soon)
-                            </button>
                         </div>
                     </div>
 
