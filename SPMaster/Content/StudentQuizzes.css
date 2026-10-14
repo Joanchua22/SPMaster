@@ -1,0 +1,1083 @@
+﻿/* =========================================================
+   STUDENT QUIZZES PAGE
+   ========================================================= */
+
+.student-quizzes-page {
+    --student-purple: #7c28ef;
+    --student-purple-hover: #6920d4;
+    --student-navy: #292052;
+    --student-muted: #625a70;
+    --student-white: #ffffff;
+    --student-lavender: #f3ecff;
+    --student-yellow: #ffe14d;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--student-navy);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.student-quizzes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+
+.student-quizzes-heading h1 {
+    margin: 0 0 2px;
+    color: var(--student-navy);
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1px;
+}
+
+
+.student-quizzes-heading p {
+    margin: 0;
+    color: var(--student-navy);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   VIEW SWITCH
+   ========================================================= */
+
+.quiz-view-switch {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--student-white);
+}
+
+
+.quiz-view-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 36px;
+    padding: 7px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--student-navy);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+    .quiz-view-tab.active {
+        background: var(--student-purple);
+        color: var(--student-white);
+    }
+
+
+.attempt-count {
+    font-size: inherit;
+}
+
+
+/* =========================================================
+   FILTER CARD
+   ========================================================= */
+
+.student-quiz-filter-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 170px auto;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    padding: 13px 14px;
+    border-radius: 16px;
+    background: var(--student-white);
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.05);
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.student-quiz-search {
+    position: relative;
+    width: 100%;
+}
+
+
+    .student-quiz-search i {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        color: var(--student-navy);
+        font-size: 15px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+
+    .student-quiz-search input {
+        width: 100%;
+        height: 42px;
+        padding: 10px 15px 10px 40px;
+        border: 0;
+        border-radius: 999px;
+        outline: none;
+        background: #f3ecff;
+        color: var(--student-navy);
+        font-family: inherit;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+
+        .student-quiz-search input::placeholder {
+            color: #70677f;
+        }
+
+
+/* =========================================================
+   SUBJECT FILTER
+   ========================================================= */
+
+.student-subject-filter {
+    position: relative;
+}
+
+
+    .student-subject-filter select {
+        width: 100%;
+        height: 42px;
+        padding: 8px 34px 8px 15px;
+        border: 0;
+        border-radius: 999px;
+        outline: none;
+        appearance: none;
+        background: #f3ecff;
+        color: var(--student-navy);
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+
+    .student-subject-filter i {
+        position: absolute;
+        top: 50%;
+        right: 14px;
+        font-size: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+
+/* =========================================================
+   JOIN CODE
+   ========================================================= */
+
+.join-code-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--student-yellow);
+    color: var(--student-navy);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+    .join-code-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(41, 32, 82, 0.12);
+    }
+
+
+/* =========================================================
+   QUIZ GRID
+   ========================================================= */
+
+.student-quiz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================================================
+   QUIZ CARD
+   ========================================================= */
+
+.student-quiz-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 230px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--student-white);
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.06);
+}
+
+
+.student-quiz-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+
+.student-quiz-subject {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.subject-mathematics {
+    background: #dcecff;
+    color: #3365b7;
+}
+
+
+.subject-sejarah {
+    background: #fff0c8;
+    color: #a86600;
+}
+
+
+.subject-english {
+    background: #d9f6ea;
+    color: #00845b;
+}
+
+.subject-science {
+    background: #d9f6ea;
+    color: #00845b;
+}
+
+
+.subject-bahasa-melayu {
+    background: #ffe4ef;
+    color: #a63867;
+}
+
+
+.student-quiz-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+}
+
+
+.quiz-icon-math {
+    color: #7542ef;
+}
+
+
+.quiz-icon-sejarah {
+    color: #e88800;
+}
+
+
+.quiz-icon-english {
+    color: #008a67;
+}
+
+/* =========================
+   QUIZ FORMAT TAG
+   ========================= */
+
+.student-quiz-format {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f3ecff;
+    color: #7c28ef;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.student-attempts-card + .student-empty-state {
+    margin-top: 16px;
+}
+
+.student-quiz-card-content {
+    flex: 1;
+}
+
+
+    .student-quiz-card-content h2 {
+        margin: 0 0 7px;
+        color: var(--student-navy);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+
+    .student-quiz-card-content p {
+        margin: 0;
+        color: var(--student-navy);
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+
+/* =========================================================
+   QUIZ META
+   ========================================================= */
+
+.student-quiz-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 17px;
+}
+
+
+    .student-quiz-meta span {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 5px;
+        background: #f3ecff;
+        color: #5a4d72;
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.student-quiz-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+
+.student-quiz-teacher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--student-navy);
+    font-size: 12px;
+}
+
+
+.teacher-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.teacher-purple {
+    background: #eee4ff;
+}
+
+
+.teacher-yellow {
+    background: #fff0c8;
+}
+
+
+.teacher-green {
+    background: #d9f6ea;
+}
+
+
+.view-quiz-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: var(--student-purple);
+    color: var(--student-white) !important;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+
+    .view-quiz-button:hover {
+        background: var(--student-purple-hover);
+        transform: translateY(-1px);
+    }
+
+
+/* =========================================================
+   ATTEMPTS CARD
+   ========================================================= */
+
+.student-attempts-card {
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--student-white);
+}
+
+
+.student-attempts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+
+    .student-attempts-header h2 {
+        margin: 0;
+        color: var(--student-navy);
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+
+/* =========================================================
+   ATTEMPT LIST
+   ========================================================= */
+
+.student-attempt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.student-attempt-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 135px auto;
+    align-items: center;
+    gap: 18px;
+    min-height: 68px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #f3ecff;
+}
+
+
+/* =========================================================
+   ATTEMPT MAIN
+   ========================================================= */
+
+.attempt-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 12px;
+}
+
+
+.attempt-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 16px;
+}
+
+
+.attempt-icon-blue {
+    background: #dcecff;
+    color: #245dc2;
+}
+
+
+.attempt-icon-yellow {
+    background: #fff0c8;
+    color: #b76e00;
+}
+
+
+.attempt-icon-purple {
+    background: #eee4ff;
+    color: #7026df;
+}
+
+.attempt-icon-green {
+    background: #d9f6ea;
+    color: #00845b;
+}
+
+
+.attempt-icon-pink {
+    background: #ffe4ef;
+    color: #a63867;
+}
+
+
+.attempt-info {
+    min-width: 0;
+}
+
+
+    .attempt-info h3 {
+        margin: 0 0 3px;
+        overflow: hidden;
+        color: var(--student-navy);
+        font-size: 15px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    .attempt-info p {
+        margin: 0;
+        color: #625a70;
+        font-size: 13px;
+    }
+
+/* =========================
+   ATTEMPT ACTIONS
+   ========================= */
+
+.attempt-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+/* =========================
+   DELETE ATTEMPT
+   ========================= */
+
+.attempt-delete-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #f1c8cf;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #c33a4c !important;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+
+    .attempt-delete-button:hover {
+        background: #fff1f3;
+        border-color: #e8aeb8;
+        transform: translateY(-1px);
+    }
+
+/* =========================================================
+   ATTEMPT RESULT
+   ========================================================= */
+
+.attempt-result {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+}
+
+
+.attempt-score {
+    color: var(--student-navy);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.attempt-progress-score {
+    color: var(--student-purple);
+}
+
+
+.attempt-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.status-graded {
+    background: #c7f7dc;
+    color: #007244;
+}
+
+
+.status-pending {
+    background: #ffe6a8;
+    color: #a95b00;
+}
+
+
+.status-progress {
+    background: #eee4ff;
+    color: #7524df;
+}
+
+
+/* =========================================================
+   ATTEMPT BUTTON
+   ========================================================= */
+
+.attempt-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 84px;
+    min-height: 34px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+
+.attempt-action-light {
+    min-width: 150px;
+    background: var(--student-white);
+    color: var(--student-purple) !important;
+}
+
+
+.attempt-action-primary {
+    min-width: 105px;
+    background: var(--student-purple);
+    color: var(--student-white) !important;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.student-empty-state {
+    padding: 45px 24px;
+    border-radius: 16px;
+    background: var(--student-white);
+    text-align: center;
+}
+
+
+    .student-empty-state i {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--student-purple);
+        font-size: 30px;
+    }
+
+
+    .student-empty-state h3 {
+        margin: 0 0 5px;
+        font-size: 16px;
+    }
+
+
+    .student-empty-state p {
+        margin: 0;
+        color: var(--student-muted);
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .student-quiz-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+
+    .student-quiz-filter-card {
+        grid-template-columns: minmax(0, 1fr) 160px;
+    }
+
+
+    .join-code-button {
+        grid-column: 1 / -1;
+    }
+
+
+    /* =====================================================
+       MY ATTEMPTS CARD
+       ===================================================== */
+
+    .student-attempts-card {
+        padding: 22px 24px;
+    }
+
+
+    .student-attempt-list {
+        gap: 14px;
+    }
+
+
+    /* =====================================================
+       ATTEMPT ROW
+       ===================================================== */
+
+    .student-attempt-row {
+        width: 100%;
+        display: grid;
+        /*
+           Column 1 = Quiz information
+           Column 2 = Result + status
+           Column 3 = View Result / Continue + Delete
+        */
+        grid-template-columns: minmax(0, 1fr) 120px max-content;
+        align-items: center;
+        column-gap: 12px;
+        padding: 18px 20px;
+        border-radius: 22px;
+        box-sizing: border-box;
+    }
+
+
+    /* =====================================================
+       LEFT SIDE
+       ===================================================== */
+
+    .attempt-main {
+        min-width: 0;
+    }
+
+
+    .attempt-info {
+        min-width: 0;
+    }
+
+
+        .attempt-info h3 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+    /* =====================================================
+       RESULT + STATUS
+       ===================================================== */
+
+    .attempt-result {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        padding: 0;
+        text-align: right;
+    }
+
+
+    .attempt-score {
+        white-space: nowrap;
+    }
+
+
+    .attempt-status {
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       ACTION AREA
+       ===================================================== */
+
+    .attempt-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        justify-self: end;
+        gap: 7px;
+        width: max-content;
+        min-width: 0;
+    }
+
+
+    /* =====================================================
+       ACTION BUTTON
+       ===================================================== */
+
+    .attempt-action-button {
+        justify-self: auto;
+        min-width: 90px;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+
+    /* Keep Continue slightly compact on tablet */
+
+    .attempt-action-primary {
+        min-width: 100px;
+    }
+
+
+    /* View Result can stay wider */
+
+    .attempt-action-light {
+        min-width: 120px;
+    }
+
+
+    /* =====================================================
+       DELETE BUTTON
+       ===================================================== */
+
+    .attempt-delete-button {
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .student-quizzes-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .student-quizzes-heading h1 {
+        font-size: 26px;
+    }
+
+
+    .quiz-view-switch {
+        width: 100%;
+    }
+
+
+    .quiz-view-tab {
+        flex: 1;
+    }
+
+
+    .student-quiz-filter-card {
+        grid-template-columns: 1fr;
+    }
+
+
+    .join-code-button {
+        width: 100%;
+    }
+
+
+    .student-quiz-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .student-attempts-card {
+        padding: 18px;
+    }
+
+
+    .student-attempt-list {
+        gap: 12px;
+    }
+
+
+    .student-attempt-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "main main"
+            "result action";
+        align-items: center;
+        column-gap: 8px;
+        row-gap: 12px;
+        width: 100%;
+        padding: 16px 16px;
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+
+    /* =====================================
+       TOP ROW - QUIZ INFORMATION
+       ===================================== */
+
+    .attempt-main {
+        grid-area: main;
+        min-width: 0;
+        gap: 10px;
+    }
+
+
+    .attempt-info {
+        min-width: 0;
+    }
+
+
+        .attempt-info h3 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+
+        .attempt-info p {
+            font-size: 11px;
+        }
+
+
+    .attempt-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+
+    /* =====================================
+       SECOND ROW
+       MARKS + STATUS + BUTTON
+       ===================================== */
+
+    .attempt-result {
+        grid-area: result;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-direction: row;
+        gap: 6px;
+        min-width: 0;
+        padding: 0;
+        text-align: left;
+    }
+
+
+    .attempt-score {
+        flex-shrink: 0;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+
+    .attempt-status {
+        flex-shrink: 0;
+        padding: 3px 8px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+
+    /* =====================================
+       ACTION BUTTON
+       ===================================== */
+
+    .attempt-action-button {
+        grid-area: action;
+        justify-self: end;
+        min-width: 82px;
+        min-height: 32px;
+        padding: 6px 11px;
+        margin: 0;
+        font-size: 11px;
+        box-sizing: border-box;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .student-quizzes-page {
+        padding: 0 2px;
+    }
+
+
+    .quiz-view-tab {
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 11px;
+    }
+
+
+    .student-quiz-card {
+        padding: 17px;
+    }
+
+
+    .student-quiz-card-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .view-quiz-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
