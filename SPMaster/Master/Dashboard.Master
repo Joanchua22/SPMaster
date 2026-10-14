@@ -17,7 +17,7 @@
     <asp:ContentPlaceHolder ID="DashboardHead" runat="server" />
 </head>
 
-<body>
+<<body id="pageBody" runat="server">>
     <form id="dashboardForm" runat="server">
 
         <a href="#dashboard-content" class="skip-link">
@@ -83,14 +83,14 @@
 
                         <nav aria-label="Admin account navigation">
 
-                            <a href="<%= ResolveUrl("~/Admin/Profile.aspx") %>" class="nav-item">
+                            <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>" class="nav-item">
                                 <span class="nav-icon" aria-hidden="true">
                                     <i class="bi bi-person-circle"></i>
                                 </span>
                                 <span>Profile</span>
                             </a>
 
-                            <a href="<%= ResolveUrl("~/Admin/Settings.aspx") %>" class="nav-item">
+                            <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>" class="nav-item">
                                 <span class="nav-icon" aria-hidden="true">
                                     <i class="bi bi-gear"></i>
                                 </span>

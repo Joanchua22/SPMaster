@@ -114,7 +114,7 @@
                             <button
                                 type="button"
                                 class="password-toggle"
-                                onclick="togglePassword()"
+                                onclick="loginTogglePassword('<%= txtPassword.ClientID %>')"
                                 aria-label="Show or hide password">
 
                                 <span id="eyeIcon">◉</span>
@@ -207,33 +207,6 @@
         </main>
 
     </form>
-
-
-    <script>
-
-        function togglePassword() {
-
-            const password =
-                document.getElementById('<%= txtPassword.ClientID %>');
-
-            const eyeIcon =
-                document.getElementById('eyeIcon');
-
-            if (password.type === "password") {
-
-                password.type = "text";
-                eyeIcon.textContent = "⊘";
-
-            }
-            else {
-
-                password.type = "password";
-                eyeIcon.textContent = "◉";
-
-            }
-        }
-
-    </script>
-
+    <script src="<%= ResolveUrl("~/Scripts/Login.js") %>"></script>
 </body>
 </html>
