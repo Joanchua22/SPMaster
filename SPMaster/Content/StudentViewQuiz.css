@@ -1,0 +1,396 @@
+﻿/* =========================================================
+   PAGE BASE
+   ========================================================= */
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+
+.student-view-quiz-body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 28px 20px 50px;
+    background: #ffe14d;
+    color: #292052;
+    font-family: "Segoe UI", Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+
+    .student-view-quiz-body *,
+    .student-view-quiz-body *::before,
+    .student-view-quiz-body *::after {
+        box-sizing: border-box;
+    }
+
+
+    .student-view-quiz-body a {
+        text-decoration: none;
+    }
+
+
+/* =========================================================
+   STUDENT VIEW QUIZ PAGE
+   ========================================================= */
+
+.student-view-quiz-page {
+    --view-quiz-primary: #7c28ef;
+    --view-quiz-primary-hover: #6920d4;
+    --view-quiz-navy: #292052;
+    --view-quiz-muted: #655b74;
+    --view-quiz-white: #ffffff;
+    --view-quiz-lavender: #f3ecff;
+    --view-quiz-yellow-light: #fff0b5;
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+    color: var(--view-quiz-navy);
+}
+
+
+/* =========================================================
+   MAIN DETAILS CARD
+   ========================================================= */
+
+.student-quiz-details-card {
+    width: 100%;
+    padding: 34px;
+    border-radius: 18px;
+    background: var(--view-quiz-white);
+    box-shadow: 0 3px 0 rgba(41, 32, 82, 0.08);
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TOP TAGS
+   ========================================================= */
+
+.student-quiz-details-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+
+.student-quiz-subject-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.student-quiz-subject-tag {
+    background: #dcecff;
+    color: #3768bd;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.student-quiz-title-section {
+    margin-bottom: 25px;
+}
+
+
+    .student-quiz-title-section h1 {
+        margin: 0 0 5px;
+        color: var(--view-quiz-navy);
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: -0.7px;
+    }
+
+
+    .student-quiz-title-section p {
+        margin: 0;
+        color: var(--view-quiz-muted);
+        font-size: 11px;
+    }
+
+
+    .student-quiz-title-section strong {
+        color: var(--view-quiz-navy);
+    }
+
+
+/* =========================================================
+   QUIZ SUMMARY
+   ========================================================= */
+
+.student-quiz-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 25px;
+    padding: 15px 18px;
+    border-radius: 999px;
+    background: var(--view-quiz-lavender);
+}
+
+
+.student-summary-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+}
+
+
+.summary-label {
+    color: var(--view-quiz-muted);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.student-summary-item strong {
+    color: var(--view-quiz-navy);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INSTRUCTIONS
+   ========================================================= */
+
+.student-quiz-description {
+    margin: 0 0 12px;
+    color: var(--view-quiz-navy);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.student-quiz-instructions {
+    margin-bottom: 22px;
+}
+
+
+    .student-quiz-instructions h2 {
+        margin: 0 0 10px;
+        color: var(--view-quiz-navy);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+
+    .student-quiz-instructions ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+
+    .student-quiz-instructions li {
+        margin-bottom: 8px;
+        color: var(--view-quiz-navy);
+        font-size: 11px;
+        line-height: 1.55;
+    }
+
+
+        .student-quiz-instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+
+/* =========================================================
+   TIMER NOTICE
+   ========================================================= */
+
+.student-quiz-timer-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 13px 16px;
+    border-radius: 999px;
+    background: var(--view-quiz-yellow-light);
+    color: var(--view-quiz-navy);
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+
+    .student-quiz-timer-notice i {
+        flex-shrink: 0;
+        color: #a97800;
+        font-size: 17px;
+    }
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.student-quiz-details-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 32px;
+}
+
+
+.student-cancel-button,
+.student-start-quiz-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 8px 19px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.student-cancel-button {
+    background: #f3ecff;
+    color: var(--view-quiz-navy) !important;
+}
+
+
+    .student-cancel-button:hover {
+        background: #e9ddff;
+    }
+
+
+.student-start-quiz-button {
+    min-width: 125px;
+    background: var(--view-quiz-primary);
+    color: var(--view-quiz-white) !important;
+}
+
+
+    .student-start-quiz-button:hover {
+        background: var(--view-quiz-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(124, 40, 239, 0.2);
+    }
+
+
+    .student-start-quiz-button i {
+        font-size: 13px;
+    }
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .student-view-quiz-page {
+        max-width: 100%;
+    }
+
+
+    .student-quiz-details-card {
+        padding: 28px;
+    }
+
+
+    .student-quiz-title-section h1 {
+        font-size: 26px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .student-quiz-details-card {
+        padding: 22px;
+        border-radius: 16px;
+    }
+
+
+    .student-quiz-details-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+
+    .student-quiz-title-section h1 {
+        font-size: 23px;
+    }
+
+
+    .student-quiz-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px 8px;
+        border-radius: 18px;
+    }
+
+
+    .student-quiz-timer-notice {
+        align-items: flex-start;
+        border-radius: 16px;
+    }
+
+
+    .student-quiz-details-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .student-cancel-button,
+    .student-start-quiz-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .student-quiz-details-card {
+        padding: 18px;
+    }
+
+
+    .student-quiz-title-section h1 {
+        font-size: 21px;
+    }
+
+
+    .student-quiz-details-actions {
+        grid-template-columns: 1fr;
+    }
+
+
+    .student-start-quiz-button {
+        grid-row: 1;
+    }
+
+
+    .student-cancel-button {
+        grid-row: 2;
+    }
+}

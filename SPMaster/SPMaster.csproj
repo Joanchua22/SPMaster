@@ -93,6 +93,9 @@
     <Content Include="Content\QuestionPreview.css" />
     <Content Include="Content\Register.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\StudentQuizzes.css" />
+    <Content Include="Content\StudentStartQuiz.css" />
+    <Content Include="Content\StudentViewQuiz.css" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
@@ -112,6 +115,9 @@
     <Content Include="Scripts\QuestionPreview.js" />
     <Content Include="Scripts\UserManagement.js" />
     <Content Include="Student\Portal.aspx" />
+    <Content Include="Student\Quizzes.aspx" />
+    <Content Include="Student\StartQuiz.aspx" />
+    <Content Include="Student\ViewQuiz.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -276,6 +282,27 @@
     </Compile>
     <Compile Include="Student\Portal.aspx.designer.cs">
       <DependentUpon>Portal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Quizzes.aspx.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Quizzes.aspx.designer.cs">
+      <DependentUpon>Quizzes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\StartQuiz.aspx.cs">
+      <DependentUpon>StartQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\StartQuiz.aspx.designer.cs">
+      <DependentUpon>StartQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\ViewQuiz.aspx.cs">
+      <DependentUpon>ViewQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\ViewQuiz.aspx.designer.cs">
+      <DependentUpon>ViewQuiz.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
