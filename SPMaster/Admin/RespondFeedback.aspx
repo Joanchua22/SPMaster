@@ -5,6 +5,16 @@
     CodeBehind="RespondFeedback.aspx.cs"
     Inherits="SPMaster.Admin.RespondFeedback" %>
 
+<asp:Content
+    ID="RespondFeedbackHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/RespondFeedback.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
 
 <asp:Content
     ID="AdminTitle"
@@ -146,33 +156,25 @@
     <section class="respond-feedback-page">
 
 
-        <%-- HEADER --%>
-        <div class="respond-feedback-header">
+            <%-- PAGE ACTIONS --%>
+    <div class="respond-feedback-actions">
 
-            <div>
-
-                <h2>
-                    Respond to Feedback
-                </h2>
-
-                <p>
-                    Review the submission and provide an administrative response.
-                </p>
-
-            </div>
+        <p class="respond-feedback-description">
+            Review the submission and provide an administrative response.
+        </p>
 
 
-            <asp:HyperLink
-                ID="lnkBack"
-                runat="server"
-                NavigateUrl="~/Admin/FeedbackReports.aspx"
-                CssClass="back-user-button">
+        <asp:HyperLink
+            ID="lnkBack"
+            runat="server"
+            NavigateUrl="~/Admin/FeedbackReports.aspx"
+            CssClass="back-user-button">
 
-                ← Back to Feedback
+            ← Back to Feedback
 
-            </asp:HyperLink>
+        </asp:HyperLink>
 
-        </div>
+    </div>
 
 
         <%-- ERROR MESSAGE --%>

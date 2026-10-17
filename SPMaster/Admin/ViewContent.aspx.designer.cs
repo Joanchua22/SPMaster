@@ -11,35 +11,35 @@ namespace SPMaster.Admin
 {
 
 
-    public partial class ReviewContent
+    public partial class ViewContent
     {
 
         /// <summary>
-        /// lnkBack control.
+        /// pnlError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkBack;
+        protected global::System.Web.UI.WebControls.Panel pnlError;
 
         /// <summary>
-        /// lblMessage control.
+        /// lblError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
+        protected global::System.Web.UI.WebControls.Label lblError;
 
         /// <summary>
-        /// lblQuestion control.
+        /// pnlQuestion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblQuestion;
+        protected global::System.Web.UI.WebControls.Panel pnlQuestion;
 
         /// <summary>
         /// lblSubject control.
@@ -60,6 +60,24 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.Label lblLecturer;
 
         /// <summary>
+        /// lblCreatedDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCreatedDate;
+
+        /// <summary>
+        /// lblQuestionText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQuestionText;
+
+        /// <summary>
         /// lblQuestionType control.
         /// </summary>
         /// <remarks>
@@ -78,75 +96,93 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.Label lblDifficulty;
 
         /// <summary>
-        /// lblReason control.
+        /// pnlMedia control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblReason;
+        protected global::System.Web.UI.WebControls.Panel pnlMedia;
 
         /// <summary>
-        /// lblReportedBy control.
+        /// imgQuestion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblReportedBy;
+        protected global::System.Web.UI.WebControls.Image imgQuestion;
 
         /// <summary>
-        /// lblReportedAt control.
+        /// pnlMcq control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblReportedAt;
+        protected global::System.Web.UI.WebControls.Panel pnlMcq;
 
         /// <summary>
-        /// lblStatus control.
+        /// rptOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatus;
+        protected global::System.Web.UI.WebControls.Repeater rptOptions;
 
         /// <summary>
-        /// txtAdminReply control.
+        /// pnlSubjective control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAdminReply;
+        protected global::System.Web.UI.WebControls.Panel pnlSubjective;
 
         /// <summary>
-        /// rfvAdminReply control.
+        /// lblModelAnswer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvAdminReply;
+        protected global::System.Web.UI.WebControls.Label lblModelAnswer;
 
         /// <summary>
-        /// lnkCancel control.
+        /// pnlExplanation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkCancel;
+        protected global::System.Web.UI.WebControls.Panel pnlExplanation;
 
         /// <summary>
-        /// btnResolve control.
+        /// lblExplanation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnResolve;
+        protected global::System.Web.UI.WebControls.Label lblExplanation;
+
+        /// <summary>
+        /// rptPublishedQuizzes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptPublishedQuizzes;
+
+        /// <summary>
+        /// pnlNoPublishedQuiz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoPublishedQuiz;
     }
 }

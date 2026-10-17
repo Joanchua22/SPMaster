@@ -5,6 +5,16 @@
     CodeBehind="FeedbackReports.aspx.cs"
     Inherits="SPMaster.Admin.FeedbackReports" %>
 
+<asp:Content
+    ID="FeedbackReportsHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/FeedbackReports.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
 
 <asp:Content
     ID="AdminTitle"
@@ -82,7 +92,7 @@
 
     <nav aria-label="Admin account navigation">
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">
@@ -94,7 +104,7 @@
         </a>
 
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">
@@ -178,19 +188,9 @@
 
         </asp:Panel>
 
-
-        <%-- HEADER --%>
-        <div class="feedback-header">
-
-            <h2>
-                Feedback &amp; Reports
-            </h2>
-
-            <p>
-                System-wide feedback review and response management
-            </p>
-
-        </div>
+        <p class="feedback-reports-description">
+            Review and respond to feedback submitted by users and lecturers
+        </p>
 
 
         <%-- TABS --%>

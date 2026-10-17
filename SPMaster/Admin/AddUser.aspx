@@ -5,6 +5,16 @@
     CodeBehind="AddUser.aspx.cs"
     Inherits="SPMaster.Admin.AddUser" %>
 
+<asp:Content
+    ID="AddUserHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/AddUser.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
 
 <asp:Content
     ID="AdminTitle"
@@ -75,8 +85,8 @@
 
     <nav aria-label="Admin account navigation">
 
-        <a href="#"
-           class="nav-item">
+        <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>"
+        class="nav-item">
 
             <span class="nav-icon">
                 <i class="bi bi-person-circle"></i>
@@ -85,8 +95,8 @@
             <span>Profile</span>
         </a>
 
-        <a href="#"
-           class="nav-item">
+        <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>"
+        class="nav-item">
 
             <span class="nav-icon">
                 <i class="bi bi-gear"></i>
@@ -135,19 +145,11 @@
 
     <section class="add-user-page">
 
-        <div class="add-user-header">
+        <div class="add-user-actions">
 
-            <div>
-
-                <h2>
-                    Add New User
-                </h2>
-
-                <p>
-                    Create a new student, lecturer or admin account.
-                </p>
-
-            </div>
+            <p class="add-user-description">
+                Create a new student, lecturer or admin account.
+            </p>
 
 
             <asp:HyperLink

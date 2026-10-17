@@ -75,14 +75,19 @@
     <Content Include="Admin\EditUser.aspx" />
     <Content Include="Admin\FeedbackReports.aspx" />
     <Content Include="Admin\RespondFeedback.aspx" />
-    <Content Include="Admin\ReviewContent.aspx" />
     <Content Include="Admin\UserManagement.aspx" />
+    <Content Include="Admin\ViewContent.aspx" />
     <Content Include="App_Data\Database.mdf" />
     <Content Include="App_Data\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\Account.css" />
+    <Content Include="Content\AddUser.css" />
+    <Content Include="Content\ContentAudit.css" />
     <Content Include="Content\CreateQuestion.css" />
     <Content Include="Content\Dashboard.css" />
+    <Content Include="Content\EditUser.css" />
+    <Content Include="Content\FeedbackReports.css" />
     <Content Include="Content\Home.css" />
     <Content Include="Content\LecturerCreateQuiz.css" />
     <Content Include="Content\LecturerPortal.css" />
@@ -92,11 +97,14 @@
     <Content Include="Content\QuestionBank.css" />
     <Content Include="Content\QuestionPreview.css" />
     <Content Include="Content\Register.css" />
+    <Content Include="Content\RespondFeedback.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\StudentQuizResult.css" />
     <Content Include="Content\StudentQuizzes.css" />
     <Content Include="Content\StudentStartQuiz.css" />
     <Content Include="Content\StudentViewQuiz.css" />
+    <Content Include="Content\UserManagement.css" />
+    <Content Include="Content\ViewContent.css" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
@@ -179,19 +187,19 @@
     <Compile Include="Admin\RespondFeedback.aspx.designer.cs">
       <DependentUpon>RespondFeedback.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Admin\ReviewContent.aspx.cs">
-      <DependentUpon>ReviewContent.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\ReviewContent.aspx.designer.cs">
-      <DependentUpon>ReviewContent.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Admin\UserManagement.aspx.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Admin\UserManagement.aspx.designer.cs">
       <DependentUpon>UserManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\ViewContent.aspx.cs">
+      <DependentUpon>ViewContent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\ViewContent.aspx.designer.cs">
+      <DependentUpon>ViewContent.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\CreateQuestion.aspx.cs">
       <DependentUpon>CreateQuestion.aspx</DependentUpon>

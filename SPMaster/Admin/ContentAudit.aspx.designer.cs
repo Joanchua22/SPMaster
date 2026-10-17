@@ -42,15 +42,6 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.DropDownList ddlSubjectFilter;
 
         /// <summary>
-        /// ddlStatusFilter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStatusFilter;
-
-        /// <summary>
         /// txtSearch control.
         /// </summary>
         /// <remarks>
@@ -60,31 +51,13 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.TextBox txtSearch;
 
         /// <summary>
-        /// lblTotalQuestions control.
+        /// lblPublishedQuestions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalQuestions;
-
-        /// <summary>
-        /// lblFlaggedQuestions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFlaggedQuestions;
-
-        /// <summary>
-        /// lblApprovedQuestions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblApprovedQuestions;
+        protected global::System.Web.UI.WebControls.Label lblPublishedQuestions;
 
         /// <summary>
         /// rptAudit control.
@@ -94,5 +67,14 @@ namespace SPMaster.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptAudit;
+
+        /// <summary>
+        /// pnlNoQuestions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoQuestions;
     }
 }

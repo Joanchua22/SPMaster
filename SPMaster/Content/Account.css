@@ -1,0 +1,683 @@
+﻿/* ==========================================
+   ACCOUNT PAGE VARIABLES
+   Profile / Settings
+========================================== */
+
+:root {
+    --account-purple: #8c4dff;
+    --account-purple-dark: #6930cf;
+    --account-navy: #2d2365;
+    --account-muted: #777382;
+}
+
+
+/* ==========================================
+   SUCCESS POPUP
+========================================== */
+
+.success-popup {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 2000;
+    max-width: 360px;
+    transition: opacity 0.3s ease;
+}
+
+
+.success-popup-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid #bce5ca;
+    border-radius: 10px;
+    background: #effbf3;
+    color: #267247;
+    box-shadow: 0 8px 24px rgba(40, 70, 50, 0.15);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #38a865;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.success-close {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: #267247;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   VALIDATION / ERROR MESSAGE
+========================================== */
+
+.validation-message {
+    display: block;
+    margin-top: 4px;
+    color: #d94a4a;
+    font-size: 11px;
+}
+
+
+.admin-form-message {
+    display: block;
+    margin-bottom: 16px;
+    padding: 10px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+
+.error-message {
+    background: #fde8e6;
+    color: #ae3d35;
+}
+
+
+/* ==========================================
+   SHARED PROFILE PAGE
+   Admin / Lecturer / Student
+========================================== */
+
+.shared-profile-page {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   PROFILE HEADER
+========================================== */
+
+.shared-profile-header {
+    margin-bottom: 18px;
+}
+
+
+    .shared-profile-header h2 {
+        margin: 0 0 3px;
+        color: var(--account-navy);
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+
+    .shared-profile-header p {
+        margin: 0;
+        color: var(--account-muted);
+        font-size: 14px;
+    }
+
+
+/* ==========================================
+   PROFILE CARD
+========================================== */
+
+.shared-profile-card {
+    width: 100%;
+    padding: 28px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(44, 37, 82, 0.08);
+}
+
+
+/* ==========================================
+   PROFILE AVATAR
+========================================== */
+
+.profile-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+
+.profile-avatar-large {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 78px;
+    height: 78px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--account-purple);
+    color: #ffffff;
+}
+
+
+.profile-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.profile-avatar-initials {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+.profile-avatar-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+
+    .profile-avatar-info strong {
+        margin-bottom: 2px;
+        color: var(--account-navy);
+        font-size: 13px;
+    }
+
+
+.profile-avatar-description {
+    margin-bottom: 8px;
+    color: #605b68;
+    font-size: 12px;
+}
+
+
+.profile-avatar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* ==========================================
+   FILE INPUT
+========================================== */
+
+.profile-file-input {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+
+/* ==========================================
+   CHANGE PHOTO BUTTON
+========================================== */
+
+.profile-photo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 13px;
+    border-radius: 16px;
+    background: var(--account-purple);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .profile-photo-button:hover {
+        background: var(--account-purple-dark);
+    }
+
+
+/* ==========================================
+   RESET PHOTO BUTTON
+========================================== */
+
+.profile-reset-button {
+    min-height: 30px;
+    padding: 6px 13px;
+    border: none;
+    border-radius: 16px;
+    background: #f2eef7;
+    color: #5f586c;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .profile-reset-button:hover {
+        background: #e9e3f0;
+    }
+
+
+/* ==========================================
+   PROFILE FORM
+========================================== */
+
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 18px;
+}
+
+
+.profile-form-group {
+    min-width: 0;
+}
+
+
+    .profile-form-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: #332c51;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+
+.profile-form-input,
+.profile-role-field {
+    width: 100%;
+    min-height: 44px;
+    border: none;
+    border-radius: 22px;
+    background: #f5effc;
+    color: #433d4c;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+
+.profile-form-input {
+    padding: 0 16px;
+    outline: none;
+}
+
+
+    .profile-form-input:focus {
+        box-shadow: 0 0 0 2px rgba(140, 77, 255, 0.22);
+    }
+
+
+/* ==========================================
+   PROFILE ROLE
+========================================== */
+
+.profile-role-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 15px;
+}
+
+
+    .profile-role-field i {
+        color: var(--account-purple);
+        font-size: 17px;
+    }
+
+
+/* ==========================================
+   PROFILE BOTTOM
+========================================== */
+
+.profile-card-divider {
+    width: 100%;
+    height: 1px;
+    margin: 20px 0 14px;
+    background: #eeeeee;
+}
+
+
+.profile-save-row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.profile-save-button {
+    min-height: 38px;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    background: var(--account-purple);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .profile-save-button:hover {
+        background: var(--account-purple-dark);
+    }
+
+
+/* ==========================================
+   SHARED SETTINGS PAGE
+   Admin / Lecturer / Student
+========================================== */
+
+.shared-settings-page {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   SETTINGS HEADER
+========================================== */
+
+.shared-settings-header {
+    margin-bottom: 18px;
+}
+
+
+    .shared-settings-header h2 {
+        margin: 0 0 3px;
+        color: var(--account-navy);
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+
+    .shared-settings-header p {
+        margin: 0;
+        color: var(--account-muted);
+        font-size: 14px;
+    }
+
+
+/* ==========================================
+   SETTINGS CARD
+========================================== */
+
+.settings-card {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 26px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(44, 37, 82, 0.08);
+}
+
+
+    .settings-card h3 {
+        margin: 0 0 18px;
+        color: var(--account-navy);
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+
+/* ==========================================
+   SETTINGS PASSWORD FORM
+========================================== */
+
+.settings-form-group {
+    margin-bottom: 18px;
+}
+
+
+    .settings-form-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: #332c51;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+
+.settings-password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+
+.settings-password-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 48px 0 16px;
+    border: none;
+    border-radius: 22px;
+    background: #f5effc;
+    color: #433d4c;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+
+    .settings-password-input:focus {
+        box-shadow: 0 0 0 2px rgba(140, 77, 255, 0.22);
+    }
+
+
+/* ==========================================
+   PASSWORD EYE BUTTON
+========================================== */
+
+.settings-eye-button {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #625b6d;
+    font-size: 16px;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+
+    .settings-eye-button:hover {
+        color: var(--account-purple);
+    }
+
+
+/* ==========================================
+   SETTINGS ACTION BUTTON
+========================================== */
+
+.settings-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+
+
+.settings-primary-button {
+    min-height: 40px;
+    padding: 8px 22px;
+    border: none;
+    border-radius: 20px;
+    background: var(--account-purple);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .settings-primary-button:hover {
+        background: var(--account-purple-dark);
+    }
+
+
+/* ==========================================
+   SIGN OUT
+========================================== */
+
+.settings-signout-card {
+    padding-top: 21px;
+    padding-bottom: 21px;
+}
+
+
+.settings-signout-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+
+    .settings-signout-content h3 {
+        margin: 0 0 2px;
+        color: #a43a32;
+        font-size: 16px;
+    }
+
+
+    .settings-signout-content p {
+        margin: 0;
+        color: var(--account-muted);
+        font-size: 12px;
+    }
+
+
+.settings-logout-button {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 7px 17px;
+    border: none;
+    border-radius: 18px;
+    background: #fde2de;
+    color: #a43a32;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .settings-logout-button:hover {
+        background: #f9d3cd;
+    }
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media screen and (max-width: 760px) {
+
+    .shared-profile-page,
+    .shared-settings-page {
+        max-width: none;
+    }
+
+
+    .profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .shared-profile-card,
+    .settings-card {
+        padding: 22px;
+    }
+}
+
+
+@media screen and (max-width: 520px) {
+
+    .success-popup {
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        max-width: none;
+    }
+
+
+    .shared-profile-header h2,
+    .shared-settings-header h2 {
+        font-size: 25px;
+    }
+
+
+    .profile-avatar-section {
+        align-items: flex-start;
+    }
+
+
+    .profile-avatar-large {
+        width: 65px;
+        height: 65px;
+    }
+
+
+    .shared-profile-card,
+    .settings-card {
+        padding: 18px;
+    }
+
+
+    .profile-form-input,
+    .settings-password-input {
+        font-size: 16px;
+    }
+
+
+    .profile-save-button,
+    .settings-primary-button {
+        width: 100%;
+    }
+
+
+    .settings-action-row {
+        justify-content: stretch;
+    }
+
+
+    .settings-signout-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .settings-logout-button {
+        width: 100%;
+    }
+}
