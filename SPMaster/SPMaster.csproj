@@ -90,6 +90,7 @@
     <Content Include="Content\FeedbackReports.css" />
     <Content Include="Content\Home.css" />
     <Content Include="Content\LecturerCreateQuiz.css" />
+    <Content Include="Content\LecturerPerformance.css" />
     <Content Include="Content\LecturerPortal.css" />
     <Content Include="Content\LecturerPreviewQuiz.css" />
     <Content Include="Content\LecturerQuizzes.css" />
@@ -109,6 +110,7 @@
     <Content Include="Images\spmaster-logo.png" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
     <Content Include="Lecturer\CreateQuiz.aspx" />
+    <Content Include="Lecturer\Performance.aspx" />
     <Content Include="Lecturer\Portal.aspx" />
     <Content Include="Lecturer\PreviewQuiz.aspx" />
     <Content Include="Lecturer\QuestionBank.aspx" />
@@ -214,6 +216,13 @@
     </Compile>
     <Compile Include="Lecturer\CreateQuiz.aspx.designer.cs">
       <DependentUpon>CreateQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Performance.aspx.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Performance.aspx.designer.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\Portal.aspx.cs">
       <DependentUpon>Portal.aspx</DependentUpon>
