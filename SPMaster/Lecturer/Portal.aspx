@@ -39,10 +39,11 @@
             </div>
 
 
-            <a id="lnkGradeSubmissions"
-               runat="server"
-               href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-               class="grading-alert-button">
+            <asp:HyperLink
+                ID="lnkGradeSubmissions"
+                runat="server"
+                NavigateUrl="~/Lecturer/Grading.aspx"
+                CssClass="grading-alert-button">
 
                 Grade Submissions Now
 
@@ -50,7 +51,7 @@
                     →
                 </span>
 
-            </a>
+            </asp:HyperLink>
 
 
         </asp:Panel>
