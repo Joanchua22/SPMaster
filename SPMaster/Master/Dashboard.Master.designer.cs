@@ -69,6 +69,42 @@ namespace SPMaster
         protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardTitle;
 
         /// <summary>
+        /// imgDashboardAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgDashboardAvatar;
+
+        /// <summary>
+        /// lblDashboardInitials control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDashboardInitials;
+
+        /// <summary>
+        /// lblDashboardUserName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDashboardUserName;
+
+        /// <summary>
+        /// lblDashboardUserRole control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDashboardUserRole;
+
+        /// <summary>
         /// DashboardUser control.
         /// </summary>
         /// <remarks>

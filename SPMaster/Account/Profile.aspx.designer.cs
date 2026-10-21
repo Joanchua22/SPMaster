@@ -42,33 +42,6 @@ namespace SPMaster.Account
         protected global::System.Web.UI.WebControls.Panel pnlStudentNavigation;
 
         /// <summary>
-        /// lblTopInitials control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTopInitials;
-
-        /// <summary>
-        /// lblTopName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTopName;
-
-        /// <summary>
-        /// lblTopRole control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTopRole;
-
-        /// <summary>
         /// pnlSuccess control.
         /// </summary>
         /// <remarks>
