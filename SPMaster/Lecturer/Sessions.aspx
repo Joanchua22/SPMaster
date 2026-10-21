@@ -11,7 +11,7 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("LecturerSessions.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/Sessions.css") %>?v=1"
           rel="stylesheet"
           type="text/css" />
 
@@ -734,7 +734,7 @@
     ContentPlaceHolderID="PortalScripts"
     runat="server">
 
-    <script src="<%= ResolveUrl("LecturerSessions.js") %>?v=1">
+    <script src="<%= ResolveUrl("~/Scripts/Sessions.js") %>?v=1">
     </script>
 
 </asp:Content>

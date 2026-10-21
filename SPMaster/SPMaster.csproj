@@ -49,6 +49,9 @@
     <Reference Include="MailKit, Version=4.18.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.4.18.1\lib\net47\MailKit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MimeKit, Version=4.18.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.4.18.1\lib\net47\MimeKit.dll</HintPath>
@@ -133,12 +136,14 @@
     <Content Include="Content\UserManagement.css" />
     <Content Include="Content\ViewContent.css" />
     <Content Include="ForgotPassword.aspx" />
+    <Content Include="Content\Grading.css" />
+    <Content Include="Lecturer\Grading.aspx" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
-    <Content Include="JavaScript.js" />
-    <Content Include="Content\LecturerSessionDetails.css" />
-    <Content Include="LecturerSessions.css" />
-    <Content Include="LecturerSessions.js" />
+    <Content Include="Scripts\Performance.js" />
+    <Content Include="Content\SessionDetails.css" />
+    <Content Include="Content\Sessions.css" />
+    <Content Include="Scripts\Sessions.js" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
     <Content Include="Lecturer\CreateQuiz.aspx" />
     <Content Include="Lecturer\Performance.aspx" />
@@ -157,7 +162,7 @@
     <Content Include="Scripts\QuestionPreview.js" />
     <Content Include="Scripts\UserManagement.js" />
     <Content Include="Lecturer\SessionDetails.aspx" />
-    <Content Include="Sessions.aspx" />
+    <Content Include="Lecturer\Sessions.aspx" />
     <Content Include="Content\StudentPortal.css" />
     <Content Include="Scripts\StudentPortal.js" />
     <Content Include="Student\Portal.aspx" />
@@ -165,9 +170,9 @@
     <Content Include="Student\Quizzes.aspx" />
     <Content Include="Student\StartQuiz.aspx" />
     <Content Include="Student\ViewQuiz.aspx" />
-    <Content Include="StyleSheet1.css" />
+    <Content Include="Content\Performance.css" />
     <Content Include="Web.config" />
-    <Content Include="WebForm1.aspx" />
+    <Content Include="Student\Performance.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\Profile.aspx.cs">
@@ -246,6 +251,13 @@
     </Compile>
     <Compile Include="ForgotPassword.aspx.designer.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Grading.aspx.cs">
+      <DependentUpon>Grading.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Grading.aspx.designer.cs">
+      <DependentUpon>Grading.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\CreateQuestion.aspx.cs">
       <DependentUpon>CreateQuestion.aspx</DependentUpon>
@@ -346,11 +358,11 @@
     <Compile Include="Lecturer\SessionDetails.aspx.designer.cs">
       <DependentUpon>SessionDetails.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sessions.aspx.cs">
+    <Compile Include="Lecturer\Sessions.aspx.cs">
       <DependentUpon>Sessions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sessions.aspx.designer.cs">
+    <Compile Include="Lecturer\Sessions.aspx.designer.cs">
       <DependentUpon>Sessions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Student\Portal.aspx.cs">
@@ -388,12 +400,12 @@
     <Compile Include="Student\ViewQuiz.aspx.designer.cs">
       <DependentUpon>ViewQuiz.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="Student\Performance.aspx.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="Student\Performance.aspx.designer.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -445,8 +457,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
 </Project>

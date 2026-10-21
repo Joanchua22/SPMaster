@@ -3,7 +3,7 @@
     Language="C#"
     MasterPageFile="~/Master/Portal.Master"
     AutoEventWireup="true"
-    CodeBehind="WebForm1.aspx.cs"
+    CodeBehind="Performance.aspx.cs"
     Inherits="SPMaster.Student.Performance" %>
 
 

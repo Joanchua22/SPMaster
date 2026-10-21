@@ -358,7 +358,7 @@ namespace SPMaster.Lecturer
 
         protected string GetStatusText(object isPublished)
         {
-            return Convert.ToBoolean(isPublished ? "Published" : "Draft";
+            return Convert.ToBoolean(isPublished) ? "Published" : "Draft";
         }
 
 
