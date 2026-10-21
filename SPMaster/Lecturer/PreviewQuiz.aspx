@@ -51,7 +51,7 @@
 
             <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
 
-            <asp:Label ID="lblPreviewMessage"runat="server"></asp:Label>
+            <asp:Label ID="lblPreviewMessage" runat="server"></asp:Label>
 
         </asp:Panel>
 

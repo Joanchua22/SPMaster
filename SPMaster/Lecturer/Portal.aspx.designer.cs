@@ -42,6 +42,24 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.Literal litGradingAlertDescription;
 
         /// <summary>
+        /// lnkGradeSubmissions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkGradeSubmissions;
+
+        /// <summary>
+        /// litQuestionBankTotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litQuestionBankTotal;
+
+        /// <summary>
         /// litQuestionBankBreakdown control.
         /// </summary>
         /// <remarks>
@@ -96,6 +114,24 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.Panel pnlNoRecentQuizzes;
 
         /// <summary>
+        /// litSideQueueCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litSideQueueCount;
+
+        /// <summary>
+        /// rptGradingQueue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptGradingQueue;
+
+        /// <summary>
         /// pnlNoGradingQueue control.
         /// </summary>
         /// <remarks>
@@ -103,6 +139,15 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlNoGradingQueue;
+
+        /// <summary>
+        /// litCohortAttemptDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litCohortAttemptDescription;
 
         /// <summary>
         /// passRateChart control.
@@ -130,5 +175,14 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litTopSubject;
+
+        /// <summary>
+        /// litNeedsAttention control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litNeedsAttention;
     }
 }
