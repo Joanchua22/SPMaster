@@ -1,23 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+
 
 namespace SPMaster.Master
 {
-    public partial class Portal : System.Web.UI.MasterPage
+    public partial class Portal :
+        System.Web.UI.MasterPage
     {
+        protected string CurrentRole
+        {
+            get
+            {
+                if (Session["Role"] == null)
+                {
+                    return "";
+                }
+
+                return Session["Role"].ToString().Trim();
+            }
+        }
+
         protected bool IsLecturer
         {
             get
             {
-                return Request.AppRelativeCurrentExecutionFilePath
-                    .StartsWith(
-                        "~/Lecturer/",
-                        StringComparison.OrdinalIgnoreCase
-                    );
+                return CurrentRole.Equals("Lecturer",StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -33,15 +39,12 @@ namespace SPMaster.Master
         {
             get
             {
-                return IsLecturer ? "Mr. Rahman" : "Aina Lee";
-            }
-        }
+                if (Session["FullName"] == null)
+                {
+                    return "User";
+                }
 
-        protected string UserInitials
-        {
-            get
-            {
-                return IsLecturer ? "MR" : "AL";
+                return Session["FullName"].ToString().Trim();
             }
         }
 
@@ -49,8 +52,41 @@ namespace SPMaster.Master
         {
             get
             {
-                return IsLecturer ? "Lecturer" : "Student";
+                if (string.IsNullOrWhiteSpace(CurrentRole))
+                {
+                    return "User";
+                }
+
+                return CurrentRole;
             }
+        }
+
+        protected string UserInitials
+        {
+            get
+            {
+                return GetInitials(DisplayName);
+            }
+        }
+
+        private string GetInitials(string fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                return "U";
+            }
+
+            string[] parts = fullName.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 1)
+            {
+                return parts[0].Substring(0, 1).ToUpper();
+            }
+
+            string first = parts[0].Substring(0, 1);
+            string last = parts[parts.Length - 1].Substring(0, 1);
+            return (first + last).ToUpper();
+
         }
     }
 }

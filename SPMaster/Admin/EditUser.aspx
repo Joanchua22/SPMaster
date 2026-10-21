@@ -6,6 +6,17 @@
     Inherits="SPMaster.Admin.EditUser" %>
 
 <asp:Content
+    ID="EditUserHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/EditUser.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
+
+<asp:Content
     ID="AdminTitle"
     ContentPlaceHolderID="DashboardTitle"
     runat="server">
@@ -77,8 +88,8 @@
 
     <nav aria-label="Admin account navigation">
 
-        <a href="#"
-           class="nav-item">
+        <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>"
+         class="nav-item">
 
             <span class="nav-icon">
                 <i class="bi bi-person-circle"></i>
@@ -88,8 +99,8 @@
         </a>
 
 
-        <a href="#"
-           class="nav-item">
+        <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>"
+        class="nav-item">
 
             <span class="nav-icon">
                 <i class="bi bi-gear"></i>
@@ -138,19 +149,11 @@
 
     <section class="add-user-page">
 
-        <div class="add-user-header">
+        <div class="edit-user-actions">
 
-            <div>
-
-                <h2>
-                    Edit User
-                </h2>
-
-                <p>
-                    Update the selected user's account details.
-                </p>
-
-            </div>
+            <p class="edit-user-description">
+                Update the selected user's account details.
+            </p>
 
 
             <asp:HyperLink

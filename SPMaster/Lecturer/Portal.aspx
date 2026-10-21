@@ -9,36 +9,27 @@
 
     <div class="lecturer-dashboard">
 
-        <section class="grading-alert">
+        <asp:Panel ID="pnlGradingAlert" runat="server" CssClass="grading-alert">
 
             <div class="grading-alert-content">
 
                 <h1>
-                    4 Subjective Submissions Awaiting Grading
+                    <asp:Literal ID="litGradingAlertCount" runat="server"></asp:Literal>
                 </h1>
 
                 <p>
-                    Student attempts in
-                    <strong>"Sejarah Kertas 2: Kedaulatan Negara"</strong>
-                    and
-                    <strong>"Mathematics Mid-Year"</strong>
-                    are waiting for your subjective mark allocation.
+                    <asp:Literal ID="litGradingAlertDescription" runat="server"></asp:Literal>
                 </p>
 
             </div>
 
-            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-               class="grading-alert-button">
 
+            <asp:HyperLink ID="lnkGradeSubmissions"runat="server" NavigateUrl="~/Lecturer/Grading.aspx" CssClass="grading-alert-button">
                 Grade Submissions Now
+                <span aria-hidden="true">→</span>
+            </asp:HyperLink>
 
-                <span aria-hidden="true">
-                    →
-                </span>
-
-            </a>
-
-        </section>
+        </asp:Panel>
 
 
         <%-- =========================================
@@ -47,30 +38,25 @@
 
         <section class="lecturer-stat-grid">
 
-            <%-- QUESTION BANK --%>
 
-            <a href="<%= ResolveUrl("~/Lecturer/QuestionBank.aspx") %>"
-               class="lecturer-stat-card">
+            <%-- =================================================
+                 QUESTION BANK
+                 ================================================= --%>
+
+            <a href="<%= ResolveUrl("~/Lecturer/QuestionBank.aspx") %>" class="lecturer-stat-card">
 
                 <div class="lecturer-stat-icon icon-purple">
-
-                    <i class="bi bi-card-text"
-                       aria-hidden="true"></i>
-
+                    <i class="bi bi-card-text" aria-hidden="true"></i>
                 </div>
 
                 <div class="lecturer-stat-content">
 
-                    <span class="lecturer-stat-heading">
-                        My Question Bank
-                    </span>
-
+                    <span class="lecturer-stat-heading">My Question Bank</span>
                     <strong>
-                        42 Items
+                        <asp:Literal ID="litQuestionBankTotal"runat="server"></asp:Literal>
                     </strong>
-
                     <span class="lecturer-stat-detail">
-                        32 MCQ • 10 Subjective
+                        <asp:Literal ID="litQuestionBankBreakdown" runat="server"></asp:Literal>
                     </span>
 
                 </div>
@@ -78,30 +64,24 @@
             </a>
 
 
-            <%-- PUBLISHED QUIZZES --%>
 
-            <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>"
-               class="lecturer-stat-card">
+            <%-- =================================================
+                 PUBLISHED QUIZZES
+                 ================================================= --%>
+
+            <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>" class="lecturer-stat-card">
 
                 <div class="lecturer-stat-icon icon-purple">
-
-                    <i class="bi bi-check2-circle"
-                       aria-hidden="true"></i>
-
+                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
                 </div>
 
                 <div class="lecturer-stat-content">
-
-                    <span class="lecturer-stat-heading">
-                        Published Quizzes
-                    </span>
-
+                    <span class="lecturer-stat-heading">Published Quizzes</span>
                     <strong>
-                        8 Quizzes
+                        <asp:Literal ID="litPublishedQuizCount" runat="server"></asp:Literal>
                     </strong>
-
                     <span class="lecturer-stat-detail">
-                        6 Authored • 2 Drafts
+                        <asp:Literal ID="litDraftQuizCount" runat="server"></asp:Literal>
                     </span>
 
                 </div>
@@ -109,68 +89,55 @@
             </a>
 
 
-            <%-- LIVE SESSIONS --%>
 
-            <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-               class="lecturer-stat-card">
+            <%-- =================================================
+                 LIVE SESSIONS
+                 KEEP HARD-CODED FOR NOW
+                 ================================================= --%>
+
+            <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="lecturer-stat-card">
 
                 <div class="lecturer-stat-icon icon-purple">
-
-                    <i class="bi bi-people-fill"
-                       aria-hidden="true"></i>
-
+                    <i class="bi bi-people-fill" aria-hidden="true"></i>
                 </div>
+
 
                 <div class="lecturer-stat-content">
 
-                    <span class="lecturer-stat-heading">
-                        Live Sessions
-                    </span>
-
-                    <strong>
-                        3 Active
-                    </strong>
-
-                    <span class="lecturer-stat-detail">
-                        148 Total attempts
-                    </span>
+                    <span class="lecturer-stat-heading">Live Sessions</span>
+                    <strong>3 Active</strong>
+                    <span class="lecturer-stat-detail">148 Total attempts</span>
 
                 </div>
 
             </a>
 
 
-            <%-- GRADING QUEUE --%>
 
-            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-               class="lecturer-stat-card">
+            <%-- =================================================
+                 GRADING QUEUE
+                 ================================================= --%>
+
+            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>" class="lecturer-stat-card">
 
                 <div class="lecturer-stat-icon icon-red">
-
-                    <i class="bi bi-pen"
-                       aria-hidden="true"></i>
-
+                    <i class="bi bi-pen" aria-hidden="true"></i>
                 </div>
 
                 <div class="lecturer-stat-content">
 
-                    <span class="lecturer-stat-heading">
-                        Grading Queue
-                    </span>
-
+                    <span class="lecturer-stat-heading">Grading Queue</span>
                     <strong class="pending-text">
-                        4 Pending
+                        <asp:Literal ID="litGradingQueueCount" runat="server"></asp:Literal>
                     </strong>
-
-                    <span class="lecturer-stat-detail">
-                        Requires review
-                    </span>
+                    <span class="lecturer-stat-detail">Requires review</span>
 
                 </div>
 
             </a>
 
-        </section>
+
+</section>
 
 
         <%-- =========================================
@@ -192,214 +159,82 @@
 
                     <div class="dashboard-card-header">
 
-                        <h2>
-
-                            My Recent Quizzes
-
-                        </h2>
-
-                        <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>"
-                           class="card-header-link">
-
-                            View All Quizzes →
-
-                        </a>
+                        <h2>My Recent Quizzes</h2>
+                        <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>"class="card-header-link">View All Quizzes →</a>
 
                     </div>
 
 
                     <div class="recent-quiz-list">
 
+                        <asp:Repeater ID="rptRecentQuizzes" runat="server">
 
-                        <%-- QUIZ 1 --%>
+                            <ItemTemplate>
 
-                        <article class="recent-quiz-row">
+                                <article class="recent-quiz-row">
 
-                            <div class="recent-quiz-main">
+                                    <div class="recent-quiz-main">
 
-                                <div class="quiz-tags">
+                                        <%-- =====================================
+                                             TAGS
+                                             ===================================== --%>
 
-                                    <span class="quiz-tag">
-                                        Mathematics
-                                    </span>
+                                        <div class="quiz-tags">
+                                            <span class='<%# GetSubjectTagCss(Eval("SubjectName")) %>'><%#: Eval("SubjectName") %></span>
+                                            <span class="quiz-tag"> <%#: Eval("FormName") %> </span>
+                                            <span class='<%# GetQuizStatusCss(Eval("IsPublished")) %>'><%#: GetQuizStatusText(Eval("IsPublished")) %></span>
+                                        </div>
 
-                                    <span class="quiz-tag">
-                                        Form 5
-                                    </span>
+                                        <%-- =====================================
+                                             TITLE
+                                             ===================================== --%>
 
-                                    <span class="quiz-tag quiz-tag-published">
-                                        Published
-                                    </span>
+                                        <h3><%#: Eval("Title") %></h3>
 
-                                </div>
+                                        <%-- =====================================
+                                             DETAILS
+                                             ===================================== --%>
 
-                                <h3>
-                                    Mathematics Final-Year Practice
-                                    (Kertas 1 &amp; 2)
-                                </h3>
+                                        <p><%#: GetQuizSummary(Eval("QuestionCount"),Eval("TotalMarks"),Eval("TimeLimitMinutes"),Eval("AttemptCount"),Eval("PendingCount"),Eval("IsPublished")) %></p>
 
-                                <p>
-                                    25 Questions • 50 Marks •
-                                    45 Mins • 42 Live Attempts
-                                </p>
-
-                            </div>
-
-                            <div class="recent-quiz-actions">
-
-                                <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                                   class="small-button small-button-primary">
-
-                                    Host Session
-
-                                </a>
-
-                                <a href="#"
-                                   class="small-button small-button-light">
-
-                                    Preview
-
-                                </a>
-
-                            </div>
-
-                        </article>
+                                    </div>
 
 
-                        <%-- QUIZ 2 --%>
 
-                        <article class="recent-quiz-row">
+                                    <%-- =====================================
+                                         ACTIONS
+                                         ===================================== --%>
 
-                            <div class="recent-quiz-main">
+                                    <div class="recent-quiz-actions">
 
-                                <div class="quiz-tags">
+                                        <a href='<%# GetPrimaryQuizActionUrl(Eval("QuizId"),Eval("IsPublished")) %>' class='<%# GetPrimaryQuizActionCss(Eval("IsPublished")) %>'> <%#: GetPrimaryQuizActionText( Eval("IsPublished")) %></a>
+                                        <a href='<%# GetPreviewQuizUrl(Eval("QuizId")) %>' class="small-button small-button-light">Preview</a>
 
-                                    <span class="quiz-tag quiz-tag-yellow">
-                                        Sejarah
-                                    </span>
+                                    </div>
 
-                                    <span class="quiz-tag">
-                                        Form 4
-                                    </span>
+                                </article>
 
-                                    <span class="quiz-tag quiz-tag-published">
-                                        Published
-                                    </span>
+                            </ItemTemplate>
 
-                                </div>
-
-                                <h3>
-                                    Sejarah Kertas 2:
-                                    Kedaulatan Negara &amp;
-                                    Gagasan Malaysia
-                                </h3>
-
-                                <p>
-                                    10 Questions • 40 Marks •
-                                    60 Mins • 4 Pending Grading
-                                </p>
-
-                            </div>
-
-                            <div class="recent-quiz-actions">
-
-                                <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                                   class="small-button small-button-primary">
-
-                                    Host Session
-
-                                </a>
-
-                                <a href="#"
-                                   class="small-button small-button-light">
-
-                                    Preview
-
-                                </a>
-
-                            </div>
-
-                        </article>
+                        </asp:Repeater>
 
 
-                        <%-- QUIZ 3 --%>
-
-                        <article class="recent-quiz-row">
-
-                            <div class="recent-quiz-main">
-
-                                <div class="quiz-tags">
-
-                                    <span class="quiz-tag">
-                                        Bahasa Melayu
-                                    </span>
-
-                                    <span class="quiz-tag">
-                                        Form 5
-                                    </span>
-
-                                    <span class="quiz-tag quiz-tag-draft">
-                                        Draft
-                                    </span>
-
-                                </div>
-
-                                <h3>
-                                    Bahasa Melayu Sintaksis
-                                    Kilat &amp; Tatabahasa SPM
-                                </h3>
-
-                                <p>
-                                    15 Questions • 30 Marks •
-                                    30 Mins • Incomplete draft
-                                </p>
-
-                            </div>
-
-                            <div class="recent-quiz-actions">
-
-                                <a href="<%= ResolveUrl("~/Lecturer/Quizzes.aspx") %>"
-                                   class="small-button small-button-soft">
-
-                                    Edit Draft
-
-                                </a>
-
-                                <a href="#"
-                                   class="small-button small-button-light">
-
-                                    Preview
-
-                                </a>
-
-                            </div>
-
-                        </article>
+                        <asp:Panel ID="pnlNoRecentQuizzes" runat="server" Visible="false" CssClass="dashboard-empty-message">
+                            No quizzes created yet.
+                        </asp:Panel>
 
                     </div>
 
                 </section>
 
 
-                <%-- ACTIVE CLASSROOM SESSIONS --%>
+                <%-- ACTIVE CLASSROOM SESSIONS (need to connect) --%>
 
                 <section class="dashboard-card classroom-card">
 
                     <div class="dashboard-card-header">
-
-                        <h2>
-
-                            Active Classroom Sessions
-
-                        </h2>
-
-                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                           class="card-header-link">
-
-                            Manage All Sessions →
-
-                        </a>
-
+                        <h2>Active Classroom Sessions</h2>
+                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="card-header-link">Manage All Sessions →</a>
                     </div>
 
 
@@ -411,131 +246,62 @@
 
                                 <tr>
 
-                                    <th>
-                                        Session Title
-                                    </th>
-
-                                    <th>
-                                        Code
-                                    </th>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Attempts
-                                    </th>
-
-                                    <th>
-                                        Actions
-                                    </th>
+                                    <th>Session Title</th>
+                                    <th>Code</th>
+                                    <th>Status</th>
+                                    <th>Attempts</th>
+                                    <th>Actions</th>
 
                                 </tr>
 
                             </thead>
 
-
                             <tbody>
 
                                 <tr>
-
                                     <td>
-
-                                        <strong>
-                                            Maths Form 5 Intensive Rev
-                                        </strong>
-
-                                        <span>
-                                            Maths Final-Year Practice
-                                        </span>
-
+                                        <strong>Maths Form 5 Intensive Rev</strong>
+                                        <span>Maths Final-Year Practice</span>
                                     </td>
 
                                     <td>
-
-                                        <span class="session-code">
-                                            MATH-582
-                                        </span>
-
+                                        <span class="session-code">MATH-582</span>
                                     </td>
 
                                     <td>
-
-                                        <span class="session-status">
-                                            Open
-                                        </span>
-
+                                        <span class="session-status">Open</span>
                                     </td>
+
+                                    <td>42 attempts</td>
 
                                     <td>
-                                        42 attempts
+                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"class="table-action-link">Details</a>
                                     </td>
-
-                                    <td>
-
-                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                                           class="table-action-link">
-
-                                            Details
-
-                                        </a>
-
-                                    </td>
-
                                 </tr>
 
 
                                 <tr>
 
                                     <td>
-
-                                        <strong>
-                                            Sejarah SPM Trial Prep
-                                        </strong>
-
-                                        <span>
-                                            Sejarah Kertas 2:
-                                            Kedaulatan
-                                        </span>
-
+                                        <strong>Sejarah SPM Trial Prep</strong>
+                                        <span>Sejarah Kertas 2:Kedaulatan</span>
                                     </td>
 
                                     <td>
-
-                                        <span class="session-code">
-                                            SEJ-481
-                                        </span>
-
+                                        <span class="session-code">SEJ-481</span>
                                     </td>
 
                                     <td>
-
-                                        <span class="session-status">
-                                            Open
-                                        </span>
-
+                                        <span class="session-status">Open</span>
                                     </td>
 
                                     <td>
-
                                         28
-
-                                        <span class="pending-attempts">
-                                            (4 pending)
-                                        </span>
-
+                                        <span class="pending-attempts">(4 pending)</span>
                                     </td>
 
                                     <td>
-
-                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"
-                                           class="table-action-link">
-
-                                            Details
-
-                                        </a>
-
+                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="table-action-link">Details</a>
                                     </td>
 
                                 </tr>
@@ -565,20 +331,12 @@
                     <div class="side-card-heading">
 
                         <div>
-
-                            <h2>
-                                Grading Queue
-                            </h2>
-
-                            <p>
-                                Pending evaluation from
-                                Form 4 &amp; 5 papers
-                            </p>
-
+                            <h2>Grading Queue</h2>
+                            <p>Pending subjective evaluations</p>
                         </div>
 
                         <span class="queue-count">
-                            4
+                            <asp:Literal ID="litSideQueueCount"runat="server"></asp:Literal>
                         </span>
 
                     </div>
@@ -586,86 +344,35 @@
 
                     <div class="grading-student-list">
 
+                        <asp:Repeater ID="rptGradingQueue"runat="server">
 
-                        <div class="grading-student">
+                            <ItemTemplate>
 
-                            <div>
+                                <div class="grading-student">
 
-                                <strong>
-                                    Aina Lee
-                                </strong>
+                                    <div>
+                                        <strong><%#: Eval("StudentName") %></strong>
+                                        <span><%#: GetQueueSubtitle(Eval("QuizTitle"),Eval("SubmittedAt")) %></span>
+                                    </div>
 
-                                <span>
-                                    Sejarah Kertas 2 • 20 Oct
-                                </span>
+                                    <a href='<%# GetGradingUrl(Eval("AttemptId")) %>' class="grade-button">Grade</a>
 
-                            </div>
+                                </div>
 
-                            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-                               class="grade-button">
+                            </ItemTemplate>
 
-                                Grade
-
-                            </a>
-
-                        </div>
+                        </asp:Repeater>
 
 
-                        <div class="grading-student">
-
-                            <div>
-
-                                <strong>
-                                    Muhammad Danial
-                                </strong>
-
-                                <span>
-                                    Sejarah Kertas 2 • 20 Oct
-                                </span>
-
-                            </div>
-
-                            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-                               class="grade-button">
-
-                                Grade
-
-                            </a>
-
-                        </div>
-
-
-                        <div class="grading-student">
-
-                            <div>
-
-                                <strong>
-                                    Tan Wei Ming
-                                </strong>
-
-                                <span>
-                                    Maths Mid-Year • 21 Oct
-                                </span>
-
-                            </div>
-
-                            <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-                               class="grade-button">
-
-                                Grade
-
-                            </a>
-
-                        </div>
+                        <asp:Panel ID="pnlNoGradingQueue" runat="server" Visible="false" CssClass="dashboard-empty-message">
+                            No submissions require grading.
+                        </asp:Panel>
 
                     </div>
 
 
-                    <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"
-                       class="side-card-button">
-
+                    <a href="<%= ResolveUrl("~/Lecturer/Grading.aspx") %>"class="side-card-button">
                         See All Submissions →
-
                     </a>
 
                 </section>
@@ -678,16 +385,10 @@
                     <div class="side-card-heading">
 
                         <div>
-
-                            <h2>
-                                Cohort Pass Rate
-                            </h2>
-
+                            <h2>Cohort Performance</h2>
                             <p>
-                                Across 148 submitted
-                                attempts in October
+                                <asp:Literal ID="litCohortAttemptDescription"runat="server"></asp:Literal>
                             </p>
-
                         </div>
 
                     </div>
@@ -695,17 +396,14 @@
 
                     <div class="pass-rate-wrapper">
 
-                        <div class="pass-rate-chart">
+                        <div ID="passRateChart" runat="server" class="pass-rate-chart">
 
                             <div class="pass-rate-chart-center">
 
                                 <strong>
-                                    76.4%
+                                    <asp:Literal ID="litCohortAverage" runat="server"></asp:Literal>
                                 </strong>
-
-                                <span>
-                                    Avg Score
-                                </span>
+                                <span>Avg Score</span>
 
                             </div>
 
@@ -716,12 +414,9 @@
 
                     <div class="performance-detail-row">
 
-                        <span>
-                            Top Performing Subject:
-                        </span>
-
+                        <span>Top Performing Subject:</span>
                         <strong class="performance-pill performance-good">
-                            Mathematics (82%)
+                            <asp:Literal ID="litTopSubject" runat="server"></asp:Literal>
                         </strong>
 
                     </div>
@@ -729,22 +424,16 @@
 
                     <div class="performance-detail-row">
 
-                        <span>
-                            Needs Attention:
-                        </span>
-
+                        <span>Needs Attention:</span>
                         <strong class="performance-pill performance-warning">
-                            Sejarah Paper 2 (61%)
+                            <asp:Literal ID="litNeedsAttention"runat="server"></asp:Literal>
                         </strong>
 
                     </div>
 
 
-                    <a href="<%= ResolveUrl("~/Lecturer/Performance.aspx") %>"
-                       class="side-card-button">
-
-                        Cohort Analytics &amp; Export →
-
+                    <a href="<%= ResolveUrl("~/Lecturer/Performance.aspx") %>" class="side-card-button">
+                        View Cohort Analytics →
                     </a>
 
                 </section>
@@ -758,9 +447,4 @@
 </asp:Content>
 
 
-<asp:Content
-    ID="LecturerPortalScripts"
-    ContentPlaceHolderID="PortalScripts"
-    runat="server">
-
-</asp:Content>
+<asp:Content ID="LecturerPortalScripts" ContentPlaceHolderID="PortalScripts" runat="server"></asp:Content>

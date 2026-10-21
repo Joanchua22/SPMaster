@@ -18,11 +18,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -35,9 +31,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -51,23 +45,17 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                if (
-                    ViewState["QuizMode"] == null
-                )
+                if (ViewState["QuizMode"] == null)
                 {
                     return "mine";
                 }
 
-
-                return ViewState[
-                    "QuizMode"
-                ].ToString();
+                return ViewState["QuizMode"].ToString();
             }
 
             set
             {
-                ViewState["QuizMode"] =
-                    value;
+                ViewState["QuizMode"] = value;
             }
         }
 
@@ -76,51 +64,30 @@ namespace SPMaster.Lecturer
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender,EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-
             if (!IsPostBack)
             {
-                string requestedTab =
-                    Request.QueryString["tab"];
+                string requestedTab = Request.QueryString["tab"];
 
-
-                if (
-                    string.Equals(
-                        requestedTab,
-                        "public",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
+                if (string.Equals(requestedTab,"public", StringComparison.OrdinalIgnoreCase))
                 {
-                    QuizMode =
-                        "public";
+                    QuizMode = "public";
                 }
                 else
                 {
-                    QuizMode =
-                        "mine";
+                    QuizMode ="mine";
                 }
 
-
                 BindQuizCounts();
-
                 BindQuizzes();
             }
-
 
             UpdateTabStyle();
         }
@@ -132,96 +99,23 @@ namespace SPMaster.Lecturer
 
         private void BindQuizCounts()
         {
-            const string sql = @"
-                SELECT
+            const string sql = @"SELECT SUM(CASE WHEN CreatedByUserId = @UserId AND IsArchived = 0 THEN 1 ELSE 0 END) AS MyQuizCount,
+                                SUM(CASE WHEN CreatedByUserId <> @UserId AND IsPublished = 1 AND IsArchived = 0 THEN 1 ELSE 0 END) AS PublicQuizCount FROM Quizzes;";
 
-                    SUM(
-                        CASE
-                            WHEN CreatedByUserId = @UserId
-                                 AND IsArchived = 0
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS MyQuizCount,
-
-                    SUM(
-                        CASE
-                            WHEN CreatedByUserId <> @UserId
-                                 AND IsPublished = 1
-                                 AND IsArchived = 0
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS PublicQuizCount
-
-                FROM Quizzes;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add(
-                        "@UserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
+                    command.Parameters.Add("@UserId",SqlDbType.Int).Value =CurrentUserId;
                     connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            int myCount =
-                                reader["MyQuizCount"]
-                                    == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "MyQuizCount"
-                                    ]
-                                );
-
-
-                            int publicCount =
-                                reader["PublicQuizCount"]
-                                    == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "PublicQuizCount"
-                                    ]
-                                );
-
-
-                            btnMyQuizzes.Text =
-                                "My Quizzes (" +
-                                myCount +
-                                ")";
-
-
-                            btnPublicLibrary.Text =
-                                "Public Quiz Library (" +
-                                publicCount +
-                                ")";
+                            int myCount = reader["MyQuizCount"] == DBNull.Value ? 0: Convert.ToInt32(reader["MyQuizCount"]);
+                            int publicCount = reader["PublicQuizCount"] == DBNull.Value ? 0 : Convert.ToInt32(reader["PublicQuizCount"]);
+                            btnMyQuizzes.Text ="My Quizzes (" + myCount + ")";
+                            btnPublicLibrary.Text ="Public Quiz Library (" + publicCount +")";
                         }
                     }
                 }
@@ -235,222 +129,42 @@ namespace SPMaster.Lecturer
 
         private void BindQuizzes()
         {
-            const string sql = @"
-        SELECT
-            q.QuizId,
-            q.Title,
-            q.Description,
-            q.TimeLimitMinutes,
-            q.IsPublished,
-            q.CreatedByUserId,
-            q.CreatedAt,
+            const string sql = @"SELECT q.QuizId, q.Title, q.Description, q.TimeLimitMinutes, q.IsPublished, q.CreatedByUserId, q.CreatedAt, s.SubjectName, f.FormName, u.FullName AS CreatorName,
+                                COUNT(qq.QuizQuestionId) AS QuestionCount, ISNULL(SUM(qq.MaxMarks), 0) AS TotalMarks, 
+                                CASE WHEN q.CreatedByUserId = @CurrentUserId THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsOwner FROM Quizzes q
+                                INNER JOIN Subjects s ON q.SubjectId = s.SubjectId
+                                INNER JOIN Forms f ON q.FormId = f.FormId
+                                INNER JOIN Users u ON q.CreatedByUserId = u.UserId
+                                LEFT JOIN QuizQuestions qq ON q.QuizId = qq.QuizId
+                                WHERE q.IsArchived = 0 AND (( @Mode = 'mine' AND q.CreatedByUserId = @CurrentUserId) 
+                                OR ( @Mode = 'public' AND q.CreatedByUserId <> @CurrentUserId AND q.IsPublished = 1)) 
+                                AND (@Search = '' OR q.Title LIKE @SearchPattern OR ISNULL( q.Description, '') LIKE @SearchPattern 
+                                OR s.SubjectName LIKE @SearchPattern OR f.FormName LIKE @SearchPattern OR u.FullName LIKE @SearchPattern) 
+                                GROUP BY q.QuizId,q.Title, q.Description, q.TimeLimitMinutes, q.IsPublished, q.CreatedByUserId, q.CreatedAt, s.SubjectName, f.FormName, u.FullName
+                                ORDER BY q.CreatedAt DESC;";
 
-            s.SubjectName,
+            DataTable quizTable = new DataTable();
+            string searchText = txtSearch.Text.Trim();
 
-            f.FormName,
-
-            u.FullName AS CreatorName,
-
-            COUNT(
-                qq.QuizQuestionId
-            ) AS QuestionCount,
-
-            ISNULL(
-                SUM(
-                    qq.MaxMarks
-                ),
-                0
-            ) AS TotalMarks,
-
-            CASE
-                WHEN q.CreatedByUserId =
-                     @CurrentUserId
-
-                THEN CAST(1 AS BIT)
-
-                ELSE CAST(0 AS BIT)
-            END AS IsOwner
-
-        FROM Quizzes q
-
-        INNER JOIN Subjects s
-            ON q.SubjectId =
-               s.SubjectId
-
-        INNER JOIN Forms f
-            ON q.FormId =
-               f.FormId
-
-        INNER JOIN Users u
-            ON q.CreatedByUserId =
-               u.UserId
-
-        LEFT JOIN QuizQuestions qq
-            ON q.QuizId =
-               qq.QuizId
-
-        WHERE
-            q.IsArchived = 0
-
-            AND
-            (
-                (
-                    @Mode = 'mine'
-
-                    AND
-
-                    q.CreatedByUserId =
-                        @CurrentUserId
-                )
-
-                OR
-
-                (
-                    @Mode = 'public'
-
-                    AND
-
-                    q.CreatedByUserId <>
-                        @CurrentUserId
-
-                    AND
-
-                    q.IsPublished = 1
-                )
-            )
-
-            AND
-            (
-                @Search = ''
-
-                OR
-
-                q.Title LIKE
-                    @SearchPattern
-
-                OR
-
-                ISNULL(
-                    q.Description,
-                    ''
-                ) LIKE
-                    @SearchPattern
-
-                OR
-
-                s.SubjectName LIKE
-                    @SearchPattern
-
-                OR
-
-                f.FormName LIKE
-                    @SearchPattern
-
-                OR
-
-                u.FullName LIKE
-                    @SearchPattern
-            )
-
-        GROUP BY
-            q.QuizId,
-            q.Title,
-            q.Description,
-            q.TimeLimitMinutes,
-            q.IsPublished,
-            q.CreatedByUserId,
-            q.CreatedAt,
-
-            s.SubjectName,
-            f.FormName,
-
-            u.FullName
-
-        ORDER BY
-            q.CreatedAt DESC;
-    ";
-
-
-            DataTable quizTable =
-                new DataTable();
-
-
-            string searchText =
-                txtSearch.Text.Trim();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add(
-                        "@CurrentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
+                    command.Parameters.Add("@CurrentUserId", SqlDbType.Int).Value = CurrentUserId;
+                    command.Parameters.Add("@Mode", SqlDbType.VarChar, 10).Value = QuizMode;
+                    command.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value = searchText;
+                    command.Parameters.Add("@SearchPattern", SqlDbType.NVarChar,204).Value = "%" + searchText + "%";
 
-
-                    command.Parameters.Add(
-                        "@Mode",
-                        SqlDbType.VarChar,
-                        10
-                    ).Value =
-                        QuizMode;
-
-
-                    command.Parameters.Add(
-                        "@Search",
-                        SqlDbType.NVarChar,
-                        200
-                    ).Value =
-                        searchText;
-
-
-                    command.Parameters.Add(
-                        "@SearchPattern",
-                        SqlDbType.NVarChar,
-                        204
-                    ).Value =
-                        "%"
-                        + searchText
-                        + "%";
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                     {
-                        adapter.Fill(
-                            quizTable
-                        );
+                        adapter.Fill(quizTable);
                     }
                 }
             }
 
-
-            rptQuizzes.DataSource =
-                quizTable;
-
-
+            rptQuizzes.DataSource = quizTable;
             rptQuizzes.DataBind();
-
-
-            pnlNoQuizzes.Visible =
-                quizTable.Rows.Count == 0;
+            pnlNoQuizzes.Visible = quizTable.Rows.Count == 0;
         }
 
 
@@ -458,16 +172,10 @@ namespace SPMaster.Lecturer
         // MY QUIZZES TAB
         // =========================================================
 
-        protected void btnMyQuizzes_Click(
-            object sender,
-            EventArgs e)
+        protected void btnMyQuizzes_Click(object sender,EventArgs e)
         {
-            QuizMode =
-                "mine";
-
-
+            QuizMode ="mine";
             BindQuizzes();
-
             UpdateTabStyle();
         }
 
@@ -476,16 +184,10 @@ namespace SPMaster.Lecturer
         // PUBLIC QUIZ LIBRARY TAB
         // =========================================================
 
-        protected void btnPublicLibrary_Click(
-            object sender,
-            EventArgs e)
+        protected void btnPublicLibrary_Click(object sender,EventArgs e)
         {
-            QuizMode =
-                "public";
-
-
+            QuizMode = "public";
             BindQuizzes();
-
             UpdateTabStyle();
         }
 
@@ -496,25 +198,15 @@ namespace SPMaster.Lecturer
 
         private void UpdateTabStyle()
         {
-            if (
-                QuizMode == "mine"
-            )
+            if (QuizMode == "mine")
             {
-                btnMyQuizzes.CssClass =
-                    "quiz-tab active";
-
-
-                btnPublicLibrary.CssClass =
-                    "quiz-tab";
+                btnMyQuizzes.CssClass = "quiz-tab active";
+                btnPublicLibrary.CssClass = "quiz-tab";
             }
             else
             {
-                btnMyQuizzes.CssClass =
-                    "quiz-tab";
-
-
-                btnPublicLibrary.CssClass =
-                    "quiz-tab active";
+                btnMyQuizzes.CssClass ="quiz-tab";
+                btnPublicLibrary.CssClass ="quiz-tab active";
             }
         }
 
@@ -523,35 +215,18 @@ namespace SPMaster.Lecturer
         // QUIZ ACTIONS
         // =========================================================
 
-        protected void rptQuizzes_ItemCommand(
-            object source,
-            RepeaterCommandEventArgs e)
+        protected void rptQuizzes_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            int quizId =
-                Convert.ToInt32(
-                    e.CommandArgument
-                );
+            int quizId = Convert.ToInt32(e.CommandArgument);
 
-
-            switch (
-                e.CommandName
-            )
+            switch (e.CommandName)
             {
-                case "ArchiveQuiz":
-
-                    ArchiveQuiz(
-                        quizId
-                    );
-
+                case "ArchiveQuiz": 
+                    ArchiveQuiz(quizId);
                     break;
 
-
                 case "DeleteQuiz":
-
-                    DeleteDraftQuiz(
-                        quizId
-                    );
-
+                    DeleteDraftQuiz(quizId);
                     break;
             }
         }
@@ -561,77 +236,27 @@ namespace SPMaster.Lecturer
         // ARCHIVE QUIZ
         // =========================================================
 
-        private void ArchiveQuiz(
-            int quizId)
+        private void ArchiveQuiz(int quizId)
         {
-            const string sql = @"
-                UPDATE Quizzes
+            const string sql = @"UPDATE Quizzes SET IsArchived = 1 WHERE QuizId = @QuizId AND CreatedByUserId = @UserId AND IsPublished = 1;";
 
-                SET
-                    IsArchived = 1
-
-                WHERE
-                    QuizId =
-                        @QuizId
-
-                    AND
-
-                    CreatedByUserId =
-                        @UserId
-
-                    AND
-
-                    IsPublished = 1;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    command.Parameters.Add(
-                        "@UserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
+                    command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@UserId",SqlDbType.Int).Value = CurrentUserId;
                     connection.Open();
 
-
-                    int rows =
-                        command.ExecuteNonQuery();
-
+                    int rows = command.ExecuteNonQuery();
 
                     if (rows == 0)
                     {
-                        ShowMessage(
-                            "Unable to archive this quiz."
-                        );
-
+                        ShowMessage("Unable to archive this quiz.");
                         return;
                     }
                 }
             }
-
 
             RefreshQuizPage();
         }
@@ -641,78 +266,27 @@ namespace SPMaster.Lecturer
         // DELETE DRAFT QUIZ
         // =========================================================
 
-        private void DeleteDraftQuiz(
-            int quizId)
+        private void DeleteDraftQuiz(int quizId)
         {
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
-
 
                 // -----------------------------------------
                 // Confirm this is the user's draft
                 // -----------------------------------------
 
-                const string checkSql = @"
-                    SELECT COUNT(*)
+                const string checkSql = @"SELECT COUNT(*) FROM Quizzes WHERE QuizId = @QuizId AND CreatedByUserId = @UserId AND IsPublished = 0;";
 
-                    FROM Quizzes
-
-                    WHERE
-                        QuizId =
-                            @QuizId
-
-                        AND
-
-                        CreatedByUserId =
-                            @UserId
-
-                        AND
-
-                        IsPublished = 0;
-                ";
-
-
-                using (
-                    SqlCommand checkCommand =
-                        new SqlCommand(
-                            checkSql,
-                            connection
-                        )
-                )
+                using (SqlCommand checkCommand = new SqlCommand(checkSql, connection))
                 {
-                    checkCommand.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    checkCommand.Parameters.Add(
-                        "@UserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    int exists =
-                        Convert.ToInt32(
-                            checkCommand
-                                .ExecuteScalar()
-                        );
-
+                    checkCommand.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
+                    checkCommand.Parameters.Add("@UserId",SqlDbType.Int).Value = CurrentUserId;
+                    int exists = Convert.ToInt32( checkCommand.ExecuteScalar());
 
                     if (exists == 0)
                     {
-                        ShowMessage(
-                            "Only your draft quizzes can be deleted."
-                        );
-
+                        ShowMessage("Only your draft quizzes can be deleted.");
                         return;
                     }
                 }
@@ -722,9 +296,7 @@ namespace SPMaster.Lecturer
                 // TRANSACTION
                 // -----------------------------------------
 
-                SqlTransaction transaction =
-                    connection.BeginTransaction();
-
+                SqlTransaction transaction = connection.BeginTransaction();
 
                 try
                 {
@@ -732,30 +304,11 @@ namespace SPMaster.Lecturer
                     // Delete question mappings
                     // -------------------------------------
 
-                    const string deleteQuestionsSql = @"
-                        DELETE FROM QuizQuestions
+                    const string deleteQuestionsSql = @"DELETE FROM QuizQuestions WHERE QuizId = @QuizId;";
 
-                        WHERE QuizId =
-                              @QuizId;
-                    ";
-
-
-                    using (
-                        SqlCommand command =
-                            new SqlCommand(
-                                deleteQuestionsSql,
-                                connection,
-                                transaction
-                            )
-                    )
+                    using (SqlCommand command = new SqlCommand(deleteQuestionsSql, connection, transaction))
                     {
-                        command.Parameters.Add(
-                            "@QuizId",
-                            SqlDbType.Int
-                        ).Value =
-                            quizId;
-
-
+                        command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
                         command.ExecuteNonQuery();
                     }
 
@@ -764,67 +317,24 @@ namespace SPMaster.Lecturer
                     // Delete quiz
                     // -------------------------------------
 
-                    const string deleteQuizSql = @"
-                        DELETE FROM Quizzes
+                    const string deleteQuizSql = @"DELETE FROM Quizzes WHERE QuizId = @QuizId AND CreatedByUserId = @UserId AND IsPublished = 0;";
 
-                        WHERE
-                            QuizId =
-                                @QuizId
-
-                            AND
-
-                            CreatedByUserId =
-                                @UserId
-
-                            AND
-
-                            IsPublished = 0;
-                    ";
-
-
-                    using (
-                        SqlCommand command =
-                            new SqlCommand(
-                                deleteQuizSql,
-                                connection,
-                                transaction
-                            )
-                    )
+                    using (SqlCommand command = new SqlCommand( deleteQuizSql, connection, transaction))
                     {
-                        command.Parameters.Add(
-                            "@QuizId",
-                            SqlDbType.Int
-                        ).Value =
-                            quizId;
-
-
-                        command.Parameters.Add(
-                            "@UserId",
-                            SqlDbType.Int
-                        ).Value =
-                            CurrentUserId;
-
-
+                        command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+                        command.Parameters.Add("@UserId",SqlDbType.Int).Value = CurrentUserId;
                         command.ExecuteNonQuery();
                     }
-
 
                     transaction.Commit();
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-
-
-                    ShowMessage(
-                        "Unable to delete quiz: "
-                        + ex.Message
-                    );
-
+                    ShowMessage("Unable to delete quiz: " + ex.Message);
                     return;
                 }
             }
-
 
             RefreshQuizPage();
         }
@@ -837,9 +347,7 @@ namespace SPMaster.Lecturer
         private void RefreshQuizPage()
         {
             BindQuizCounts();
-
             BindQuizzes();
-
             UpdateTabStyle();
         }
 
@@ -848,25 +356,15 @@ namespace SPMaster.Lecturer
         // STATUS
         // =========================================================
 
-        protected string GetStatusText(
-            object isPublished)
+        protected string GetStatusText(object isPublished)
         {
-            return Convert.ToBoolean(
-                isPublished
-            )
-                ? "Published"
-                : "Draft";
+            return Convert.ToBoolean(isPublished ? "Published" : "Draft";
         }
 
 
-        protected string GetStatusCss(
-            object isPublished)
+        protected string GetStatusCss(object isPublished)
         {
-            return Convert.ToBoolean(
-                isPublished
-            )
-                ? "status-published"
-                : "status-draft";
+            return Convert.ToBoolean(isPublished) ? "status-published" : "status-draft";
         }
 
 
@@ -874,46 +372,29 @@ namespace SPMaster.Lecturer
         // SUBJECT CSS
         // =========================================================
 
-        protected string GetSubjectCss(
-            object subjectName)
+        protected string GetSubjectCss(object subjectName)
         {
-            string subject =
-                Convert.ToString(
-                    subjectName
-                )
-                .Trim()
-                .ToLower();
+            string subject = Convert.ToString(subjectName).Trim().ToLower();
 
 
             switch (subject)
             {
                 case "mathematics":
-
                     return "subject-purple";
-
 
                 case "sejarah":
-
                     return "subject-yellow";
 
-
                 case "bahasa melayu":
-
                     return "subject-blue";
-
 
                 case "english":
-
                     return "subject-purple";
 
-
                 case "science":
-
                     return "subject-blue";
 
-
                 default:
-
                     return "subject-purple";
             }
         }
@@ -923,24 +404,14 @@ namespace SPMaster.Lecturer
         // DESCRIPTION
         // =========================================================
 
-        protected string GetDescription(
-            object description)
+        protected string GetDescription(object description)
         {
-            string value =
-                Convert.ToString(
-                    description
-                );
+            string value = Convert.ToString(description);
 
-
-            if (
-                string.IsNullOrWhiteSpace(
-                    value
-                )
-            )
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return "No description provided.";
             }
-
 
             return value;
         }
@@ -950,35 +421,15 @@ namespace SPMaster.Lecturer
         // MESSAGE
         // =========================================================
 
-        private void ShowMessage(
-            string message)
+        private void ShowMessage(string message)
         {
-            string safeMessage =
-                HttpUtility
-                    .JavaScriptStringEncode(
-                        message
-                    );
-
-
-            ClientScript
-                .RegisterStartupScript(
-                    GetType(),
-                    Guid
-                        .NewGuid()
-                        .ToString(),
-                    "alert('" +
-                    safeMessage +
-                    "');",
-                    true
-                );
+            string safeMessage = HttpUtility.JavaScriptStringEncode(message);
+            ClientScript.RegisterStartupScript(GetType(), Guid.NewGuid().ToString(),"alert('" + safeMessage + "');", true);
         }
 
-
-        protected void FilterChanged(
-            object sender,
-            EventArgs e)
-                {
-                    BindQuizzes();
-                }
+        protected void FilterChanged(object sender,EventArgs e)
+        {
+            BindQuizzes();
+        }
     }
 }

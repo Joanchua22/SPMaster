@@ -5,6 +5,16 @@
     CodeBehind="ContentAudit.aspx.cs"
     Inherits="SPMaster.Admin.ContentAudit" %>
 
+<asp:Content
+    ID="ContentAuditHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/ContentAudit.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
 
 <asp:Content
     ID="AdminTitle"
@@ -21,7 +31,8 @@
     ContentPlaceHolderID="DashboardNavigation"
     runat="server">
 
-    <nav class="sidebar-nav" aria-label="Admin navigation">
+    <nav class="sidebar-nav"
+         aria-label="Admin navigation">
 
         <a href="<%= ResolveUrl("~/Admin/Dashboard.aspx") %>"
            class="nav-item">
@@ -48,7 +59,8 @@
 
 
         <a href="<%= ResolveUrl("~/Admin/ContentAudit.aspx") %>"
-           class="nav-item">
+           class="nav-item active"
+           aria-current="page">
 
             <span class="nav-icon">
                 <i class="bi bi-file-earmark-text"></i>
@@ -82,7 +94,7 @@
 
     <nav aria-label="Admin account navigation">
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">
@@ -94,7 +106,7 @@
         </a>
 
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">
@@ -160,12 +172,10 @@
                     ✓
                 </span>
 
-
                 <asp:Label
                     ID="lblSuccessMessage"
                     runat="server">
                 </asp:Label>
-
 
                 <button
                     type="button"
@@ -181,27 +191,14 @@
         </asp:Panel>
 
 
-        <%-- PAGE HEADER --%>
-        <div class="content-audit-header">
-
-            <div>
-
-                <h2>
-                    Content Audit
-                </h2>
-
-                <p>
-                    Review quiz questions and flagged content across the platform
-                </p>
-
-            </div>
-
-        </div>
+               <%-- PAGE DESCRIPTION --%>
+        <p class="content-audit-description">
+            View and manage questions currently used in published quizzes
+        </p>
 
 
         <%-- FILTER BAR --%>
         <div class="audit-filter-bar">
-
 
             <asp:DropDownList
                 ID="ddlSubjectFilter"
@@ -213,31 +210,6 @@
                 <asp:ListItem
                     Text="All Subjects"
                     Value="">
-                </asp:ListItem>
-
-            </asp:DropDownList>
-
-
-            <asp:DropDownList
-                ID="ddlStatusFilter"
-                runat="server"
-                CssClass="filter-select"
-                AutoPostBack="true"
-                OnSelectedIndexChanged="FilterChanged">
-
-                <asp:ListItem
-                    Text="All"
-                    Value="">
-                </asp:ListItem>
-
-                <asp:ListItem
-                    Text="Approved"
-                    Value="Approved">
-                </asp:ListItem>
-
-                <asp:ListItem
-                    Text="Flagged"
-                    Value="Flagged">
                 </asp:ListItem>
 
             </asp:DropDownList>
@@ -255,61 +227,19 @@
         </div>
 
 
-        <%-- SUMMARY CARDS --%>
-        <div class="audit-summary-grid">
-
+        <%-- SUMMARY --%>
+        <div class="audit-summary-grid audit-summary-single">
 
             <div class="audit-summary-card">
 
                 <span class="audit-summary-label">
-                    Total Questions
+                    Published Questions
                 </span>
-
 
                 <span class="audit-summary-value">
 
                     <asp:Label
-                        ID="lblTotalQuestions"
-                        runat="server"
-                        Text="0">
-                    </asp:Label>
-
-                </span>
-
-            </div>
-
-
-            <div class="audit-summary-card">
-
-                <span class="audit-summary-label">
-                    Flagged for Review
-                </span>
-
-
-                <span class="audit-summary-value flagged-number">
-
-                    <asp:Label
-                        ID="lblFlaggedQuestions"
-                        runat="server"
-                        Text="0">
-                    </asp:Label>
-
-                </span>
-
-            </div>
-
-
-            <div class="audit-summary-card">
-
-                <span class="audit-summary-label">
-                    Approved
-                </span>
-
-
-                <span class="audit-summary-value">
-
-                    <asp:Label
-                        ID="lblApprovedQuestions"
+                        ID="lblPublishedQuestions"
                         runat="server"
                         Text="0">
                     </asp:Label>
@@ -321,7 +251,7 @@
         </div>
 
 
-        <%-- AUDIT TABLE --%>
+        <%-- TABLE --%>
         <div class="audit-table-card">
 
             <div class="audit-table-wrapper">
@@ -335,8 +265,8 @@
                             <th>Question</th>
                             <th>Subject</th>
                             <th>Lecturer</th>
-                            <th>Flag Reason</th>
-                            <th>Status</th>
+                            <th>Published In</th>
+                            <th>Created Date</th>
                             <th>Actions</th>
 
                         </tr>
@@ -353,7 +283,6 @@
                             <ItemTemplate>
 
                                 <tr>
-
 
                                     <td class="audit-question-cell">
 
@@ -378,22 +307,14 @@
 
                                     <td>
 
-                                        <%# Eval("FlagReason") %>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <span class='<%#
-                                            Eval("AuditStatus").ToString() == "Flagged"
-                                            ? "audit-status flagged-status"
-                                            : "audit-status approved-status"
-                                        %>'>
-
-                                            <%# Eval("AuditStatus") %>
-
-                                        </span>
+                                        <%# Eval("PublishedQuizCount") %>
+                                        <%#
+                                            Convert.ToInt32(
+                                                Eval("PublishedQuizCount")
+                                            ) == 1
+                                            ? " quiz"
+                                            : " quizzes"
+                                        %>
 
                                     </td>
 
@@ -401,12 +322,56 @@
                                     <td>
 
                                         <%#
-                                            Eval("AuditStatus").ToString() == "Flagged"
-                                            ? "<a class='review-button' href='ReviewContent.aspx?id="
-                                                + Eval("QuestionId")
-                                                + "'>Review</a>"
-                                            : "—"
+                                            Convert.ToDateTime(
+                                                Eval("CreatedAt")
+                                            ).ToString(
+                                                "dd MMM yyyy"
+                                            )
                                         %>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="audit-action-buttons">
+
+
+                                            <%-- VIEW --%>
+                                            <a
+                                                href='<%#
+                                                    "ViewContent.aspx?id="
+                                                    + Eval("QuestionId")
+                                                %>'
+                                                class="audit-view-button">
+
+                                                <i class="bi bi-eye"></i>
+
+                                                View
+
+                                            </a>
+
+
+                                            <%-- UNPUBLISH --%>
+                                            <asp:LinkButton
+                                                ID="btnUnpublish"
+                                                runat="server"
+                                                CssClass="audit-unpublish-button"
+                                                CommandArgument='<%#
+                                                    Eval("QuestionId")
+                                                %>'
+                                                OnCommand="Unpublish_Command"
+                                                CausesValidation="false"
+                                                OnClientClick="return confirm('Are you sure you want to unpublish this question from all published quizzes?');">
+
+                                                <i class="bi bi-eye-slash"></i>
+
+                                                Unpublish
+
+                                            </asp:LinkButton>
+
+
+                                        </div>
 
                                     </td>
 
@@ -419,6 +384,22 @@
                     </tbody>
 
                 </table>
+
+
+                <%-- EMPTY STATE --%>
+                <asp:Panel
+                    ID="pnlNoQuestions"
+                    runat="server"
+                    CssClass="audit-empty-state"
+                    Visible="false">
+
+                    <i class="bi bi-file-earmark-x"></i>
+
+                    <p>
+                        No published questions found.
+                    </p>
+
+                </asp:Panel>
 
             </div>
 

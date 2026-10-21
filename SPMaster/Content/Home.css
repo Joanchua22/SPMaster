@@ -1,6 +1,7 @@
-﻿/* =========================
+﻿/* =========================================================
    HOMEPAGE BASE
-   ========================= */
+   ========================================================= */
+
 .home-page {
     --home-yellow: #ffe14d;
     --home-purple: #8c4dff;
@@ -8,15 +9,29 @@
     --home-navy: #292052;
     --home-muted: #61596e;
     --home-pink: #e62288;
+    --home-pink-soft: #ffafd0;
+    --home-pink-dark: #87204c;
+    --home-blue-soft: #95dafa;
+    --home-blue-dark: #075d85;
+    --home-green-soft: #a2dfad;
+    --home-green-dark: #146b31;
     position: relative;
     color: var(--home-navy);
 }
 
+
+    /* Leave space above sections when using navigation links */
+
     .home-page section[id] {
-        scroll-margin-top: 24px;
+        scroll-margin-top: 150px;
     }
 
-    /* Hide headings visually while keeping them accessible */
+
+
+    /* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
     .home-page .visually-hidden {
         position: absolute;
         width: 1px;
@@ -29,20 +44,32 @@
         border: 0;
     }
 
-    /* =========================
+
+
+    /* =========================================================
    SHARED HOMEPAGE ELEMENTS
-   ========================= */
-    .home-page .eyebrow {
-        display: inline-block;
+   ========================================================= */
+
+    /* Small pink section label */
+
+    .home-page .eyebrow,
+    .home-page .features-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 5px 14px;
         border-radius: 999px;
-        background: #ffafd0;
-        color: #87204c;
+        background: var(--home-pink-soft);
+        color: var(--home-pink-dark);
         font-size: 11px;
         font-weight: 700;
+        line-height: 1.2;
         letter-spacing: 0.3px;
         text-transform: uppercase;
     }
+
+
+    /* Buttons */
 
     .home-page .button {
         display: inline-flex;
@@ -60,29 +87,36 @@
         transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
+
     .home-page .button-primary {
         background: var(--home-purple);
-        color: white;
+        color: #ffffff;
     }
+
 
         .home-page .button-primary:hover {
             background: var(--home-purple-hover);
             transform: translateY(-2px);
         }
 
+
     .home-page .button-white {
-        background: white;
+        background: #ffffff;
         color: var(--home-navy);
     }
+
 
         .home-page .button-white:hover {
             background: #f4eeff;
             transform: translateY(-2px);
         }
 
-    /* =========================
+
+
+    /* =========================================================
    HERO SECTION
-   ========================= */
+   ========================================================= */
+
     .home-page .hero {
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -91,24 +125,28 @@
         padding-bottom: 48px;
     }
 
+
     .home-page .hero-copy {
         position: relative;
         z-index: 1;
         min-width: 0;
     }
 
+
     .home-page .hero h1 {
         max-width: 650px;
         margin: 22px 0;
-        font-size: clamp(38px, 4.6vw, 64px);
+        font-size: clamp( 38px, 4.6vw, 64px );
         font-weight: 800;
         line-height: 1.14;
         letter-spacing: -1.7px;
     }
 
+
         .home-page .hero h1 span {
             color: var(--home-pink);
         }
+
 
     .home-page .hero-description {
         max-width: 390px;
@@ -118,6 +156,7 @@
         line-height: 1.7;
     }
 
+
     .home-page .hero-actions {
         display: flex;
         align-items: center;
@@ -125,43 +164,12 @@
         gap: 12px;
     }
 
-    /* Small coloured circles below the buttons */
-    .home-page .hero-note {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 24px;
-        font-size: 12px;
-        line-height: 1.5;
-    }
 
-    .home-page .student-dots {
-        display: inline-flex;
-        flex-shrink: 0;
-        padding-left: 8px;
-    }
 
-        .home-page .student-dots span {
-            display: block;
-            width: 28px;
-            height: 28px;
-            margin-left: -8px;
-            border: 2px solid white;
-            border-radius: 50%;
-            background: #57c779;
-        }
-
-            .home-page .student-dots span:nth-child(2) {
-                background: #00afd5;
-            }
-
-            .home-page .student-dots span:nth-child(3) {
-                background: #e96aa1;
-            }
-
-    /* =========================
+    /* =========================================================
    DECORATIVE HERO CIRCLES
-   ========================= */
+   ========================================================= */
+
     .home-page .hero-art {
         position: relative;
         width: 100%;
@@ -171,10 +179,12 @@
         isolation: isolate;
     }
 
+
     .home-page .art-circle {
         position: absolute;
         border-radius: 50%;
     }
+
 
     .home-page .art-circle-orange {
         width: 62%;
@@ -184,6 +194,7 @@
         background: #ffad50;
         z-index: 0;
     }
+
 
     .home-page .art-circle-green {
         width: 70%;
@@ -195,9 +206,57 @@
         z-index: 1;
     }
 
-    /* =========================
-   FEATURE CARDS
-   ========================= */
+
+
+    /* =========================================================
+   SHARED SECTION HEADING
+   ========================================================= */
+
+    .home-page .section-heading,
+    .home-page .features-heading {
+        max-width: 650px;
+        margin: 0 auto 32px;
+        text-align: center;
+    }
+
+
+        /* Pink label spacing */
+
+        .home-page .section-heading .eyebrow,
+        .home-page .features-heading .features-label {
+            margin-bottom: 0;
+        }
+
+
+        /* Main section heading */
+
+        .home-page .section-heading h2,
+        .home-page .features-heading h2 {
+            margin: 16px 0 12px;
+            color: var(--home-navy);
+            font-size: clamp( 28px, 3.2vw, 40px );
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.8px;
+        }
+
+
+        /* Section description */
+
+        .home-page .section-heading p,
+        .home-page .features-heading p {
+            margin: 0;
+            color: var(--home-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+
+
+    /* =========================================================
+   FEATURES SECTION
+   ========================================================= */
+
     .home-page .features-section {
         position: relative;
         isolation: isolate;
@@ -206,23 +265,36 @@
 
     .home-page .feature-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat( 3, minmax(0, 1fr) );
         gap: 24px;
     }
+
+
+
+    /* =========================================================
+   FEATURE CARDS
+   ========================================================= */
 
     .home-page .feature-card {
         min-width: 0;
         padding: 26px;
         border-radius: 18px;
-        background: white;
+        background: #ffffff;
         box-shadow: 0 4px 0 rgba(41, 32, 82, 0.08);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
+
         .home-page .feature-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(41, 32, 82, 0.1);
+            box-shadow: 0 8px 16px rgba(41, 32, 82, 0.10);
         }
+
+
+
+    /* =========================================================
+   FEATURE ICONS
+   ========================================================= */
 
     .home-page .feature-icon {
         display: inline-flex;
@@ -236,26 +308,38 @@
         line-height: 1;
     }
 
+
     .home-page .icon-pink {
-        background: #ffafd0;
+        background: var(--home-pink-soft);
         color: #a60050;
     }
 
+
     .home-page .icon-blue {
-        background: #95dafa;
-        color: #075d85;
+        background: var(--home-blue-soft);
+        color: var(--home-blue-dark);
     }
 
+
     .home-page .icon-green {
-        background: #a2dfad;
-        color: #146b31;
+        background: var(--home-green-soft);
+        color: var(--home-green-dark);
     }
+
+
+
+    /* =========================================================
+   FEATURE CARD CONTENT
+   ========================================================= */
 
     .home-page .feature-card h3 {
         margin: 16px 0 10px;
+        color: var(--home-navy);
         font-size: 18px;
+        font-weight: 700;
         line-height: 1.4;
     }
+
 
     .home-page .feature-card p {
         margin: 0;
@@ -264,9 +348,12 @@
         line-height: 1.65;
     }
 
-    /* =========================
+
+
+    /* =========================================================
    REGISTRATION BANNER
-   ========================= */
+   ========================================================= */
+
     .home-page .signup-banner {
         position: relative;
         display: flex;
@@ -279,59 +366,52 @@
         background: #fff0a6;
     }
 
+
     .home-page .signup-message {
         display: flex;
         align-items: center;
         gap: 16px;
     }
 
+
         .home-page .signup-message h2 {
             margin: 0 0 4px;
+            color: var(--home-navy);
             font-size: 18px;
+            font-weight: 700;
             line-height: 1.4;
         }
+
 
         .home-page .signup-message p {
             margin: 0;
             color: var(--home-muted);
             font-size: 14px;
+            line-height: 1.6;
         }
+
 
     .home-page .signup-banner > .button {
         flex-shrink: 0;
     }
 
-    /* =========================
+
+
+    /* =========================================================
    HOW IT WORKS
-   ========================= */
+   ========================================================= */
+
     .home-page .home-section {
         padding: 72px 0;
     }
 
-    .home-page .section-heading {
-        max-width: 650px;
-        margin: 0 auto 32px;
-        text-align: center;
-    }
-
-        .home-page .section-heading h2 {
-            margin: 16px 0 12px;
-            font-size: clamp(28px, 3.2vw, 40px);
-            line-height: 1.2;
-            letter-spacing: -0.8px;
-        }
-
-        .home-page .section-heading p {
-            margin: 0;
-            color: var(--home-muted);
-            font-size: 15px;
-        }
 
     .home-page .steps-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat( 3, minmax(0, 1fr) );
         gap: 24px;
     }
+
 
     .home-page .step-card {
         padding: 26px;
@@ -339,6 +419,7 @@
         border-radius: 18px;
         background: #fff3b5;
     }
+
 
     .home-page .step-number {
         display: inline-flex;
@@ -348,16 +429,20 @@
         height: 48px;
         border-radius: 50%;
         background: #6930cf;
-        color: white;
+        color: #ffffff;
         font-size: 18px;
         font-weight: 800;
     }
 
+
     .home-page .step-card h3 {
         margin: 18px 0 10px;
+        color: var(--home-navy);
         font-size: 18px;
+        font-weight: 700;
         line-height: 1.4;
     }
+
 
     .home-page .step-card p {
         margin: 0;
@@ -366,9 +451,12 @@
         line-height: 1.7;
     }
 
-    /* =========================
+
+
+    /* =========================================================
    ABOUT US
-   ========================= */
+   ========================================================= */
+
     .home-page .about-section {
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -376,16 +464,20 @@
         gap: 40px;
         padding: 36px;
         border-radius: 24px;
-        background: white;
+        background: #ffffff;
         box-shadow: 0 4px 0 rgba(41, 32, 82, 0.06);
     }
 
+
     .home-page .about-copy h2 {
         margin: 18px 0;
-        font-size: clamp(28px, 3.2vw, 40px);
+        color: var(--home-navy);
+        font-size: clamp( 28px, 3.2vw, 40px );
+        font-weight: 800;
         line-height: 1.2;
         letter-spacing: -0.8px;
     }
+
 
     .home-page .about-copy p {
         margin: 0 0 16px;
@@ -394,9 +486,16 @@
         line-height: 1.8;
     }
 
+
         .home-page .about-copy p:last-child {
             margin-bottom: 0;
         }
+
+
+
+    /* =========================================================
+   SUBJECT PANEL
+   ========================================================= */
 
     .home-page .subjects-panel {
         padding: 28px;
@@ -404,11 +503,15 @@
         background: #f4eeff;
     }
 
+
         .home-page .subjects-panel h3 {
             margin: 0 0 20px;
+            color: var(--home-navy);
             font-size: 20px;
+            font-weight: 700;
             line-height: 1.4;
         }
+
 
     .home-page .subject-list {
         display: flex;
@@ -419,42 +522,53 @@
         list-style: none;
     }
 
+
         .home-page .subject-list li {
             padding: 8px 14px;
             border-radius: 999px;
-            background: white;
+            background: #ffffff;
             color: #6930cf;
             font-size: 14px;
             font-weight: 600;
         }
 
+
     .home-page .subjects-panel p {
         margin: 20px 0 0;
         color: var(--home-muted);
         font-size: 13px;
+        line-height: 1.6;
     }
 
-/* =========================
-   TABLETS
-   ========================= */
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
 @media (max-width: 900px) {
+
     .home-page .hero {
         gap: 24px;
     }
 
+
         .home-page .hero h1 {
-            font-size: clamp(36px, 5.4vw, 48px);
+            font-size: clamp( 36px, 5.4vw, 48px );
         }
+
 
     .home-page .feature-grid,
     .home-page .steps-grid {
         gap: 16px;
     }
 
+
     .home-page .feature-card,
     .home-page .step-card {
         padding: 20px;
     }
+
 
     .home-page .about-section {
         grid-template-columns: 1fr;
@@ -462,91 +576,155 @@
     }
 }
 
-/* =========================
+
+
+/* =========================================================
    PHONES
-   ========================= */
+   ========================================================= */
+
 @media (max-width: 680px) {
+
     .home-page .hero {
         grid-template-columns: 1fr;
         gap: 32px;
         padding-bottom: 36px;
     }
 
+
         .home-page .hero h1 {
             max-width: 520px;
-            font-size: clamp(34px, 8vw, 48px);
+            font-size: clamp( 34px, 8vw, 48px );
             letter-spacing: -1px;
         }
+
 
     .home-page .hero-description {
         max-width: 100%;
         font-size: 15px;
     }
 
+
     .home-page .hero-art {
-        display:none;
+        display: none;
     }
+
 
     .home-page .feature-grid,
     .home-page .steps-grid {
         grid-template-columns: 1fr;
     }
 
+
     .home-page .feature-card,
     .home-page .step-card {
         padding: 24px;
     }
 
-    .home-page .features-section::before {
-        left: -12px;
+
+    .home-page .section-heading,
+    .home-page .features-heading {
+        margin-bottom: 26px;
     }
 
+
+        .home-page .section-heading h2,
+        .home-page .features-heading h2,
+        .home-page .about-copy h2 {
+            font-size: 28px;
+        }
+
+
     .home-page .signup-banner {
-        flex-direction: column;
         align-items: flex-start;
+        flex-direction: column;
         padding: 22px;
     }
 
+
         .home-page .signup-banner > .button {
             width: 100%;
+            box-sizing: border-box;
         }
+
 
     .home-page .home-section {
         padding: 48px 0;
     }
 
+
     .home-page .about-section {
         padding: 24px;
     }
+
 
     .home-page .subjects-panel {
         padding: 22px;
     }
 }
 
-/* =========================
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 540px) {
+
+    .home-page section[id] {
+        scroll-margin-top: 220px;
+    }
+
+
+    .home-page .eyebrow,
+    .home-page .features-label {
+        padding: 5px 12px;
+        font-size: 10px;
+    }
+
+
+    .home-page .section-heading h2,
+    .home-page .features-heading h2,
+    .home-page .about-copy h2 {
+        font-size: 26px;
+    }
+
+
+    .home-page .section-heading p,
+    .home-page .features-heading p {
+        font-size: 14px;
+    }
+
+
+    .home-page .feature-card h3,
+    .home-page .step-card h3,
+    .home-page .signup-message h2 {
+        font-size: 17px;
+    }
+
+
+    .home-page .feature-card p,
+    .home-page .step-card p,
+    .home-page .signup-message p {
+        font-size: 13px;
+    }
+}
+
+
+
+/* =========================================================
    REDUCED MOTION
-   ========================= */
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
+
     .home-page .button,
     .home-page .feature-card {
         transition: none;
     }
 
+
         .home-page .button:hover,
         .home-page .feature-card:hover {
             transform: none;
         }
-}
-
-
-/* Leave space above sections when using navigation links */
-.home-page section[id] {
-    scroll-margin-top: 150px;
-}
-
-@media (max-width: 540px) {
-    .home-page section[id] {
-        scroll-margin-top: 220px;
-    }
 }

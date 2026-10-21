@@ -5,225 +5,566 @@
     CodeBehind="Dashboard.aspx.cs"
     Inherits="SPMaster.Admin.Dashboard" %>
 
-<asp:Content ID="AdminTitle"
+
+<asp:Content
+    ID="AdminTitle"
     ContentPlaceHolderID="DashboardTitle"
     runat="server">
+
     System Overview
+
 </asp:Content>
 
-<asp:Content ID="AdminContent"
+
+<asp:Content
+    ID="AdminContent"
     ContentPlaceHolderID="DashboardContent"
     runat="server">
 
-    <%-- Prototype data: replace with real values when implemented. --%>
 
-    <!-- SYSTEM HEALTH -->
+    <%-- =====================================================
+         SYSTEM HEALTH
+         ===================================================== --%>
+
     <section class="admin-health-card">
 
         <div class="admin-health-left">
-            <span class="health-dot" aria-hidden="true"></span>
+
+            <span
+                class="health-dot"
+                aria-hidden="true">
+            </span>
+
 
             <span class="health-text">
-                System Health: All services operational
+
+                <asp:Label
+                    ID="lblSystemHealth"
+                    runat="server"
+                    Text="System Health: Checking...">
+                </asp:Label>
+
             </span>
+
         </div>
 
+
         <span class="backup-text">
-            Last database backup: 2 hours ago
+
+            <asp:Label
+                ID="lblDatabaseStatus"
+                runat="server"
+                Text="Database: Checking...">
+            </asp:Label>
+
         </span>
 
     </section>
 
-    <!-- SUMMARY CARDS -->
-    <section class="admin-summary-grid"
-             aria-label="Platform summary">
+
+
+    <%-- =====================================================
+         SUMMARY CARDS
+         ===================================================== --%>
+
+    <section
+        class="admin-summary-grid"
+        aria-label="Platform summary">
+
+
+        <%-- TOTAL USERS --%>
 
         <div class="summary-card">
-            <span class="summary-label">Total Users</span>
-            <span class="summary-value">1,248</span>
-            <span class="summary-growth">+32 this week</span>
+
+            <span class="summary-label">
+                Total Users
+            </span>
+
+
+            <span class="summary-value">
+
+                <asp:Label
+                    ID="lblTotalUsers"
+                    runat="server"
+                    Text="0">
+                </asp:Label>
+
+            </span>
+
+
+            <span class="summary-growth">
+
+                +<asp:Label
+                    ID="lblNewUsersThisWeek"
+                    runat="server"
+                    Text="0">
+                </asp:Label>
+
+                this week
+
+            </span>
+
         </div>
 
-        <div class="summary-card">
-            <span class="summary-label">Active Lecturers</span>
-            <span class="summary-value">24</span>
-        </div>
+
+
+        <%-- ACTIVE LECTURERS --%>
 
         <div class="summary-card">
-            <span class="summary-label">Pending Reports</span>
-            <span class="summary-value pending-value">7</span>
+
+            <span class="summary-label">
+                Active Lecturers
+            </span>
+
+
+            <span class="summary-value">
+
+                <asp:Label
+                    ID="lblActiveLecturers"
+                    runat="server"
+                    Text="0">
+                </asp:Label>
+
+            </span>
+
         </div>
 
+
+
+        <%-- PENDING REPORTS --%>
+
         <div class="summary-card">
-            <span class="summary-label">Database Size</span>
-            <span class="summary-value">4.2 GB</span>
+
+            <span class="summary-label">
+                Pending Reports
+            </span>
+
+
+            <span class="summary-value pending-value">
+
+                <asp:Label
+                    ID="lblPendingReports"
+                    runat="server"
+                    Text="0">
+                </asp:Label>
+
+            </span>
+
+        </div>
+
+
+
+        <%-- DATABASE SIZE --%>
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                Database Size
+            </span>
+
+
+            <span class="summary-value">
+
+                <asp:Label
+                    ID="lblDatabaseSize"
+                    runat="server"
+                    Text="0 MB">
+                </asp:Label>
+
+            </span>
+
         </div>
 
     </section>
 
-    <!-- PLATFORM ACTIVITY -->
-    <section class="admin-card activity-section"
-             aria-labelledby="activity-title">
 
-        <h2 id="activity-title" class="admin-card-title">
+
+    <%-- =====================================================
+         PLATFORM ACTIVITY
+         ===================================================== --%>
+
+    <section
+        class="admin-card activity-section"
+        aria-labelledby="activity-title">
+
+
+        <h2
+            id="activity-title"
+            class="admin-card-title">
+
             Platform Activity
+
         </h2>
+
 
         <div class="activity-chart">
 
-            <div class="chart-grid-line line-1" aria-hidden="true"></div>
-            <div class="chart-grid-line line-2" aria-hidden="true"></div>
-            <div class="chart-grid-line line-3" aria-hidden="true"></div>
 
-            <svg class="activity-svg"
-                 viewBox="0 0 700 180"
-                 preserveAspectRatio="none"
-                 role="img"
-                 aria-labelledby="activity-chart-title">
+            <%-- =============================================
+                 Y AXIS
+                 ============================================= --%>
 
-                <title id="activity-chart-title">
-                    Sample platform activity increasing from Monday to Sunday.
-                </title>
+            <div class="activity-y-axis">
 
-                <polygon
-                    points="20,140 130,128 240,116 350,98
-                            460,82 570,50 680,20 680,160 20,160"
-                    fill="rgba(145,72,255,0.12)">
-                </polygon>
+                <span class="activity-y-title">
+                    Quiz Attempts
+                </span>
 
-                <polyline
-                    points="20,140 130,128 240,116 350,98
-                            460,82 570,50 680,20"
-                    fill="none"
-                    stroke="#9148ff"
-                    stroke-width="4">
-                </polyline>
+                <div class="activity-y-values">
 
-                <circle cx="20" cy="140" r="5" fill="#9148ff"></circle>
-                <circle cx="130" cy="128" r="5" fill="#9148ff"></circle>
-                <circle cx="240" cy="116" r="5" fill="#9148ff"></circle>
-                <circle cx="350" cy="98" r="5" fill="#9148ff"></circle>
-                <circle cx="460" cy="82" r="5" fill="#9148ff"></circle>
-                <circle cx="570" cy="50" r="5" fill="#9148ff"></circle>
-                <circle cx="680" cy="20" r="5" fill="#9148ff"></circle>
+                    <span><%= ActivityYAxisMax %></span>
+                    <span><%= ActivityYAxisMidHigh %></span>
+                    <span><%= ActivityYAxisMidLow %></span>
+                    <span>0</span>
 
-            </svg>
+                </div>
 
-            <div class="chart-days">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
+            </div>
+
+
+
+            <%-- =============================================
+                 CHART BODY
+                 ============================================= --%>
+
+            <div class="activity-chart-body">
+
+
+                <%-- GRID LINES --%>
+
+                <div
+                    class="chart-grid-line line-1"
+                    aria-hidden="true">
+                </div>
+
+
+                <div
+                    class="chart-grid-line line-2"
+                    aria-hidden="true">
+                </div>
+
+
+                <div
+                    class="chart-grid-line line-3"
+                    aria-hidden="true">
+                </div>
+
+
+
+                <%-- SVG CHART --%>
+
+                <svg
+                    class="activity-svg"
+                    viewBox="0 0 700 180"
+                    preserveAspectRatio="none"
+                    role="img"
+                    aria-labelledby="activity-chart-title">
+
+
+                    <title id="activity-chart-title">
+                        Number of quiz attempts recorded from Monday to Sunday.
+                    </title>
+
+
+
+                    <%-- AREA UNDER LINE --%>
+
+                    <polygon
+                        points="<%= ActivityPolygonPoints %>"
+                        fill="rgba(145,72,255,0.12)">
+                    </polygon>
+
+
+
+                    <%-- ACTIVITY LINE --%>
+
+                    <polyline
+                        points="<%= ActivityPolylinePoints %>"
+                        fill="none"
+                        stroke="#9148ff"
+                        stroke-width="4">
+                    </polyline>
+
+
+
+                    <%-- DATA POINTS --%>
+
+                    <%= ActivityCircles %>
+
+
+                </svg>
+
+
+
+                <%-- =========================================
+                     DAYS + EXACT VALUES
+                     ========================================= --%>
+
+                <div class="chart-days">
+
+
+                    <span>
+
+                        Mon
+
+                        <small>
+                            <%= ActivityCounts[0] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Tue
+
+                        <small>
+                            <%= ActivityCounts[1] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Wed
+
+                        <small>
+                            <%= ActivityCounts[2] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Thu
+
+                        <small>
+                            <%= ActivityCounts[3] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Fri
+
+                        <small>
+                            <%= ActivityCounts[4] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Sat
+
+                        <small>
+                            <%= ActivityCounts[5] %>
+                        </small>
+
+                    </span>
+
+
+                    <span>
+
+                        Sun
+
+                        <small>
+                            <%= ActivityCounts[6] %>
+                        </small>
+
+                    </span>
+
+
+                </div>
+
             </div>
 
         </div>
+
     </section>
 
-    <!-- BOTTOM SECTION -->
-    <section class="admin-bottom-grid"
-             aria-label="Recent signups and reports">
 
-        <!-- RECENT SIGNUPS -->
+
+    <%-- =====================================================
+         BOTTOM SECTION
+         ===================================================== --%>
+
+    <section
+        class="admin-bottom-grid"
+        aria-label="Recent signups and reports">
+
+
+        <%-- =================================================
+             RECENT USER SIGNUPS
+             ================================================= --%>
+
         <div class="admin-card">
+
 
             <h2 class="admin-card-title">
                 Recent User Signups
             </h2>
 
-            <div class="signup-row">
-                <div>
-                    <div class="signup-name">Farah Aziz</div>
-                    <div class="signup-date">joined today</div>
-                </div>
 
-                <span class="role-badge student-badge">
-                    Student
-                </span>
-            </div>
+            <asp:Repeater
+                ID="rptRecentUsers"
+                runat="server">
 
-            <div class="signup-row">
-                <div>
-                    <div class="signup-name">Hafiz Salleh</div>
-                    <div class="signup-date">joined today</div>
-                </div>
 
-                <span class="role-badge student-badge">
-                    Student
-                </span>
-            </div>
+                <ItemTemplate>
 
-            <div class="signup-row">
-                <div>
-                    <div class="signup-name">Dr. Wong Mei</div>
-                    <div class="signup-date">joined yesterday</div>
-                </div>
 
-                <span class="role-badge lecturer-badge">
-                    Lecturer
-                </span>
-            </div>
+                    <div class="signup-row">
+
+
+                        <div>
+
+
+                            <div class="signup-name">
+
+                                <%# Eval("FullName") %>
+
+                            </div>
+
+
+                            <div class="signup-date">
+
+                                <%#
+                                    GetJoinedText(
+                                        Eval("CreatedAt")
+                                    )
+                                %>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <span class='<%#
+                            GetRoleBadgeClass(
+                                Eval("RoleName")
+                            )
+                        %>'>
+
+                            <%# Eval("RoleName") %>
+
+                        </span>
+
+
+                    </div>
+
+
+                </ItemTemplate>
+
+
+            </asp:Repeater>
+
+
+
+            <asp:Panel
+                ID="pnlNoRecentUsers"
+                runat="server"
+                Visible="false"
+                CssClass="dashboard-empty">
+
+                No recent user signups.
+
+            </asp:Panel>
+
 
         </div>
 
-        <!-- PENDING REPORTS -->
+
+
+        <%-- =================================================
+             PENDING FEEDBACK REPORTS
+             ================================================= --%>
+
         <div class="admin-card">
+
 
             <h2 class="admin-card-title">
                 Pending Feedback Reports
             </h2>
 
-            <div class="report-row">
-                <span class="report-tag content-bug">
-                    Content Bug
-                </span>
 
-                <span class="report-description">
-                    Mathematics quiz
-                </span>
+            <asp:Repeater
+                ID="rptPendingReports"
+                runat="server">
 
-                <a href="<%= ResolveUrl("~/Admin/FeedbackReports.aspx") %>"
-                   class="review-button"
-                   aria-label="Review feedback reports about Mathematics quiz">
-                    Review
-                </a>
-            </div>
 
-            <div class="report-row">
-                <span class="report-tag technical-issue">
-                    Technical Issue
-                </span>
+                <ItemTemplate>
 
-                <span class="report-description">
-                    Login page
-                </span>
 
-                <a href="<%= ResolveUrl("~/Admin/FeedbackReports.aspx") %>"
-                   class="review-button"
-                   aria-label="Review feedback reports about the login page">
-                    Review
-                </a>
-            </div>
+                    <div class="report-row">
 
-            <div class="report-row">
-                <span class="report-tag student-conduct">
-                    Student Conduct
-                </span>
 
-                <span class="report-description">
-                    reported by Mr. Rahman
-                </span>
+                        <span class='<%#
+                            GetReportStatusClass(
+                                Eval("Status")
+                            )
+                        %>'>
 
-                <a href="<%= ResolveUrl("~/Admin/FeedbackReports.aspx") %>"
-                   class="review-button"
-                   aria-label="Review feedback reports from Mr. Rahman">
-                    Review
-                </a>
-            </div>
+                            <%# Eval("Status") %>
+
+                        </span>
+
+
+
+                        <span class="report-description">
+
+                            <%# Eval("DisplayTitle") %>
+
+                        </span>
+
+
+
+                        <a
+                            href='<%#
+                                ResolveUrl(
+                                    "~/Admin/RespondFeedback.aspx?id="
+                                    + Eval("FeedbackId")
+                                )
+                            %>'
+                            class="review-button">
+
+                            Review
+
+                        </a>
+
+
+                    </div>
+
+
+                </ItemTemplate>
+
+
+            </asp:Repeater>
+
+
+
+            <asp:Panel
+                ID="pnlNoPendingReports"
+                runat="server"
+                Visible="false"
+                CssClass="dashboard-empty">
+
+                No pending feedback reports.
+
+            </asp:Panel>
+
 
         </div>
+
+
     </section>
+
 
 </asp:Content>

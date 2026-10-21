@@ -5,6 +5,16 @@
     CodeBehind="UserManagement.aspx.cs"
     Inherits="SPMaster.Admin.UserManagement" %>
 
+<asp:Content
+    ID="UserManagementHead"
+    ContentPlaceHolderID="DashboardHead"
+    runat="server">
+
+    <link
+        href="<%= ResolveUrl("~/Content/UserManagement.css") %>"
+        rel="stylesheet" />
+
+</asp:Content>
 
 <asp:Content
     ID="AdminTitle"
@@ -179,33 +189,25 @@
         </asp:Panel>
 
 
-        <!-- PAGE HEADER -->
-        <div class="user-management-header">
+                    <!-- PAGE ACTIONS -->
+            <div class="user-management-actions">
 
-            <div>
-
-                <h2>
-                    User Management
-                </h2>
-
-                <p>
+                <p class="user-management-description">
                     Manage student, lecturer and admin accounts
                 </p>
 
+
+                <asp:HyperLink
+                    ID="lnkAddUser"
+                    runat="server"
+                    NavigateUrl="~/Admin/AddUser.aspx"
+                    CssClass="add-user-button">
+
+                    + Add User
+
+                </asp:HyperLink>
+
             </div>
-
-
-            <asp:HyperLink
-                ID="lnkAddUser"
-                runat="server"
-                NavigateUrl="~/Admin/AddUser.aspx"
-                CssClass="add-user-button">
-
-                + Add User
-
-            </asp:HyperLink>
-
-        </div>
 
 
         <!-- FILTER BAR -->

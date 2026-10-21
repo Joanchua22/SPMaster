@@ -24,6 +24,15 @@ namespace SPMaster.Master
         protected global::System.Web.UI.WebControls.ContentPlaceHolder PortalHead;
 
         /// <summary>
+        /// DashboardHead control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardHead;
+
+        /// <summary>
         /// portalForm control.
         /// </summary>
         /// <remarks>
@@ -33,6 +42,42 @@ namespace SPMaster.Master
         protected global::System.Web.UI.HtmlControls.HtmlForm portalForm;
 
         /// <summary>
+        /// DashboardTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardTitle;
+
+        /// <summary>
+        /// DashboardNavigation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardNavigation;
+
+        /// <summary>
+        /// DashboardAccountNavigation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardAccountNavigation;
+
+        /// <summary>
+        /// DashboardUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardUser;
+
+        /// <summary>
         /// PortalContent control.
         /// </summary>
         /// <remarks>
@@ -40,6 +85,24 @@ namespace SPMaster.Master
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder PortalContent;
+
+        /// <summary>
+        /// DashboardContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardContent;
+
+        /// <summary>
+        /// DashboardScripts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardScripts;
 
         /// <summary>
         /// PortalScripts control.

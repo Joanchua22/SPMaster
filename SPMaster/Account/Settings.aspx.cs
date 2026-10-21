@@ -6,6 +6,49 @@ namespace SPMaster.Account
 {
     public partial class Settings : System.Web.UI.Page
     {
+        protected void Page_PreInit(
+            object sender,
+            EventArgs e)
+                {
+                    // User must be logged in
+                    if (
+                        Session["Role"] == null
+                    )
+                    {
+                        Response.Redirect(
+                            "~/Login.aspx"
+                        );
+
+                        return;
+                    }
+
+
+                    string role =
+                        Session["Role"]
+                        .ToString()
+                        .Trim();
+
+
+                    // Admin uses Dashboard.Master
+                    if (
+                        role.Equals(
+                            "Admin",
+                            StringComparison.OrdinalIgnoreCase
+                        )
+                    )
+                    {
+                        MasterPageFile =
+                            "~/Master/Dashboard.Master";
+                    }
+
+                    // Student and Lecturer use Portal.Master
+                    else
+                    {
+                        MasterPageFile =
+                            "~/Master/Portal.Master";
+                    }
+                }
+
         protected void Page_Load(
             object sender,
             EventArgs e)

@@ -5,8 +5,12 @@
             ".success-popup"
         );
 
+
     if (popup) {
-        popup.style.display = "none";
+
+        popup.style.display =
+            "none";
+
     }
 }
 
@@ -29,12 +33,12 @@ window.addEventListener(
 
         if (
             url.searchParams.has(
-                "reviewed"
+                "unpublished"
             )
         ) {
 
             url.searchParams.delete(
-                "reviewed"
+                "unpublished"
             );
 
 

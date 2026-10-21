@@ -1,0 +1,383 @@
+﻿/* =========================================================
+   FEEDBACK & REPORTS
+   ========================================================= */
+
+.feedback-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   PAGE DESCRIPTION
+   ========================================================= */
+
+.feedback-description {
+    margin: 0 0 18px;
+    color: var(--dashboard-muted);
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.feedback-tabs {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+
+.feedback-tab {
+    position: relative;
+    padding: 10px 2px;
+    color: var(--dashboard-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+    .feedback-tab:hover {
+        color: var(--dashboard-navy);
+    }
+
+
+    .feedback-tab.active {
+        color: var(--dashboard-navy);
+    }
+
+
+        .feedback-tab.active::after {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--dashboard-purple);
+            content: "";
+        }
+
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.feedback-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 0 4px 10px;
+}
+
+
+    .feedback-section-title h3 {
+        margin: 0;
+        color: var(--dashboard-navy);
+        font-size: 17px;
+    }
+
+
+    .feedback-section-title span {
+        color: var(--dashboard-muted);
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   FEEDBACK LIST
+   ========================================================= */
+
+.feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.feedback-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 18px;
+    border-radius: 11px;
+    background: #ffffff;
+    box-shadow: 0 2px 7px rgba(44, 37, 82, 0.08);
+}
+
+
+.feedback-main {
+    min-width: 0;
+    flex: 1;
+}
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.feedback-user-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+}
+
+
+    .feedback-user-line strong {
+        color: var(--dashboard-navy);
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   ROLE + TYPE
+   ========================================================= */
+
+.feedback-role,
+.feedback-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.student-role {
+    color: #c43e85;
+    background: #ffe3f1;
+}
+
+
+.lecturer-role {
+    color: #32769b;
+    background: #ddf3ff;
+}
+
+
+.feedback-type {
+    color: #7057c8;
+    background: #ebe5ff;
+}
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+.feedback-quiz {
+    margin-bottom: 5px;
+    color: #746f7d;
+    font-size: 11px;
+}
+
+
+    .feedback-quiz i {
+        margin-right: 4px;
+    }
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.feedback-message {
+    margin-bottom: 7px;
+    color: #625d69;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+
+.feedback-date {
+    color: #95909d;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.feedback-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* =========================================================
+   STATUS DROPDOWN
+   ========================================================= */
+
+.feedback-status-select {
+    min-width: 135px;
+    min-height: 38px;
+    padding: 7px 32px 7px 10px;
+    border: 1px solid #eeeaf2;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #4c4753;
+    font-family: inherit;
+    font-size: 11px;
+    outline: none;
+}
+
+
+    .feedback-status-select:focus {
+        border-color: var(--dashboard-purple);
+        box-shadow: 0 0 0 3px rgba(140, 77, 255, 0.10);
+    }
+
+
+/* =========================================================
+   RESPOND BUTTON
+   ========================================================= */
+
+.feedback-respond-button {
+    display: inline-flex;
+    min-height: 38px;
+    padding: 8px 18px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: var(--dashboard-purple);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+    .feedback-respond-button:hover {
+        opacity: 0.9;
+    }
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.feedback-empty {
+    padding: 45px 20px;
+    border-radius: 11px;
+    background: #ffffff;
+    text-align: center;
+    color: var(--dashboard-muted);
+}
+
+
+    .feedback-empty i {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 28px;
+    }
+
+
+    .feedback-empty p {
+        margin: 0;
+    }
+
+
+/* =========================================================
+   RESPONSE PERFORMANCE
+   ========================================================= */
+
+.feedback-stat-card {
+    margin-top: 18px;
+    padding: 22px;
+    border-radius: 11px;
+    background: #ffffff;
+    box-shadow: 0 2px 7px rgba(44, 37, 82, 0.08);
+}
+
+
+    .feedback-stat-card h3 {
+        margin: 0 0 20px;
+        color: var(--dashboard-navy);
+        font-size: 16px;
+    }
+
+
+.feedback-stat-grid {
+    display: flex;
+    gap: 70px;
+}
+
+
+.feedback-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.feedback-stat-label {
+    color: var(--dashboard-muted);
+    font-size: 12px;
+}
+
+
+.feedback-stat strong {
+    color: var(--dashboard-navy);
+    font-size: 23px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media screen and (max-width: 760px) {
+
+    .feedback-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .feedback-actions {
+        justify-content: flex-end;
+    }
+
+
+    .feedback-stat-grid {
+        gap: 35px;
+    }
+}
+
+
+@media screen and (max-width: 520px) {
+
+    .feedback-tabs {
+        gap: 15px;
+    }
+
+
+    .feedback-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .feedback-status-select,
+    .feedback-respond-button {
+        width: 100%;
+    }
+
+
+    .feedback-stat-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
