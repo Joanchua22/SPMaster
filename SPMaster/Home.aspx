@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Master/Site.Master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="SPMaster.Home" %>
+
 <asp:Content ID="HomeHead" ContentPlaceHolderID="head" runat="server">
     <link href="<%= ResolveUrl("~/Content/Home.css") %>?v=2" rel="stylesheet" type="text/css" />
     <meta charset="utf-8" />
@@ -6,6 +7,7 @@
 </asp:Content>
 
 <asp:Content ID ="HomeContent" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    
     <div class="home-page">
 
         <!-- HERO -->
@@ -30,16 +32,6 @@
                         <span aria-hidden="true">▷</span> See how it works
                     </a>
                 </div>
-
-                <div class="hero-note">
-                    <span class="student-dots" aria-hidden="true">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-
-                    <span>Six subjects. One place to practise.</span>
-                </div>
             </div>
 
             <!-- Decorative artwork, created with CSS -->
@@ -53,43 +45,62 @@
         <!-- FEATURES -->
         <section id="features" class="features-section" aria-labelledby="features-title">
 
-            <h2 id="features-title" class="visually-hidden">
-                Features that support your learning
-            </h2>
+            <div class="features-heading">
+
+                <span class="features-label"> FEATURES </span>
+
+                <h2 id="features-title"> What We Provide？</h2>
+
+                <p>
+                    Everything you need to practise, track progress, and improve your SPM preparation.
+                </p>
+
+            </div>
+
 
             <div class="feature-grid">
 
                 <article class="feature-card">
-                    <span class="feature-icon icon-pink" aria-hidden="true">▤</span>
 
-                    <h3>SPM-ready quizzes</h3>
+                    <span class="feature-icon icon-pink" aria-hidden="true"> ▤ </span>
+
+                    <h3>SPM-ready quizzes
+                    </h3>
 
                     <p>
                         Practise objective and subjective questions across your favourite SPM subjects.
                     </p>
+
                 </article>
 
+
                 <article class="feature-card">
-                    <span class="feature-icon icon-blue" aria-hidden="true">▥</span>
+
+                    <span class="feature-icon icon-blue" aria-hidden="true"> ▥ </span>
 
                     <h3>See your progress</h3>
 
                     <p>
                         Review your scores, explore past attempts and discover which topics need more practice.
                     </p>
+
                 </article>
 
+
                 <article class="feature-card">
+
                     <span class="feature-icon icon-green" aria-hidden="true">☆</span>
 
-                    <h3>Learn with feedback</h3>
+                    <h3> Learn with feedback</h3>
 
                     <p>
                         Check objective results and receive teacher feedback on your subjective answers.
                     </p>
+                 
                 </article>
 
             </div>
+
         </section>
 
         <!-- REGISTRATION BANNER -->
@@ -168,13 +179,12 @@
             </div>
 
             <div class="subjects-panel">
-                <h3>Explore our six subjects</h3>
+                <h3>Explore our five subjects</h3>
 
                 <ul class="subject-list">
                     <li>Sejarah</li>
                     <li>Bahasa Melayu</li>
                     <li>English</li>
-                    <li>Bahasa Cina</li>
                     <li>Mathematics</li>
                     <li>Science</li>
                 </ul>

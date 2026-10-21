@@ -18,11 +18,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -35,30 +31,16 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
 
-
-        // =========================================================
-        // PAGE LOAD
-        // =========================================================
-
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender,EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
@@ -98,120 +80,30 @@ namespace SPMaster.Lecturer
 
         private void LoadQuestionBankSummary()
         {
-            const string sql = @"
-                SELECT
-                    COUNT(*) AS TotalQuestions,
+            const string sql = @"SELECT COUNT(*) AS TotalQuestions, SUM(CASE WHEN QuestionType = 'MCQ' THEN 1 ELSE 0 END) AS McqCount, 
+                            SUM(CASE WHEN QuestionType <> 'MCQ' THEN 1 ELSE 0 END) AS SubjectiveCount FROM Questions WHERE CreatedByUserId = @LecturerId AND IsArchived = 0;";
 
-                    SUM(
-                        CASE
-                            WHEN QuestionType = 'MCQ'
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS McqCount,
-
-                    SUM(
-                        CASE
-                            WHEN QuestionType <> 'MCQ'
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS SubjectiveCount
-
-                FROM Questions
-
-                WHERE
-                    CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    IsArchived = 0;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
-
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value =CurrentUserId;
 
                 connection.Open();
 
-
-                using (
-                    SqlDataReader reader =
-                        command.ExecuteReader()
-                )
+                using (SqlDataReader reader =command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        int total =
-                            Convert.ToInt32(
-                                reader[
-                                    "TotalQuestions"
-                                ]
-                            );
-
-
-                        int mcq =
-                            reader[
-                                "McqCount"
-                            ] == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "McqCount"
-                                    ]
-                                );
-
-
-                        int subjective =
-                            reader[
-                                "SubjectiveCount"
-                            ] == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "SubjectiveCount"
-                                    ]
-                                );
-
-
-                        litQuestionBankTotal.Text =
-                            total
-                            + (
-                                total == 1
-                                    ? " Item"
-                                    : " Items"
-                            );
-
-
-                        litQuestionBankBreakdown.Text =
-                            mcq
-                            + " MCQ • "
-                            + subjective
-                            + " Subjective";
+                        int total = Convert.ToInt32(reader["TotalQuestions"]);
+                        int mcq = reader["McqCount"] == DBNull.Value ? 0 : Convert.ToInt32(reader["McqCount"]);
+                        int subjective = reader["SubjectiveCount"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SubjectiveCount"]);
+                        litQuestionBankTotal.Text = total + (total == 1 ? " Item" : " Items");
+                        litQuestionBankBreakdown.Text = mcq + " MCQ • " + subjective + " Subjective";
                     }
                 }
             }
         }
-
-
 
         // =========================================================
         // QUIZ SUMMARY
@@ -219,112 +111,29 @@ namespace SPMaster.Lecturer
 
         private void LoadQuizSummary()
         {
-            const string sql = @"
-                SELECT
+            const string sql = @"SELECT SUM(CASE WHEN IsPublished = 1 THEN 1 ELSE 0 END) AS PublishedCount, SUM(CASEWHEN IsPublished = 0 THEN 1 ELSE 0 END) AS DraftCount
+                                FROM Quizzes WHERE CreatedByUserId = @LecturerId AND IsArchived = 0;";
 
-                    SUM(
-                        CASE
-                            WHEN IsPublished = 1
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS PublishedCount,
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
 
-                    SUM(
-                        CASE
-                            WHEN IsPublished = 0
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) AS DraftCount
-
-                FROM Quizzes
-
-                WHERE
-                    CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    IsArchived = 0;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
-
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                 connection.Open();
 
-
-                using (
-                    SqlDataReader reader =
-                        command.ExecuteReader()
-                )
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        int published =
-                            reader[
-                                "PublishedCount"
-                            ] == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "PublishedCount"
-                                    ]
-                                );
-
-
-                        int drafts =
-                            reader[
-                                "DraftCount"
-                            ] == DBNull.Value
-                                ? 0
-                                : Convert.ToInt32(
-                                    reader[
-                                        "DraftCount"
-                                    ]
-                                );
-
-
-                        litPublishedQuizCount.Text =
-                            published
-                            + (
-                                published == 1
-                                    ? " Quiz"
-                                    : " Quizzes"
-                            );
-
-
-                        litDraftQuizCount.Text =
-                            drafts
-                            + (
-                                drafts == 1
-                                    ? " Draft"
-                                    : " Drafts"
-                            );
+                        int published = reader["PublishedCount"] == DBNull.Value ? 0 : Convert.ToInt32(reader["PublishedCount"]);
+                        int drafts = reader["DraftCount"] == DBNull.Value ? 0 : Convert.ToInt32(reader["DraftCount"]);
+                        litPublishedQuizCount.Text = published + (published == 1 ? " Quiz" : " Quizzes");
+                        litDraftQuizCount.Text = drafts + (drafts == 1 ? " Draft" : " Drafts");
                     }
                 }
             }
         }
-
 
 
         // =========================================================
@@ -333,112 +142,40 @@ namespace SPMaster.Lecturer
 
         private void LoadGradingSummary()
         {
-            const string sql = @"
-                SELECT
-                    COUNT(*)
-
-                FROM QuizAttempts qa
-
-                INNER JOIN Quizzes q
-                    ON qa.QuizId =
-                       q.QuizId
-
-                WHERE
-                    q.CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    qa.AttemptStatus =
-                        'PendingGrading';
-            ";
-
+            const string sql = @"SELECT COUNT(*) FROM QuizAttempts qa INNER JOIN Quizzes q ON qa.QuizId = q.QuizId WHERE q.CreatedByUserId = @LecturerId AND qa.AttemptStatus = 'PendingGrading';";
 
             int pendingCount;
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
-
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                 connection.Open();
 
-
-                pendingCount =
-                    Convert.ToInt32(
-                        command.ExecuteScalar()
-                    );
+                pendingCount = Convert.ToInt32(command.ExecuteScalar());
             }
 
-
-            litGradingQueueCount.Text =
-                pendingCount
-                + " Pending";
-
-
-            litSideQueueCount.Text =
-                pendingCount.ToString();
-
+            litGradingQueueCount.Text = pendingCount + " Pending";
+            litSideQueueCount.Text = pendingCount.ToString();
 
             // =============================================
             // NO PENDING GRADING
             // =============================================
 
-            if (
-                pendingCount == 0
-            )
+            if (pendingCount == 0)
             {
-                pnlGradingAlert.Visible =
-                    true;
-
-
-                litGradingAlertCount.Text =
-                    "You're all caught up!";
-
-
-                litGradingAlertDescription.Text =
-                    "There are currently no subjective submissions waiting for grading.";
-
-
-                lnkGradeSubmissions.Visible =
-                    false;
-
-
+                pnlGradingAlert.Visible = true;
+                litGradingAlertCount.Text = "You're all caught up!";
+                litGradingAlertDescription.Text = "There are currently no subjective submissions waiting for grading.";
+                lnkGradeSubmissions.Visible = false;
                 return;
             }
 
-            pnlGradingAlert.Visible =
-                true;
-
-
-            lnkGradeSubmissions.Visible =
-                true;
-
-
-            litGradingAlertCount.Text =
-                pendingCount
-                + (
-                    pendingCount == 1
-                        ? " Submission Awaiting Grading"
-                        : " Submissions Awaiting Grading"
-                );
-
+            pnlGradingAlert.Visible = true;
+            lnkGradeSubmissions.Visible = true;
+            litGradingAlertCount.Text = pendingCount + (pendingCount == 1 ? " Submission Awaiting Grading" : " Submissions Awaiting Grading");
 
             LoadGradingAlertTitles();
         }
@@ -451,132 +188,46 @@ namespace SPMaster.Lecturer
 
         private void LoadGradingAlertTitles()
         {
-            const string sql = @"
-                SELECT TOP 2
-                    q.Title,
+            const string sql = @" SELECT TOP 2 q.Title, MAX(qa.SubmittedAt) AS LatestSubmission FROM QuizAttempts qa INNER JOIN Quizzes q ON qa.QuizId = q.QuizId
+                            WHERE q.CreatedByUserId = @LecturerId AND qa.AttemptStatus = 'PendingGrading' GROUP BY q.QuizId, q.Title ORDER BY LatestSubmission DESC;";
 
-                    MAX(
-                        qa.SubmittedAt
-                    ) AS LatestSubmission
+            string firstTitle = null;
+            string secondTitle = null;
 
-                FROM QuizAttempts qa
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
 
-                INNER JOIN Quizzes q
-                    ON qa.QuizId =
-                       q.QuizId
-
-                WHERE
-                    q.CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    qa.AttemptStatus =
-                        'PendingGrading'
-
-                GROUP BY
-                    q.QuizId,
-                    q.Title
-
-                ORDER BY
-                    LatestSubmission DESC;
-            ";
-
-
-            string firstTitle =
-                null;
-
-
-            string secondTitle =
-                null;
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
-
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                 connection.Open();
 
-
-                using (
-                    SqlDataReader reader =
-                        command.ExecuteReader()
-                )
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        firstTitle =
-                            reader[
-                                "Title"
-                            ].ToString();
+                        firstTitle = reader["Title"].ToString();
                     }
-
 
                     if (reader.Read())
                     {
-                        secondTitle =
-                            reader[
-                                "Title"
-                            ].ToString();
+                        secondTitle = reader["Title"].ToString();
                     }
                 }
             }
 
 
-            if (
-                !string.IsNullOrWhiteSpace(
-                    firstTitle
-                )
-                &&
-                !string.IsNullOrWhiteSpace(
-                    secondTitle
-                )
-            )
+            if (!string.IsNullOrWhiteSpace(firstTitle) && !string.IsNullOrWhiteSpace(secondTitle))
             {
-                litGradingAlertDescription.Text =
-                    "Student attempts in <strong>\""
-                    + HttpUtility.HtmlEncode(
-                        firstTitle
-                    )
-                    + "\"</strong> and <strong>\""
-                    + HttpUtility.HtmlEncode(
-                        secondTitle
-                    )
-                    + "\"</strong> are waiting for your subjective mark allocation.";
+                litGradingAlertDescription.Text = "Student attempts in <strong>\"" + HttpUtility.HtmlEncode(firstTitle) + "\"</strong> and <strong>\"" + HttpUtility.HtmlEncode(secondTitle) + "\"</strong> are waiting for your subjective mark allocation.";
             }
-            else if (
-                !string.IsNullOrWhiteSpace(
-                    firstTitle
-                )
-            )
+            else if (!string.IsNullOrWhiteSpace(firstTitle))
             {
-                litGradingAlertDescription.Text =
-                    "Student attempts in <strong>\""
-                    + HttpUtility.HtmlEncode(
-                        firstTitle
-                    )
-                    + "\"</strong> are waiting for your subjective mark allocation.";
+                litGradingAlertDescription.Text = "Student attempts in <strong>\"" + HttpUtility.HtmlEncode(firstTitle) + "\"</strong> are waiting for your subjective mark allocation.";
             }
             else
             {
-                litGradingAlertDescription.Text =
-                    "Student attempts are waiting for your subjective mark allocation.";
+                litGradingAlertDescription.Text = "Student attempts are waiting for your subjective mark allocation.";
             }
         }
 
@@ -588,149 +239,30 @@ namespace SPMaster.Lecturer
 
         private void BindRecentQuizzes()
         {
-            const string sql = @"
-                SELECT TOP 3
-                    q.QuizId,
-                    q.Title,
-                    q.TimeLimitMinutes,
-                    q.IsPublished,
-                    q.CreatedAt,
+            const string sql = @"SELECT TOP 3 q.QuizId, q.Title, q.TimeLimitMinutes, q.IsPublished, q.CreatedAt, s.SubjectName, f.FormName,
+                            (SELECT COUNT(*) FROM QuizQuestions qq WHERE qq.QuizId = q.QuizId) AS QuestionCount,
+                            (SELECT ISNULL (SUMqq.MaxMarks),0) FROM QuizQuestions qq WHERE qq.QuizId = q.QuizId) AS TotalMarks,
+                            (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId) AS AttemptCount,
+                            (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus = 'PendingGrading') AS PendingCount
+                            FROM Quizzes q INNER JOIN Subjects s ON q.SubjectId = s.SubjectId INNER JOIN Forms f ON q.FormId = f.FormId WHERE q.CreatedByUserId = @LecturerId AND q.IsArchived = 0 ORDER BY q.CreatedAt DESC;";
 
-                    s.SubjectName,
-                    f.FormName,
+            DataTable table = new DataTable();
 
-                    (
-                        SELECT
-                            COUNT(*)
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
 
-                        FROM QuizQuestions qq
-
-                        WHERE
-                            qq.QuizId =
-                                q.QuizId
-
-                    ) AS QuestionCount,
-
-                    (
-                        SELECT
-                            ISNULL(
-                                SUM(
-                                    qq.MaxMarks
-                                ),
-                                0
-                            )
-
-                        FROM QuizQuestions qq
-
-                        WHERE
-                            qq.QuizId =
-                                q.QuizId
-
-                    ) AS TotalMarks,
-
-                    (
-                        SELECT
-                            COUNT(*)
-
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                    ) AS AttemptCount,
-
-                    (
-                        SELECT
-                            COUNT(*)
-
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                            AND
-                            qa.AttemptStatus =
-                                'PendingGrading'
-
-                    ) AS PendingCount
-
-
-                FROM Quizzes q
-
-                INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
-
-                INNER JOIN Forms f
-                    ON q.FormId =
-                       f.FormId
-
-                WHERE
-                    q.CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    q.IsArchived =
-                        0
-
-                ORDER BY
-                    q.CreatedAt DESC;
-            ";
-
-
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
-
-                using (
-                    SqlDataAdapter adapter =
-                        new SqlDataAdapter(
-                            command
-                        )
-                )
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    adapter.Fill(
-                        table
-                    );
+                    adapter.Fill(table);
                 }
             }
 
-
-            pnlNoRecentQuizzes.Visible =
-                table.Rows.Count == 0;
-
-
-            rptRecentQuizzes.Visible =
-                table.Rows.Count > 0;
-
-
-            rptRecentQuizzes.DataSource =
-                table;
-
-
+            pnlNoRecentQuizzes.Visible = table.Rows.Count == 0;
+            rptRecentQuizzes.Visible = table.Rows.Count > 0;
+            rptRecentQuizzes.DataSource = table;
             rptRecentQuizzes.DataBind();
         }
 
@@ -742,92 +274,27 @@ namespace SPMaster.Lecturer
 
         private void BindGradingQueue()
         {
-            const string sql = @"
-                SELECT TOP 3
-                    qa.AttemptId,
-                    qa.SubmittedAt,
+            const string sql = @"SELECT TOP 3 qa.AttemptId, qa.SubmittedAt, student.FullName AS StudentName, q.Title AS QuizTitle FROM QuizAttempts qa
+                            INNER JOIN Quizzes q ON qa.QuizId = q.QuizId INNER JOIN Users student ON qa.StudentUserId = student.UserId WHERE q.CreatedByUserId = @LecturerId AND qa.AttemptStatus = 'PendingGrading' ORDER BY qa.SubmittedAt DESC, qa.AttemptId DESC;";
 
-                    student.FullName
-                        AS StudentName,
+            DataTable table = new DataTable();
 
-                    q.Title
-                        AS QuizTitle
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
 
-                FROM QuizAttempts qa
-
-                INNER JOIN Quizzes q
-                    ON qa.QuizId =
-                       q.QuizId
-
-                INNER JOIN Users student
-                    ON qa.StudentUserId =
-                       student.UserId
-
-                WHERE
-                    q.CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    qa.AttemptStatus =
-                        'PendingGrading'
-
-                ORDER BY
-                    qa.SubmittedAt DESC,
-                    qa.AttemptId DESC;
-            ";
-
-
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value =CurrentUserId;
 
-
-                using (
-                    SqlDataAdapter adapter =
-                        new SqlDataAdapter(
-                            command
-                        )
-                )
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    adapter.Fill(
-                        table
+                    adapter.Fill(table
                     );
                 }
             }
 
-
-            pnlNoGradingQueue.Visible =
-                table.Rows.Count == 0;
-
-
-            rptGradingQueue.Visible =
-                table.Rows.Count > 0;
-
-
-            rptGradingQueue.DataSource =
-                table;
-
-
+            pnlNoGradingQueue.Visible = table.Rows.Count == 0;
+            rptGradingQueue.Visible = table.Rows.Count > 0;
+            rptGradingQueue.DataSource = table;
             rptGradingQueue.DataBind();
         }
 
@@ -839,154 +306,32 @@ namespace SPMaster.Lecturer
 
         private void LoadCohortPerformance()
         {
-            const string sql = @"
-                WITH QuizTotals AS
-                (
-                    SELECT
-                        q.QuizId,
+            const string sql = @"WITH QuizTotals AS (SELECT q.QuizId, ISNULL (SUM( qq.MaxMarks),0) AS TotalMarks FROM Quizzes q LEFT JOIN QuizQuestions qq ON q.QuizId = qq.QuizId
+                            WHERE q.CreatedByUserId = @LecturerId AND q.IsArchived = 0 GROUP BY q.QuizId), AttemptScores AS (SELECT qa.AttemptId, CASE WHEN qt.TotalMarks > 0 THEN ISNULL (SUM (ISNULL (sa.MarksAwarded,0)),0) * 100.0 / qt.TotalMarks ELSE 0 END AS Percentage 
+                            FROM QuizAttempts qa INNER JOIN QuizTotals qt ON qa.QuizId = qt.QuizId LEFT JOIN StudentAnswers sa ON qa.AttemptId = sa.AttemptId 
+                            WHERE qa.AttemptStatus ='Graded' GROUP BY qa.AttemptId, qt.TotalMarks) SELECT COUNT(*) AS GradedAttempts, AVG(Percentage) AS AverageScore FROM AttemptScores;";
 
-                        ISNULL(
-                            SUM(
-                                qq.MaxMarks
-                            ),
-                            0
-                        ) AS TotalMarks
-
-                    FROM Quizzes q
-
-                    LEFT JOIN QuizQuestions qq
-                        ON q.QuizId =
-                           qq.QuizId
-
-                    WHERE
-                        q.CreatedByUserId =
-                            @LecturerId
-
-                        AND
-                        q.IsArchived =
-                            0
-
-                    GROUP BY
-                        q.QuizId
-                ),
-
-                AttemptScores AS
-                (
-                    SELECT
-                        qa.AttemptId,
-
-                        CASE
-
-                            WHEN
-                                qt.TotalMarks > 0
-
-                            THEN
-                                ISNULL(
-                                    SUM(
-                                        ISNULL(
-                                            sa.MarksAwarded,
-                                            0
-                                        )
-                                    ),
-                                    0
-                                )
-                                * 100.0
-                                /
-                                qt.TotalMarks
-
-                            ELSE 0
-
-                        END AS Percentage
-
-                    FROM QuizAttempts qa
-
-                    INNER JOIN QuizTotals qt
-                        ON qa.QuizId =
-                           qt.QuizId
-
-                    LEFT JOIN StudentAnswers sa
-                        ON qa.AttemptId =
-                           sa.AttemptId
-
-                    WHERE
-                        qa.AttemptStatus =
-                            'Graded'
-
-                    GROUP BY
-                        qa.AttemptId,
-                        qt.TotalMarks
-                )
-
-                SELECT
-                    COUNT(*) AS GradedAttempts,
-
-                    AVG(
-                        Percentage
-                    ) AS AverageScore
-
-                FROM AttemptScores;
-            ";
+            int gradedAttempts = 0;
+            decimal averageScore = 0;
 
 
-            int gradedAttempts =
-                0;
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
 
-
-            decimal averageScore =
-                0;
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(sql,connection))
             {
-                command.Parameters.Add(
-                    "@LecturerId",
-                    SqlDbType.Int
-                ).Value =
-                    CurrentUserId;
-
+                command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                 connection.Open();
 
-
-                using (
-                    SqlDataReader reader =
-                        command.ExecuteReader()
-                )
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        gradedAttempts =
-                            Convert.ToInt32(
-                                reader[
-                                    "GradedAttempts"
-                                ]
-                            );
+                        gradedAttempts = Convert.ToInt32(reader["GradedAttempts"]);
 
-
-                        if (
-                            reader[
-                                "AverageScore"
-                            ] != DBNull.Value
-                        )
+                        if (reader["AverageScore"] != DBNull.Value)
                         {
-                            averageScore =
-                                Convert.ToDecimal(
-                                    reader[
-                                        "AverageScore"
-                                    ]
-                                );
+                            averageScore = Convert.ToDecimal(reader["AverageScore"]);
                         }
                     }
                 }
@@ -997,64 +342,19 @@ namespace SPMaster.Lecturer
             // DISPLAY AVERAGE
             // =============================================
 
-            litCohortAttemptDescription.Text =
-                "Across "
-                + gradedAttempts
-                + (
-                    gradedAttempts == 1
-                        ? " graded attempt"
-                        : " graded attempts"
-                );
+            litCohortAttemptDescription.Text = "Across " + gradedAttempts + (gradedAttempts == 1 ? " graded attempt" : " graded attempts");
 
-
-            if (
-                gradedAttempts == 0
-            )
+            if (gradedAttempts == 0)
             {
-                litCohortAverage.Text =
-                    "—";
-
-
-                passRateChart.Style[
-                    "background"
-                ] =
-                    "#eee4ff";
+                litCohortAverage.Text = "—";
+                passRateChart.Style["background"] ="#eee4ff";
             }
             else
             {
-                litCohortAverage.Text =
-                    averageScore.ToString(
-                        "0.0"
-                    )
-                    + "%";
-
-
-                decimal chartValue =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            100,
-                            averageScore
-                        )
-                    );
-
-
-                passRateChart.Style[
-                    "background"
-                ] =
-                    "conic-gradient("
-                    + "#7c28ef 0 "
-                    + chartValue.ToString(
-                        "0.##"
-                    )
-                    + "%, "
-                    + "#eee4ff "
-                    + chartValue.ToString(
-                        "0.##"
-                    )
-                    + "% 100%)";
+                litCohortAverage.Text = averageScore.ToString("0.0") + "%";
+                decimal chartValue = Math.Max(0,Math.Min(100,averageScore));
+                passRateChart.Style["background"] ="conic-gradient(" + "#7c28ef 0 " + chartValue.ToString("0.##") + "%, " + "#eee4ff " + chartValue.ToString("0.##") + "% 100%)";
             }
-
 
             LoadSubjectPerformance();
         }
