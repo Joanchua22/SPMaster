@@ -1,0 +1,565 @@
+﻿/* =========================================================
+   SESSION DETAILS PAGE
+   ========================================================= */
+
+.session-details-page {
+    min-height: 100vh;
+    padding: 32px 42px 55px;
+    background: #ffe14d;
+    color: #292052;
+}
+
+
+/* =========================================================
+   BACK LINK
+   ========================================================= */
+
+.session-details-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    color: #5c4c71 !important;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .session-details-back:hover {
+        color: #7c28ef !important;
+    }
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.session-details-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.session-details-header-left {
+    min-width: 0;
+}
+
+.session-details-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+    .session-details-title-row h1 {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 800;
+    }
+
+.session-details-status {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.status-live {
+    background: #dff6e7;
+    color: #2f9258;
+}
+
+.status-closed {
+    background: #eee8f1;
+    color: #706776;
+}
+
+.session-details-quiz {
+    margin: 5px 0 10px;
+    color: #6b5e75;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.session-details-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+    .session-details-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #756a58;
+        font-size: 10px;
+    }
+
+    .session-details-meta i {
+        color: #7c28ef;
+    }
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.session-details-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.session-refresh-button,
+.session-close-button {
+    min-height: 38px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.session-refresh-button {
+    background: #ffffff;
+    color: #574c61;
+}
+
+.session-close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #7c28ef;
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+    .session-close-button:hover {
+        background: #6821ca;
+    }
+
+
+/* =========================================================
+   JOIN CODE
+   ========================================================= */
+
+.session-code-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 23px 25px;
+    border-radius: 17px;
+    background: linear-gradient( 110deg, #7220e4, #8c3fff );
+    color: #ffffff;
+}
+
+.session-code-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.session-code-card strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 28px;
+    letter-spacing: 3px;
+}
+
+.session-code-card p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+}
+
+.session-live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+    .session-live-indicator span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #72ef9a;
+    }
+
+
+/* =========================================================
+   CLOSED MESSAGE
+   ========================================================= */
+
+.session-closed-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #6e6475;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.session-details-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 13px;
+    margin-bottom: 20px;
+}
+
+.session-detail-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(78, 55, 0, 0.06);
+}
+
+.session-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.stat-purple {
+    background: #eee3ff;
+    color: #7c28ef;
+}
+
+.stat-blue {
+    background: #e4efff;
+    color: #4674c9;
+}
+
+.stat-green {
+    background: #ddf5e5;
+    color: #35935b;
+}
+
+.stat-yellow {
+    background: #fff2c5;
+    color: #a27600;
+}
+
+.session-stat-label {
+    display: block;
+    margin-bottom: 3px;
+    color: #7c7282;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.session-detail-stat-card strong {
+    color: #31263e;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PARTICIPANTS CARD
+   ========================================================= */
+
+.session-participants-card {
+    padding: 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(78, 55, 0, 0.06);
+}
+
+.session-participants-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 17px;
+}
+
+    .session-participants-header h2 {
+        margin: 0 0 3px;
+        color: #332840;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .session-participants-header p {
+        margin: 0;
+        color: #8b8290;
+        font-size: 9px;
+    }
+
+.participant-count {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f2e9ff;
+    color: #7c28ef;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NO PARTICIPANTS
+   ========================================================= */
+
+.session-no-participants {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 190px;
+    padding: 20px;
+    text-align: center;
+    color: #857b8a;
+}
+
+    .session-no-participants i {
+        margin-bottom: 8px;
+        color: #7c28ef;
+        font-size: 28px;
+    }
+
+    .session-no-participants strong {
+        margin-bottom: 4px;
+        color: #4c4056;
+        font-size: 12px;
+    }
+
+    .session-no-participants span {
+        max-width: 360px;
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.session-table-wrapper {
+    overflow-x: auto;
+}
+
+.session-participant-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .session-participant-table th {
+        padding: 10px 12px;
+        border-bottom: 1px solid #ece6ef;
+        color: #84798a;
+        font-size: 8px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .session-participant-table td {
+        padding: 12px;
+        border-bottom: 1px solid #f0ebf2;
+        color: #605566;
+        font-size: 9px;
+        vertical-align: middle;
+    }
+
+    .session-participant-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+/* =========================================================
+   STUDENT
+   ========================================================= */
+
+.participant-student {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.participant-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 31px;
+    height: 31px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #eee2ff;
+    color: #7c28ef;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.participant-student strong {
+    display: block;
+    margin-bottom: 2px;
+    color: #3c3046;
+    font-size: 10px;
+}
+
+.participant-student span:not(.participant-avatar) {
+    display: block;
+    color: #958b9a;
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.participant-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.participant-progress {
+    background: #ece5ff;
+    color: #7243c7;
+}
+
+.participant-pending {
+    background: #fff0c5;
+    color: #a27400;
+}
+
+.participant-graded {
+    background: #def5e6;
+    color: #338d57;
+}
+
+.participant-score {
+    color: #3e3347;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.participant-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.participant-action-primary {
+    background: #7c28ef;
+    color: #ffffff !important;
+}
+
+    .participant-action-primary:hover {
+        background: #6821ca;
+    }
+
+.participant-action-light {
+    background: #f1e9fb;
+    color: #7c28ef !important;
+}
+
+.participant-no-action {
+    color: #aaa2ae;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .session-details-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 760px) {
+
+    .session-details-page {
+        padding: 24px 18px 45px;
+    }
+
+    .session-details-header {
+        flex-direction: column;
+    }
+
+    .session-details-header-actions {
+        width: 100%;
+    }
+
+    .session-details-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .session-code-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .session-participants-header {
+        flex-direction: column;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .session-details-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .session-details-header-actions {
+        flex-direction: column;
+    }
+
+    .session-refresh-button,
+    .session-close-button {
+        width: 100%;
+    }
+}

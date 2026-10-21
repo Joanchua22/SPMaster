@@ -1,0 +1,1085 @@
+﻿/* =========================================================
+   STUDENT DASHBOARD
+   ========================================================= */
+
+.student-dashboard {
+    --student-yellow: #ffe14d;
+    --student-purple: #7c28ef;
+    --student-purple-dark: #6720ca;
+    --student-purple-soft: #f2e9ff;
+    --student-navy: #292052;
+    --student-text: #443b51;
+    --student-muted: #81788b;
+    --student-white: #ffffff;
+    --student-border: #eee8f3;
+    min-height: 100vh;
+    padding: 32px 42px 55px;
+    background: var(--student-yellow);
+    color: var(--student-navy);
+}
+
+
+/* =========================================================
+   MAIN HEADING
+   ========================================================= */
+
+.student-dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+    .student-dashboard-heading h1 {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+.student-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #63596e;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+    .student-date i {
+        color: var(--student-purple);
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.student-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 215px;
+    margin-bottom: 22px;
+    padding: 30px 34px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: linear-gradient( 110deg, #7220e4 0%, #8c3fff 55%, #6930d8 100% );
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(90, 40, 160, 0.16);
+}
+
+.student-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+}
+
+.student-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.17);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.student-hero h2 {
+    margin: 0 0 9px;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.student-hero p {
+    max-width: 590px;
+    margin: 0 0 20px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.student-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.student-explore-button,
+.student-join-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.student-explore-button {
+    background: #ffffff;
+    color: #4b365f !important;
+    border: 2px solid #ffffff;
+}
+
+.student-join-button {
+    background: transparent;
+    color: #ffffff !important;
+    border: 2px solid #ffffff;
+}
+
+    .student-explore-button:hover {
+        color: #4b365f;
+        transform: translateY(-1px);
+    }
+
+.student-join-button {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+    .student-join-button:hover {
+        background: rgba(255, 255, 255, 0.23);
+    }
+
+.student-hero-decoration {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.hero-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.hero-circle-large {
+    width: 155px;
+    height: 155px;
+    right: 45px;
+    bottom: -40px;
+}
+
+.hero-circle-small {
+    width: 75px;
+    height: 75px;
+    right: 165px;
+    top: 23px;
+    opacity: 0.3;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.student-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.student-stat-card {
+    min-width: 0;
+    padding: 18px 19px;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(76, 54, 0, 0.06);
+}
+
+.student-stat-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+    .student-stat-heading > span {
+        color: #655c6e;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+.student-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.stat-icon-purple {
+    background: #f0e6ff;
+    color: #7c28ef;
+}
+
+.stat-icon-lavender {
+    background: #eee8ff;
+    color: #6948cc;
+}
+
+.stat-icon-yellow {
+    background: #fff3b2;
+    color: #987000;
+}
+
+.student-stat-value {
+    margin-bottom: 11px;
+    color: #2c2140;
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+    .student-stat-value small {
+        margin-left: 3px;
+        color: #8d8493;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+.student-stat-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+    .student-stat-note i {
+        font-size: 6px;
+    }
+
+.stat-note-green {
+    color: #4a9470;
+}
+
+.stat-note-purple {
+    color: #7c28ef;
+}
+
+    .stat-note-purple i {
+        font-size: 12px;
+    }
+
+.stat-note-yellow {
+    color: #b48500;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.student-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+}
+
+    .student-section-header h2 {
+        margin: 0 0 2px;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .student-section-header p {
+        margin: 0;
+        color: #756b56;
+        font-size: 10px;
+    }
+
+.student-browse-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6943a3;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .student-browse-link:hover {
+        color: #7c28ef;
+    }
+
+
+/* =========================================================
+   SUBJECT HUBS
+   ========================================================= */
+
+.student-subject-section {
+    margin-bottom: 28px;
+}
+
+.student-subject-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.student-subject-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 168px;
+    padding: 17px;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(76, 54, 0, 0.06);
+}
+
+.subject-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 13px;
+}
+
+.subject-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    font-size: 15px;
+}
+
+.subject-icon-blue {
+    background: #e5efff;
+    color: #4978cc;
+}
+
+.subject-icon-pink {
+    background: #ffe5ed;
+    color: #d2557c;
+}
+
+.subject-icon-green {
+    background: #e0f6e8;
+    color: #3a9965;
+}
+
+.subject-icon-yellow {
+    background: #fff0cc;
+    color: #9d711c;
+}
+
+.subject-icon-purple {
+    background: #f0e2ff;
+    color: #8a42d6;
+}
+
+.subject-icon-teal {
+    background: #dcf6f1;
+    color: #218b7f;
+}
+
+.subject-quiz-count {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f7f3fa;
+    color: #716778;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.student-subject-card h3 {
+    margin: 0 0 5px;
+    color: #342942;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.student-subject-card p {
+    margin: 0 0 15px;
+    color: #81778a;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.subject-explore-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f3eaff;
+    color: #7c28ef;
+    font-size: 9px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .subject-explore-button:hover {
+        background: #e9daff;
+        color: #6b1fd3;
+    }
+
+
+/* =========================================================
+   EMPTY CARD
+   ========================================================= */
+
+.student-empty-card {
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #766d7d;
+    font-size: 11px;
+    text-align: center;
+}
+
+
+/* =========================================================
+   LOWER DASHBOARD
+   ========================================================= */
+
+.student-dashboard-bottom {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.8fr) minmax(430px, 1.2fr);
+    gap: 16px;
+}
+
+.student-dashboard-card {
+    padding: 19px;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(76, 54, 0, 0.06);
+}
+
+.student-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 17px;
+}
+
+    .student-card-header h2 {
+        margin: 0 0 3px;
+        color: #3a3045;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .student-card-header p {
+        margin: 0;
+        color: #918893;
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+.weekly-total {
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #f3eaff;
+    color: #7c28ef;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   WEEKLY CHART
+   ========================================================= */
+
+.weekly-chart {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: end;
+    gap: 8px;
+    height: 150px;
+    padding-top: 10px;
+}
+
+.weekly-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.weekly-bar-area {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    min-height: 100px;
+}
+
+.weekly-number {
+    margin-bottom: 4px;
+    color: #766b7d;
+    font-size: 8px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.weekly-bar-track {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: 85px;
+}
+
+.weekly-bar {
+    width: 22px;
+    min-height: 4px;
+    max-height: 100%;
+    border-radius: 7px 7px 3px 3px;
+    background: linear-gradient( 180deg, #8f43ef, #7c28ef );
+    transition: height 0.3s ease;
+}
+
+.weekly-day:nth-child(2n) .weekly-bar {
+    background: #d8baf8;
+}
+
+.weekly-day:nth-child(6) .weekly-bar {
+    background: #e5c527;
+}
+
+.weekly-day-name {
+    margin-top: 6px;
+    color: #8a8190;
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   RECENT ATTEMPTS
+   ========================================================= */
+
+.recent-view-all {
+    color: #7c28ef;
+    font-size: 9px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.recent-attempt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.recent-attempt-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 11px;
+    border-radius: 11px;
+    background: #faf7fc;
+}
+
+.recent-attempt-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 10px;
+}
+
+.recent-attempt-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 31px;
+    height: 31px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.recent-attempt-info {
+    min-width: 0;
+}
+
+    .recent-attempt-info h3 {
+        margin: 0 0 3px;
+        overflow: hidden;
+        color: #44374e;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .recent-attempt-info p {
+        margin: 0;
+        color: #938a99;
+        font-size: 8px;
+    }
+
+.recent-attempt-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.recent-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.recent-status-graded {
+    background: #dff6e7;
+    color: #2e9455;
+}
+
+.recent-status-pending {
+    background: #fff0c7;
+    color: #9b7000;
+}
+
+.recent-status-progress {
+    background: #eee2ff;
+    color: #7c28ef;
+}
+
+.recent-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.recent-action-light {
+    background: #ffffff;
+    color: #705d7f;
+    border: 1px solid #e7dfee;
+}
+
+.recent-action-primary {
+    background: #7c28ef;
+    color: #ffffff;
+}
+
+    .recent-action-primary:hover {
+        color: #ffffff;
+        background: #6821c9;
+    }
+
+.student-recent-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 110px;
+    color: #8e8494;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   JOIN SESSION MODAL
+   ========================================================= */
+
+.student-join-modal[hidden] {
+    display: none !important;
+}
+
+.student-join-modal {
+    position: fixed;
+    z-index: 6000;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.student-join-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 30, 28, 0.58);
+}
+
+.student-join-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(470px, 100%);
+    padding: 25px;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.student-join-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 21px;
+}
+
+.student-join-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+}
+
+.student-join-title-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: #f1e7ff;
+    color: #7c28ef;
+    font-size: 14px;
+}
+
+.student-join-header h2 {
+    margin: 0 0 3px;
+    color: #31263e;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.student-join-header p {
+    margin: 0;
+    color: #8b8291;
+    font-size: 10px;
+}
+
+.student-join-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 33px;
+    height: 33px;
+    border: 0;
+    border-radius: 50%;
+    background: #f5eff9;
+    color: #796e82;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   JOIN ERROR
+   ========================================================= */
+
+.join-error-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 15px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: #fff0f0;
+    color: #bd3d3d;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   JOIN FIELD
+   ========================================================= */
+
+.join-code-field {
+    margin-bottom: 17px;
+}
+
+    .join-code-field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #514757;
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+.required-mark {
+    color: #d92d20;
+}
+
+.join-code-input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.join-code-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 43px;
+    padding: 0 13px;
+    border: 1px solid #dfd4eb;
+    border-radius: 11px;
+    outline: none;
+    background: #faf7ff;
+    color: #392e43;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+    .join-code-input:focus {
+        border-color: #7c28ef;
+        box-shadow: 0 0 0 3px rgba(124, 40, 239, 0.08);
+    }
+
+.join-find-button {
+    min-width: 72px;
+    border: 0;
+    border-radius: 11px;
+    background: #7c28ef;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .join-find-button:hover {
+        background: #6821ca;
+    }
+
+.join-field-error {
+    display: block;
+    margin-top: 6px;
+    color: #d92d20;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FOUND SESSION
+   ========================================================= */
+
+.found-session-card {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 13px;
+    background: #f7efff;
+}
+
+.found-session-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #dff5e6;
+    color: #328b52;
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.found-session-card h3 {
+    margin: 0 0 3px;
+    color: #392c46;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.found-session-name {
+    margin: 0 0 12px;
+    color: #83778c;
+    font-size: 10px;
+}
+
+.found-session-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+    .found-session-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #6d6177;
+        font-size: 9px;
+    }
+
+    .found-session-meta i {
+        color: #7c28ef;
+    }
+
+
+/* =========================================================
+   JOIN ACTIONS
+   ========================================================= */
+
+.student-join-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.join-cancel-button,
+.join-start-button {
+    min-height: 37px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.join-cancel-button {
+    background: #f1edf3;
+    color: #665b6e;
+}
+
+.join-start-button {
+    background: #7c28ef;
+    color: #ffffff;
+}
+
+    .join-start-button:hover {
+        background: #6821ca;
+    }
+
+body.student-join-open {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .student-subject-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .student-dashboard-bottom {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 760px) {
+
+    .student-dashboard {
+        padding: 24px 18px 45px;
+    }
+
+    .student-dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .student-date {
+        align-self: flex-start;
+    }
+
+    .student-hero {
+        padding: 27px 24px;
+    }
+
+        .student-hero h2 {
+            font-size: 23px;
+        }
+
+    .student-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .student-subject-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-attempt-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-attempt-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .student-hero-decoration {
+        display: none;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .student-hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .student-explore-button,
+    .student-join-button {
+        width: 100%;
+    }
+
+    .join-code-input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .join-find-button {
+        min-height: 40px;
+    }
+
+    .student-join-actions {
+        flex-direction: column-reverse;
+    }
+
+    .join-cancel-button,
+    .join-start-button {
+        width: 100%;
+    }
+}
