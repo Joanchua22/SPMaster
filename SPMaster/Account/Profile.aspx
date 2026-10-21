@@ -193,52 +193,6 @@
 
 </asp:Content>
 
-
-<asp:Content
-    ID="ProfileUser"
-    ContentPlaceHolderID="DashboardUser"
-    runat="server">
-
-    <div class="user-summary">
-
-        <span class="user-avatar">
-
-            <asp:Label
-                ID="lblTopInitials"
-                runat="server">
-            </asp:Label>
-
-        </span>
-
-
-        <div class="user-details">
-
-            <span class="user-name">
-
-                <asp:Label
-                    ID="lblTopName"
-                    runat="server">
-                </asp:Label>
-
-            </span>
-
-
-            <span class="user-role">
-
-                <asp:Label
-                    ID="lblTopRole"
-                    runat="server">
-                </asp:Label>
-
-            </span>
-
-        </div>
-
-    </div>
-
-</asp:Content>
-
-
 <asp:Content
     ID="ProfileContent"
     ContentPlaceHolderID="DashboardContent"
@@ -307,14 +261,12 @@
 
                 <div class="profile-avatar-large">
 
-
                     <asp:Image
                         ID="imgProfile"
                         runat="server"
                         CssClass="profile-avatar-image"
-                        Visible="false"
-                        AlternateText="Profile photo" />
-
+                        AlternateText="Profile photo"
+                        Style="display: none;" />
 
                     <asp:Label
                         ID="lblProfileInitials"
@@ -358,7 +310,8 @@
                             ID="fuProfilePhoto"
                             runat="server"
                             CssClass="profile-file-input"
-                            accept=".jpg,.jpeg,.png,.webp" />
+                            accept=".jpg,.jpeg,.png,.webp"
+                            onchange="previewProfilePhoto(this);" />
 
 
                         <asp:Button

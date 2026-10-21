@@ -264,6 +264,14 @@ button:focus-visible {
     color: var(--dashboard-navy);
     font-size: 14px;
     font-weight: 800;
+    overflow: hidden;
+}
+
+.user-avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .user-details {

@@ -84,6 +84,97 @@ function autoHideSuccessPopup() {
 
 }
 
+function previewProfilePhoto(input) {
+
+    var profileImage =
+        document.querySelector(
+            ".profile-avatar-image"
+        );
+
+    var profileInitials =
+        document.querySelector(
+            ".profile-avatar-initials"
+        );
+
+
+    if (
+        !input
+        ||
+        !input.files
+        ||
+        input.files.length === 0
+    ) {
+        return;
+    }
+
+
+    var file =
+        input.files[0];
+
+
+    var allowedTypes =
+        [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+
+    if (
+        allowedTypes.indexOf(
+            file.type
+        ) === -1
+    ) {
+        alert(
+            "Please select a JPG, PNG or WEBP image."
+        );
+
+        input.value =
+            "";
+
+        return;
+    }
+
+
+    if (
+        file.size >
+        2 * 1024 * 1024
+    ) {
+        alert(
+            "Profile image must be smaller than 2 MB."
+        );
+
+        input.value =
+            "";
+
+        return;
+    }
+
+
+    var reader =
+        new FileReader();
+
+
+    reader.onload =
+        function (event) {
+
+            profileImage.src =
+                event.target.result;
+
+
+            profileImage.style.display =
+                "block";
+
+
+            profileInitials.style.display =
+                "none";
+        };
+
+
+    reader.readAsDataURL(
+        file
+    );
+}
 
 window.addEventListener(
     "load",
