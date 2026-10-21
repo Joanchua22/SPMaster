@@ -9,8 +9,7 @@ using System.Web;
 
 namespace SPMaster.Lecturer
 {
-    public partial class Performance :
-        System.Web.UI.Page
+    public partial class Performance : System.Web.UI.Page
     {
         // =========================================================
         // CONNECTION STRING
@@ -20,11 +19,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -37,9 +32,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -49,59 +42,36 @@ namespace SPMaster.Lecturer
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender,EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
-
 
             if (!IsPostBack)
             {
                 BindQuizDropdown();
 
-
-                if (
-                    ddlQuiz.Items.Count > 0
-                )
+                if (ddlQuiz.Items.Count > 0)
                 {
-                    pnlNoQuizzes.Visible =
-                        false;
-
-
-                    pnlPerformance.Visible =
-                        true;
-
-
+                    pnlNoQuizzes.Visible = false;
+                    pnlPerformance.Visible = true;
                     LoadPerformanceData();
                 }
                 else
                 {
-                    pnlNoQuizzes.Visible =
-                        true;
-
-
-                    pnlPerformance.Visible =
-                        false;
+                    pnlNoQuizzes.Visible = true;
+                    pnlPerformance.Visible =false;
                 }
             }
         }
 
-        protected void ddlQuiz_SelectedIndexChanged(
-            object sender,
-            EventArgs e)    
-                {
-                    LoadPerformanceData();
-                }
+        protected void ddlQuiz_SelectedIndexChanged(object sender,EventArgs e)    
+        {
+            LoadPerformanceData();
+        }
 
 
 
@@ -111,97 +81,28 @@ namespace SPMaster.Lecturer
 
         private void BindQuizDropdown()
         {
-            const string sql = @"
-                SELECT
-                    q.QuizId,
+            const string sql = @"SELECT q.QuizId, q.Title + ' (' + RTRIM(s.SubjectName) + ' • ' + f.FormName + ')' AS DisplayName FROM Quizzes q
+                            INNER JOIN Subjects s ON q.SubjectId = s.SubjectId INNER JOIN Forms f ON q.FormId = f.FormId
+                            WHERE q.CreatedByUserId = @LecturerId AND q.IsPublished = 1 AND q.IsArchived = 0 ORDER BY q.CreatedAt DESC;";
 
-                    q.Title
-                    + ' ('
-                    + RTRIM(s.SubjectName)
-                    + ' • '
-                    + f.FormName
-                    + ')' AS DisplayName
+            DataTable table =new DataTable();
 
-                FROM Quizzes q
-
-                INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
-
-                INNER JOIN Forms f
-                    ON q.FormId =
-                       f.FormId
-
-                WHERE
-                    q.CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    q.IsPublished =
-                        1
-
-                    AND
-                    q.IsArchived =
-                        0
-
-                ORDER BY
-                    q.CreatedAt DESC;
-            ";
-
-
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql,connection))
                 {
-                    command.Parameters.Add(
-                        "@LecturerId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
+                    command.Parameters.Add("@LecturerId", SqlDbType.Int).Value = CurrentUserId;
 
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                     {
-                        adapter.Fill(
-                            table
-                        );
+                        adapter.Fill(table);
                     }
                 }
             }
 
-
-            ddlQuiz.DataSource =
-                table;
-
-
-            ddlQuiz.DataValueField =
-                "QuizId";
-
-
-            ddlQuiz.DataTextField =
-                "DisplayName";
-
-
+            ddlQuiz.DataSource = table;
+            ddlQuiz.DataValueField ="QuizId";
+            ddlQuiz.DataTextField = "DisplayName";
             ddlQuiz.DataBind();
         }
 
@@ -214,126 +115,42 @@ namespace SPMaster.Lecturer
         {
             int quizId;
 
-
-            if (
-                !int.TryParse(
-                    ddlQuiz.SelectedValue,
-                    out quizId
-                )
-            )
+            if (!int.TryParse(ddlQuiz.SelectedValue, out quizId))
             {
                 return;
             }
 
-
-            if (
-                !QuizBelongsToCurrentLecturer(
-                    quizId
-                )
-            )
+            if (!QuizBelongsToCurrentLecturer(quizId))
             {
                 return;
             }
 
-
-            PerformanceSummary summary =
-                LoadSummary(
-                    quizId
-                );
-
-
-            List<decimal> gradedScores =
-                LoadGradedScores(
-                    quizId
-                );
-
-
-            List<int> completionTimes =
-                LoadCompletionTimes(
-                    quizId
-                );
-
-
-            DisplaySummary(
-                summary,
-                gradedScores,
-                completionTimes
-            );
-
-
-            DisplayGradeBands(
-                gradedScores
-            );
-
-
-            BindQuestionPerformance(
-                quizId
-            );
+            PerformanceSummary summary = LoadSummary(quizId);
+            List<decimal> gradedScores = LoadGradedScores(quizId);
+            List<int> completionTimes = LoadCompletionTimes(quizId);
+            DisplaySummary(summary,gradedScores,completionTimes);
+            DisplayGradeBands(gradedScores);
+            BindQuestionPerformance(quizId);
         }
-
-
 
         // =========================================================
         // SECURITY CHECK
         // =========================================================
 
-        private bool QuizBelongsToCurrentLecturer(
-            int quizId)
+        private bool QuizBelongsToCurrentLecturer(int quizId)
         {
-            const string sql = @"
-                SELECT COUNT(*)
+            const string sql = @"SELECT COUNT(*) FROM Quizzes WHERE QuizId = @QuizId AND CreatedByUserId = @LecturerId AND IsArchived = 0;";
 
-                FROM Quizzes
-
-                WHERE
-                    QuizId =
-                        @QuizId
-
-                    AND
-                    CreatedByUserId =
-                        @LecturerId
-
-                    AND
-                    IsArchived =
-                        0;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql,connection))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    command.Parameters.Add(
-                        "@LecturerId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
+                    command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                     connection.Open();
 
-
-                    return Convert.ToInt32(
-                        command.ExecuteScalar()
-                    ) > 0;
+                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
                 }
             }
         }
@@ -344,180 +161,38 @@ namespace SPMaster.Lecturer
         // SUMMARY DATA
         // =========================================================
 
-        private PerformanceSummary LoadSummary(
-            int quizId)
+        private PerformanceSummary LoadSummary(int quizId)
         {
-            const string sql = @"
-                SELECT
-                    q.TimeLimitMinutes,
+            const string sql = @"SELECT q.TimeLimitMinutes, (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus IN ('Graded', 'PendingGrading')) AS TotalAttempts,
+                            (SELECT COUNT(DISTINCT qa.StudentUserId) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus IN ('Graded', 'PendingGrading')) AS UniqueStudents,
+                            (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus ='Graded') AS GradedAttempts,
+                            (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus ='PendingGrading') AS PendingAttempts
+                            FROM Quizzes q WHERE q.QuizId = @QuizId AND q.CreatedByUserId = @LecturerId;";
 
-                    (
-                        SELECT COUNT(*)
+            PerformanceSummary summary = new PerformanceSummary();
 
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                            AND
-                            qa.AttemptStatus IN
-                            (
-                                'Graded',
-                                'PendingGrading'
-                            )
-                    ) AS TotalAttempts,
-
-
-                    (
-                        SELECT
-                            COUNT(
-                                DISTINCT qa.StudentUserId
-                            )
-
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                            AND
-                            qa.AttemptStatus IN
-                            (
-                                'Graded',
-                                'PendingGrading'
-                            )
-                    ) AS UniqueStudents,
-
-
-                    (
-                        SELECT COUNT(*)
-
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                            AND
-                            qa.AttemptStatus =
-                                'Graded'
-                    ) AS GradedAttempts,
-
-
-                    (
-                        SELECT COUNT(*)
-
-                        FROM QuizAttempts qa
-
-                        WHERE
-                            qa.QuizId =
-                                q.QuizId
-
-                            AND
-                            qa.AttemptStatus =
-                                'PendingGrading'
-                    ) AS PendingAttempts
-
-
-                FROM Quizzes q
-
-                WHERE
-                    q.QuizId =
-                        @QuizId
-
-                    AND
-                    q.CreatedByUserId =
-                        @LecturerId;
-            ";
-
-
-            PerformanceSummary summary =
-                new PerformanceSummary();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql,connection))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    command.Parameters.Add(
-                        "@LecturerId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
+                    command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@LecturerId",SqlDbType.Int).Value = CurrentUserId;
 
                     connection.Open();
 
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            summary.TotalAttempts =
-                                Convert.ToInt32(
-                                    reader[
-                                        "TotalAttempts"
-                                    ]
-                                );
-
-
-                            summary.UniqueStudents =
-                                Convert.ToInt32(
-                                    reader[
-                                        "UniqueStudents"
-                                    ]
-                                );
-
-
-                            summary.GradedAttempts =
-                                Convert.ToInt32(
-                                    reader[
-                                        "GradedAttempts"
-                                    ]
-                                );
-
-
-                            summary.PendingAttempts =
-                                Convert.ToInt32(
-                                    reader[
-                                        "PendingAttempts"
-                                    ]
-                                );
-
-
-                            summary.TimeLimitMinutes =
-                                Convert.ToInt32(
-                                    reader[
-                                        "TimeLimitMinutes"
-                                    ]
-                                );
+                            summary.TotalAttempts = Convert.ToInt32(reader["TotalAttempts"]);
+                            summary.UniqueStudents = Convert.ToInt32(reader["UniqueStudents"]);
+                            summary.GradedAttempts = Convert.ToInt32(reader["GradedAttempts"]);
+                            summary.PendingAttempts = Convert.ToInt32(reader["PendingAttempts"]);
+                            summary.TimeLimitMinutes = Convert.ToInt32(reader["TimeLimitMinutes"]);
                         }
                     }
                 }
             }
-
 
             return summary;
         }
@@ -528,129 +203,32 @@ namespace SPMaster.Lecturer
         // GRADED SCORES
         // =========================================================
 
-        private List<decimal> LoadGradedScores(
-            int quizId)
+        private List<decimal> LoadGradedScores(int quizId)
         {
-            const string sql = @"
-                SELECT
-                    qa.AttemptId,
+            const string sql = @"SELECT qa.AttemptId, CASE WHEN totals.TotalMarks > 0 THEN (ISNULL(SUM(ISNULL(sa.MarksAwarded,0)),0)* 100.0/totals.TotalMarks)ELSE 0 END AS Percentage
+                            FROM QuizAttempts qa CROSS APPLY (SELECT ISNULL(SUM(qq.MaxMarks),0) AS TotalMarks FROM QuizQuestions qq WHERE qq.QuizId = @QuizId) totals
+                            LEFT JOIN StudentAnswers sa ON sa.AttemptId = qa.AttemptId WHERE qa.QuizId = @QuizId AND qa.AttemptStatus = 'Graded'
+                            GROUP BY qa.AttemptId, totals.TotalMarks;";
 
-                    CASE
+            List<decimal> scores = new List<decimal>();
 
-                        WHEN totals.TotalMarks > 0
-                        THEN
-                            (
-                                ISNULL(
-                                    SUM(
-                                        ISNULL(
-                                            sa.MarksAwarded,
-                                            0
-                                        )
-                                    ),
-                                    0
-                                )
-                                * 100.0
-                                /
-                                totals.TotalMarks
-                            )
-
-                        ELSE 0
-
-                    END AS Percentage
-
-
-                FROM QuizAttempts qa
-
-
-                CROSS APPLY
-                (
-                    SELECT
-                        ISNULL(
-                            SUM(
-                                qq.MaxMarks
-                            ),
-                            0
-                        ) AS TotalMarks
-
-                    FROM QuizQuestions qq
-
-                    WHERE
-                        qq.QuizId =
-                            @QuizId
-
-                ) totals
-
-
-                LEFT JOIN StudentAnswers sa
-                    ON sa.AttemptId =
-                       qa.AttemptId
-
-
-                WHERE
-                    qa.QuizId =
-                        @QuizId
-
-                    AND
-                    qa.AttemptStatus =
-                        'Graded'
-
-
-                GROUP BY
-                    qa.AttemptId,
-                    totals.TotalMarks;
-            ";
-
-
-            List<decimal> scores =
-                new List<decimal>();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(sql,connection))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
+                    command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
 
                     connection.Open();
 
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (
-                            reader.Read()
-                        )
+                        while (reader.Read())
                         {
-                            scores.Add(
-                                Convert.ToDecimal(
-                                    reader[
-                                        "Percentage"
-                                    ]
-                                )
-                            );
+                            scores.Add(Convert.ToDecimal(reader["Percentage"]));
                         }
                     }
                 }
             }
-
 
             return scores;
         }
@@ -661,128 +239,43 @@ namespace SPMaster.Lecturer
         // COMPLETION TIMES
         // =========================================================
 
-        private List<int> LoadCompletionTimes(
-            int quizId)
+        private List<int> LoadCompletionTimes(int quizId)
         {
-            const string sql = @"
-                SELECT
-                    DATEDIFF(
-                        SECOND,
-                        StartedAt,
-
-                        CASE
-
-                            /* -------------------------------------
-                               Submitted after timer expired
-                               ------------------------------------- */
-
-                            WHEN SubmittedAt > ExpiresAt
-                            THEN ExpiresAt
-
-
-                            /* -------------------------------------
-                               Normal submission
-                               ------------------------------------- */
-
-                            ELSE SubmittedAt
-
-                        END
-
-                    ) AS CompletionSeconds
-
-                FROM QuizAttempts
-
-                WHERE
-                    QuizId =
-                        @QuizId
-
-                    AND
-                    SubmittedAt IS NOT NULL
-
-                    AND
-                    AttemptStatus IN
-                    (
-                        'Graded',
-                        'PendingGrading'
-                    )
-
-                ORDER BY
-                    CompletionSeconds;
-            ";
-
-
-                    List<int> times =
-                        new List<int>();
-
-
-                    using (
-                        SqlConnection connection =
-                            new SqlConnection(
-                                ConnectionString
-                            )
-                    )
+            const string sql = @"SELECT DATEDIFF(SECOND, StartedAt, CASE WHEN SubmittedAt > ExpiresAt THEN ExpiresAt ELSE SubmittedAt END) AS CompletionSeconds
+                            FROM QuizAttempts WHERE QuizId = @QuizId AND SubmittedAt IS NOT NULL AND AttemptStatus IN ('Graded','PendingGrading') ORDER BY CompletionSeconds;";
+            
+            List<int> times = new List<int>();
+            
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql,connection))
+                {
+                    command.Parameters.Add("@QuizId",SqlDbType.Int).Value = quizId;
+                    
+                    connection.Open();
+                    
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        using (
-                            SqlCommand command =
-                                new SqlCommand(
-                                    sql,
-                                    connection
-                                )
-                        )
+                        while (reader.Read())
                         {
-                            command.Parameters.Add(
-                                "@QuizId",
-                                SqlDbType.Int
-                            ).Value =
-                                quizId;
-
-
-                            connection.Open();
-
-
-                            using (
-                                SqlDataReader reader =
-                                    command.ExecuteReader()
-                            )
+                            if (reader["CompletionSeconds"] == DBNull.Value)
                             {
-                                while (
-                                    reader.Read()
-                                )
-                                {
-                                    if (
-                                        reader[
-                                            "CompletionSeconds"
-                                        ] == DBNull.Value
-                                    )
-                                    {
-                                        continue;
-                                    }
-
-
-                                    int seconds =
-                                        Convert.ToInt32(
-                                            reader[
-                                                "CompletionSeconds"
-                                            ]
-                                        );
-
-
-                                    if (
-                                        seconds >= 0
-                                    )
-                                    {
-                                        times.Add(
-                                            seconds
-                                        );
-                                    }
-                                }
+                                continue;
+                            }
+                            
+                            int seconds = Convert.ToInt32(reader["CompletionSeconds"]);
+                            
+                            if (seconds >= 0)
+                            {
+                                times.Add(seconds);
                             }
                         }
                     }
-
-
-                    return times;
                 }
+            }
+            
+            return times;
+        }
 
 
 

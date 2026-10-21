@@ -24,7 +24,7 @@
             </div>
 
 
-            <asp:HyperLink ID="lnkGradeSubmissions"runat="server" NavigateUrl="~/Lecturer/Grading.aspx" CssClass="grading-alert-button">
+            <asp:HyperLink ID="lnkGradeSubmissions" runat="server" NavigateUrl="~/Lecturer/Grading.aspx" CssClass="grading-alert-button">
                 Grade Submissions Now
                 <span aria-hidden="true">→</span>
             </asp:HyperLink>
@@ -53,7 +53,7 @@
 
                     <span class="lecturer-stat-heading">My Question Bank</span>
                     <strong>
-                        <asp:Literal ID="litQuestionBankTotal"runat="server"></asp:Literal>
+                        <asp:Literal ID="litQuestionBankTotal" runat="server"></asp:Literal>
                     </strong>
                     <span class="lecturer-stat-detail">
                         <asp:Literal ID="litQuestionBankBreakdown" runat="server"></asp:Literal>
@@ -336,7 +336,7 @@
                         </div>
 
                         <span class="queue-count">
-                            <asp:Literal ID="litSideQueueCount"runat="server"></asp:Literal>
+                            <asp:Literal ID="litSideQueueCount" runat="server"></asp:Literal>
                         </span>
 
                     </div>
@@ -344,7 +344,7 @@
 
                     <div class="grading-student-list">
 
-                        <asp:Repeater ID="rptGradingQueue"runat="server">
+                        <asp:Repeater ID="rptGradingQueue" runat="server">
 
                             <ItemTemplate>
 
@@ -387,7 +387,7 @@
                         <div>
                             <h2>Cohort Performance</h2>
                             <p>
-                                <asp:Literal ID="litCohortAttemptDescription"runat="server"></asp:Literal>
+                                <asp:Literal ID="litCohortAttemptDescription" runat="server"></asp:Literal>
                             </p>
                         </div>
 
@@ -426,7 +426,7 @@
 
                         <span>Needs Attention:</span>
                         <strong class="performance-pill performance-warning">
-                            <asp:Literal ID="litNeedsAttention"runat="server"></asp:Literal>
+                            <asp:Literal ID="litNeedsAttention" runat="server"></asp:Literal>
                         </strong>
 
                     </div>
