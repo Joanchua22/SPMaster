@@ -111,7 +111,7 @@ namespace SPMaster.Lecturer
 
         private void LoadQuizSummary()
         {
-            const string sql = @"SELECT SUM(CASE WHEN IsPublished = 1 THEN 1 ELSE 0 END) AS PublishedCount, SUM(CASEWHEN IsPublished = 0 THEN 1 ELSE 0 END) AS DraftCount
+            const string sql = @"SELECT SUM(CASE WHEN IsPublished = 1 THEN 1 ELSE 0 END) AS PublishedCount, SUM(CASE WHEN IsPublished = 0 THEN 1 ELSE 0 END) AS DraftCount
                                 FROM Quizzes WHERE CreatedByUserId = @LecturerId AND IsArchived = 0;";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -241,7 +241,7 @@ namespace SPMaster.Lecturer
         {
             const string sql = @"SELECT TOP 3 q.QuizId, q.Title, q.TimeLimitMinutes, q.IsPublished, q.CreatedAt, s.SubjectName, f.FormName,
                             (SELECT COUNT(*) FROM QuizQuestions qq WHERE qq.QuizId = q.QuizId) AS QuestionCount,
-                            (SELECT ISNULL (SUMqq.MaxMarks),0) FROM QuizQuestions qq WHERE qq.QuizId = q.QuizId) AS TotalMarks,
+                            (SELECT ISNULL(SUM(qq.MaxMarks),0) FROM QuizQuestions qq WHERE qq.QuizId = q.QuizId) AS TotalMarks,
                             (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId) AS AttemptCount,
                             (SELECT COUNT(*) FROM QuizAttempts qa WHERE qa.QuizId = q.QuizId AND qa.AttemptStatus = 'PendingGrading') AS PendingCount
                             FROM Quizzes q INNER JOIN Subjects s ON q.SubjectId = s.SubjectId INNER JOIN Forms f ON q.FormId = f.FormId WHERE q.CreatedByUserId = @LecturerId AND q.IsArchived = 0 ORDER BY q.CreatedAt DESC;";
