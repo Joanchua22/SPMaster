@@ -11,7 +11,7 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("Feedback.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/Feedback.css") %>?v=1"
           rel="stylesheet"
           type="text/css" />
 
@@ -494,7 +494,7 @@
     ContentPlaceHolderID="PortalScripts"
     runat="server">
 
-    <script src="<%= ResolveUrl("Feedback.js") %>?v=1">
+    <script src="<%= ResolveUrl("~/Scripts/Feedback.js") %>?v=1">
     </script>
 
 </asp:Content>

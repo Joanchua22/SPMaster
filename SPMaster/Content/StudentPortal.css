@@ -662,11 +662,12 @@
 .recent-status-graded {
     background: #dff6e7;
     color: #2e9455;
+    font-size: 12px;
 }
 
 .recent-status-pending {
     background: #fff0c7;
-    color: #9b7000;
+    color: #9b7000; 
 }
 
 .recent-status-progress {
@@ -1082,4 +1083,24 @@ body.student-join-open {
     .join-start-button {
         width: 100%;
     }
+}
+.recent-attempt-button {
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.completed-button {
+    font-size: 0.82rem;
+    border: 1px solid #7c28ef;
+    background: #fff;
+    color: #7c28ef;
+}
+.completed-button:hover {
+    background: #7c28ef;
+    color: #ffffff;
+    border-color: #7c28ef;
+    transform: translateY(-1px);
 }
