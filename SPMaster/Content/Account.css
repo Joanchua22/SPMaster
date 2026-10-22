@@ -303,6 +303,9 @@
         text-transform: uppercase;
     }
 
+.profile-form-select {
+    cursor: pointer;
+}
 
 .profile-form-input,
 .profile-role-field {

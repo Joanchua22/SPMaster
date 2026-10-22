@@ -301,72 +301,14 @@
 
                 </div>
 
-
-                <div class="admin-form-group">
-
-                    <label for="<%= txtPassword.ClientID %>">
-                        New Password
-                    </label>
-
-                    <asp:TextBox
-                        ID="txtPassword"
-                        runat="server"
-                        CssClass="admin-form-input"
-                        TextMode="Password"
-                        placeholder="Leave blank to keep current password">
-                    </asp:TextBox>
-                    <asp:RegularExpressionValidator
-                        ID="revPassword"
-                        runat="server"
-                        ControlToValidate="txtPassword"
-                        ValidationExpression="^$|^.{8,}$"
-                        ErrorMessage="Password must be at least 8 characters."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RegularExpressionValidator>
-
-                </div>
-
-
-                <div class="admin-form-group">
-
-                    <label for="<%= txtConfirmPassword.ClientID %>">
-                        Confirm New Password
-                    </label>
-
-                    <asp:TextBox
-                        ID="txtConfirmPassword"
-                        runat="server"
-                        CssClass="admin-form-input"
-                        TextMode="Password"
-                        placeholder="Leave blank to keep current password">
-                    </asp:TextBox>
-
-                    <asp:CompareValidator
-                        ID="cvPassword"
-                        runat="server"
-                        ControlToValidate="txtConfirmPassword"
-                        ControlToCompare="txtPassword"
-                        ErrorMessage="Passwords do not match."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:CompareValidator>
-
-                </div>
-
-            </div>
-
-
-            <div class="admin-form-actions">
+            <div class="edit-user-form-actions">
 
                 <asp:HyperLink
                     ID="lnkCancel"
                     runat="server"
                     NavigateUrl="~/Admin/UserManagement.aspx"
-                    CssClass="cancel-user-button">
-
+                    CssClass="edit-user-cancel-button">
                     Cancel
-
                 </asp:HyperLink>
 
 
@@ -374,7 +316,7 @@
                     ID="btnSave"
                     runat="server"
                     Text="Save Changes"
-                    CssClass="create-user-button"
+                    CssClass="edit-user-save-button"
                     OnClick="btnSave_Click" />
 
             </div>

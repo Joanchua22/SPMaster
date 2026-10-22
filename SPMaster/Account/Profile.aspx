@@ -400,28 +400,58 @@
 
                 </div>
 
-
                 <%-- SCHOOL --%>
                 <div class="profile-form-group">
 
-                    <label for="<%= txtSchool.ClientID %>">
+                    <label for="<%= ddlSchool.ClientID %>">
                         SCHOOL / INSTITUTION
                     </label>
 
 
-                    <asp:TextBox
-                        ID="txtSchool"
+                    <asp:DropDownList
+                        ID="ddlSchool"
                         runat="server"
-                        CssClass="profile-form-input"
-                        MaxLength="150">
-                    </asp:TextBox>
+                        CssClass="profile-form-input profile-form-select">
+
+                        <asp:ListItem
+                            Text="Select your school"
+                            Value="">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Asia Pacific University (APU)"
+                            Value="Asia Pacific University">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="SMK"
+                            Value="SMK">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Private School"
+                            Value="Private School">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="International School"
+                            Value="International School">
+                        </asp:ListItem>
+
+                        <asp:ListItem
+                            Text="Other"
+                            Value="Other">
+                        </asp:ListItem>
+
+                    </asp:DropDownList>
 
 
                     <asp:RequiredFieldValidator
                         ID="rfvSchool"
                         runat="server"
-                        ControlToValidate="txtSchool"
-                        ErrorMessage="School or institution is required."
+                        ControlToValidate="ddlSchool"
+                        InitialValue=""
+                        ErrorMessage="Please select your school."
                         CssClass="validation-message"
                         Display="Dynamic">
                     </asp:RequiredFieldValidator>

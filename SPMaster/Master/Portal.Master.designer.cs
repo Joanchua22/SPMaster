@@ -78,6 +78,33 @@ namespace SPMaster.Master
         protected global::System.Web.UI.WebControls.ContentPlaceHolder DashboardUser;
 
         /// <summary>
+        /// imgPortalAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgPortalAvatar;
+
+        /// <summary>
+        /// lblPortalInitials control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPortalInitials;
+
+        /// <summary>
+        /// lblPortalUserName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPortalUserName;
+
+        /// <summary>
         /// PortalContent control.
         /// </summary>
         /// <remarks>

@@ -335,8 +335,16 @@ namespace SPMaster.Account
                             email;
 
 
-                        txtSchool.Text =
-                            school;
+                        if (ddlSchool.Items.FindByValue(school) != null)
+                        {
+                            ddlSchool.SelectedValue =
+                                school;
+                        }
+                        else
+                        {
+                            ddlSchool.SelectedValue =
+                                "";
+                        }
 
 
                         lblInstitutionalRole.Text =
@@ -531,47 +539,27 @@ namespace SPMaster.Account
         // SAVE PROFILE
         // =========================================================
 
-        protected void btnSaveProfile_Click(
-            object sender,
-            EventArgs e)
+        protected void btnSaveProfile_Click(object sender, EventArgs e)
         {
-            if (
-                !Page.IsValid
-            )
+            if (!Page.IsValid)
             {
                 return;
             }
 
-
-            int userId =
-                GetUserId();
+            int userId = GetUserId();
 
 
-            if (
-                userId == 0
-            )
+            if (userId == 0)
             {
-                ShowError(
-                    "Your session has expired. Please log in again."
-                );
-
+                ShowError("Your session has expired. Please log in again.");
                 return;
             }
 
+            string fullName = txtFullName.Text.Trim();
 
-            string fullName =
-                txtFullName.Text
-                    .Trim();
+            string email = txtEmail.Text.Trim();
 
-
-            string email =
-                txtEmail.Text
-                    .Trim();
-
-
-            string school =
-                txtSchool.Text
-                    .Trim();
+            string school = ddlSchool.SelectedValue.Trim();
 
 
 
@@ -898,21 +886,16 @@ namespace SPMaster.Account
 
 
                         // =========================================
-                        // RELOAD ADMIN TOP-RIGHT AVATAR
+                        // RELOAD TOP-RIGHT USER HEADER
+                        //
+                        // Admin:
+                        //     Dashboard.Master
+                        //
+                        // Student / Lecturer:
+                        //     Portal.Master
                         // =========================================
 
-                        SPMaster.Dashboard dashboardMaster =
-                            Master
-                            as SPMaster.Dashboard;
-
-
-                        if (
-                            dashboardMaster != null
-                        )
-                        {
-                            dashboardMaster
-                                .LoadCurrentUser();
-                        }
+                        RefreshMasterUserHeader();
 
 
 
@@ -1014,21 +997,10 @@ namespace SPMaster.Account
 
 
                         // =========================================
-                        // RELOAD ADMIN TOP-RIGHT AVATAR
+                        // RELOAD TOP-RIGHT USER HEADER
                         // =========================================
 
-                        SPMaster.Dashboard dashboardMaster =
-                            Master
-                            as SPMaster.Dashboard;
-
-
-                        if (
-                            dashboardMaster != null
-                        )
-                        {
-                            dashboardMaster
-                                .LoadCurrentUser();
-                        }
+                        RefreshMasterUserHeader();
 
 
 
@@ -1052,6 +1024,59 @@ namespace SPMaster.Account
                         );
                     }
                 }
+            }
+        }
+
+
+
+        // =========================================================
+        // REFRESH CURRENT MASTER PAGE USER HEADER
+        //
+        // Admin:
+        //     Dashboard.Master
+        //
+        // Student / Lecturer:
+        //     Portal.Master
+        // =========================================================
+
+        private void RefreshMasterUserHeader()
+        {
+            // =====================================================
+            // ADMIN
+            // =====================================================
+
+            SPMaster.Dashboard dashboardMaster =
+                Master
+                as SPMaster.Dashboard;
+
+
+            if (
+                dashboardMaster != null
+            )
+            {
+                dashboardMaster
+                    .LoadCurrentUser();
+
+                return;
+            }
+
+
+
+            // =====================================================
+            // STUDENT / LECTURER
+            // =====================================================
+
+            SPMaster.Master.Portal portalMaster =
+                Master
+                as SPMaster.Master.Portal;
+
+
+            if (
+                portalMaster != null
+            )
+            {
+                portalMaster
+                    .LoadCurrentUser();
             }
         }
 
