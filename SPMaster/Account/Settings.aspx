@@ -339,6 +339,13 @@
                     Display="Dynamic">
                 </asp:RequiredFieldValidator>
 
+                <asp:Label
+                    ID="lblCurrentPasswordError"
+                    runat="server"
+                    CssClass="validation-message"
+                    Visible="false">
+                </asp:Label>
+
             </div>
 
 
