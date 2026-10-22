@@ -11,7 +11,7 @@
     ContentPlaceHolderID="PortalHead"
     runat="server">
 
-    <link href="<%= ResolveUrl("~/Content/LecturerSessionDetails.css") %>?v=1"
+    <link href="<%= ResolveUrl("~/Content/SessionDetails.css") %>?v=1"
           rel="stylesheet"
           type="text/css" />
 

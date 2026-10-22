@@ -135,13 +135,18 @@
     <Content Include="Content\StudentViewQuiz.css" />
     <Content Include="Content\UserManagement.css" />
     <Content Include="Content\ViewContent.css" />
+    <Content Include="Content\Feedback.css" />
+    <Content Include="Scripts\Feedback.js" />
+    <Content Include="Student\Feedback.aspx" />
     <Content Include="ForgotPassword.aspx" />
+    <Content Include="Content\Grading.css" />
+    <Content Include="Lecturer\Grading.aspx" />
     <Content Include="Home.aspx" />
     <Content Include="Images\spmaster-logo.png" />
-    <Content Include="JavaScript.js" />
-    <Content Include="Content\LecturerSessionDetails.css" />
-    <Content Include="LecturerSessions.css" />
-    <Content Include="LecturerSessions.js" />
+    <Content Include="Scripts\Performance.js" />
+    <Content Include="Content\SessionDetails.css" />
+    <Content Include="Content\Sessions.css" />
+    <Content Include="Scripts\Sessions.js" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
     <Content Include="Lecturer\CreateQuiz.aspx" />
     <Content Include="Lecturer\Performance.aspx" />
@@ -160,7 +165,7 @@
     <Content Include="Scripts\QuestionPreview.js" />
     <Content Include="Scripts\UserManagement.js" />
     <Content Include="Lecturer\SessionDetails.aspx" />
-    <Content Include="Sessions.aspx" />
+    <Content Include="Lecturer\Sessions.aspx" />
     <Content Include="Content\StudentPortal.css" />
     <Content Include="Scripts\StudentPortal.js" />
     <Content Include="Student\Portal.aspx" />
@@ -168,9 +173,9 @@
     <Content Include="Student\Quizzes.aspx" />
     <Content Include="Student\StartQuiz.aspx" />
     <Content Include="Student\ViewQuiz.aspx" />
-    <Content Include="StyleSheet1.css" />
+    <Content Include="Content\Performance.css" />
     <Content Include="Web.config" />
-    <Content Include="WebForm1.aspx" />
+    <Content Include="Student\Performance.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\Profile.aspx.cs">
@@ -243,12 +248,26 @@
     <Compile Include="Admin\ViewContent.aspx.designer.cs">
       <DependentUpon>ViewContent.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Student\Feedback.aspx.cs">
+      <DependentUpon>Feedback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Feedback.aspx.designer.cs">
+      <DependentUpon>Feedback.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ForgotPassword.aspx.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ForgotPassword.aspx.designer.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\Grading.aspx.cs">
+      <DependentUpon>Grading.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\Grading.aspx.designer.cs">
+      <DependentUpon>Grading.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\CreateQuestion.aspx.cs">
       <DependentUpon>CreateQuestion.aspx</DependentUpon>
@@ -349,11 +368,11 @@
     <Compile Include="Lecturer\SessionDetails.aspx.designer.cs">
       <DependentUpon>SessionDetails.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sessions.aspx.cs">
+    <Compile Include="Lecturer\Sessions.aspx.cs">
       <DependentUpon>Sessions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sessions.aspx.designer.cs">
+    <Compile Include="Lecturer\Sessions.aspx.designer.cs">
       <DependentUpon>Sessions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Student\Portal.aspx.cs">
@@ -391,12 +410,12 @@
     <Compile Include="Student\ViewQuiz.aspx.designer.cs">
       <DependentUpon>ViewQuiz.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="Student\Performance.aspx.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="Student\Performance.aspx.designer.cs">
+      <DependentUpon>Performance.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

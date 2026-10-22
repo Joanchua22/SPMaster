@@ -132,7 +132,7 @@
                                 Performance
                             </a>
 
-                            <a href="<%= ResolveUrl("~/Feedback.aspx") %>">
+                            <a href="<%= ResolveUrl("~/Student/Feedback.aspx") %>">
                                 Feedback
                             </a>
 
