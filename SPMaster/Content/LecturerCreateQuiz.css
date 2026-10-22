@@ -1,11 +1,116 @@
-﻿/* =========================
+﻿/* =========================================================
+   STANDALONE CREATE QUIZ PAGE
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
+
+.create-quiz-body {
+    /* =====================================================
+       THEME VARIABLES
+       ===================================================== */
+
+    --portal-yellow: #ffe14d;
+    --portal-purple: #8c4dff;
+    --portal-purple-dark: #6930cf;
+    --portal-navy: #292052;
+    --portal-muted: #61596e;
+    --portal-white: #ffffff;
+    --portal-lavender: #f1eaff;
+    --portal-border: #eae5f2;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--portal-yellow);
+    color: var(--portal-navy);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+
+    /* =========================================================
+   GLOBAL BOX SIZING
+   ========================================================= */
+
+    .create-quiz-body *,
+    .create-quiz-body *::before,
+    .create-quiz-body *::after {
+        box-sizing: border-box;
+    }
+
+
+
+    /* =========================================================
+   HIDDEN ELEMENTS
+   ========================================================= */
+
+    .create-quiz-body [hidden] {
+        display: none !important;
+    }
+
+
+
+    /* =========================================================
+   BASE LINKS
+   ========================================================= */
+
+    .create-quiz-body a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+
+
+    /* =========================================================
+   BASE IMAGES
+   ========================================================= */
+
+    .create-quiz-body img {
+        max-width: 100%;
+    }
+
+
+
+    /* =========================================================
+   FORM FONT
+   Do not use "font: inherit" because it also inherits
+   the 16px body font size.
+   ========================================================= */
+
+    .create-quiz-body button,
+    .create-quiz-body input,
+    .create-quiz-body select,
+    .create-quiz-body textarea {
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+
+
+/* =========================================================
+   STANDALONE WRAPPER
+   ========================================================= */
+
+.create-quiz-standalone {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+}
+
+
+
+/* =========================================================
    CREATE QUIZ PAGE
-   ========================= */
+   ========================================================= */
 
 .create-quiz-page {
     --quiz-primary: #7c28ef;
     --quiz-primary-hover: #6920d4;
-    --quiz-button-font-size: 13px;
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
@@ -13,44 +118,51 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    PAGE HEADER
-   ========================= */
+   ========================================================= */
 
 .create-quiz-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
 
 
     .create-quiz-header h1 {
         margin: 0;
-        font-size: 30px;
-        line-height: 1.2;
-        letter-spacing: -0.5px;
+        color: var(--portal-navy);
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.7px;
     }
 
 
     .create-quiz-header p {
-        margin: 4px 0 0;
+        margin: 5px 0 0;
         color: var(--portal-muted);
         font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
     }
 
 
 .create-quiz-header-actions {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     gap: 8px;
 }
 
 
-/* =========================
+
+/* =========================================================
    HEADER BUTTONS
-   ========================= */
+   ========================================================= */
 
 .create-quiz-cancel-button,
 .create-quiz-publish-button {
@@ -58,14 +170,17 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-    min-height: 38px;
-    padding: 7px 15px;
+    min-height: 32px;
+    padding: 6px 14px;
     border: 0;
     border-radius: 999px;
-    font-family: inherit;
-    font-size: var(--quiz-button-font-size);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 
@@ -75,20 +190,28 @@
 }
 
 
+    .create-quiz-cancel-button:hover {
+        background: var(--portal-lavender);
+        transform: translateY(-1px);
+    }
+
+
 .create-quiz-publish-button {
     background: var(--quiz-primary);
     color: var(--portal-white) !important;
-}   
+}
 
 
     .create-quiz-publish-button:hover {
         background: var(--quiz-primary-hover);
+        transform: translateY(-1px);
     }
 
 
-/* =========================
+
+/* =========================================================
    CARD
-   ========================= */
+   ========================================================= */
 
 .create-quiz-card {
     padding: 24px;
@@ -103,9 +226,10 @@
     }
 
 
-/* =========================
+
+/* =========================================================
    SECTION HEADING
-   ========================= */
+   ========================================================= */
 
 .create-quiz-section-heading {
     margin-bottom: 16px;
@@ -117,17 +241,19 @@
         margin: 0;
         color: var(--portal-navy);
         font-size: 18px;
+        font-weight: 700;
         line-height: 1.3;
     }
 
 
-/* =========================
+
+/* =========================================================
    GENERAL INFORMATION GRID
-   ========================= */
+   ========================================================= */
 
 .quiz-general-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat( 4, minmax(0, 1fr) );
     gap: 14px;
 }
 
@@ -147,16 +273,18 @@
 }
 
 
-/* =========================
-   LABELS
-   ========================= */
+
+/* =========================================================
+   FIELD LABELS
+   ========================================================= */
 
 .quiz-field > label {
     display: block;
     margin-bottom: 6px;
     color: var(--portal-navy);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1.4;
     text-transform: uppercase;
 }
 
@@ -166,21 +294,24 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    INPUTS
-   ========================= */
+   ========================================================= */
 
 .quiz-input,
 .quiz-select {
     width: 100%;
-    height: 42px;
+    height: 40px;
     border: 0;
     border-radius: 999px;
     outline: none;
     background: #f3ecff;
     color: var(--portal-navy);
-    font-family: inherit;
-    font-size: 13px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px !important;
+    font-weight: 400;
+    line-height: 1.4;
 }
 
 
@@ -197,12 +328,15 @@
 
     .quiz-input::placeholder {
         color: #9e94ab;
+        font-size: 12px;
+        opacity: 1;
     }
 
 
-/* =========================
+
+/* =========================================================
    SELECT
-   ========================= */
+   ========================================================= */
 
 .quiz-select-wrapper {
     position: relative;
@@ -211,11 +345,20 @@
 
 .quiz-select {
     padding: 8px 34px 8px 14px;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    cursor: pointer;
 }
+
+
+    .quiz-select option {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+    }
 
 
 .quiz-select-arrow {
@@ -229,9 +372,10 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    PERCENTAGE
-   ========================= */
+   ========================================================= */
 
 .quiz-percentage-input {
     position: relative;
@@ -255,9 +399,31 @@
     }
 
 
-/* =========================
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+.quiz-validation-error {
+    display: block;
+    margin-top: 6px;
+    color: #ff334b;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+
+.allocation-validation-error {
+    margin: 0 0 14px;
+}
+
+
+
+/* =========================================================
    QUESTION ALLOCATION HEADER
-   ========================= */
+   ========================================================= */
 
 .question-allocation-header {
     display: flex;
@@ -272,6 +438,7 @@
         margin: 3px 0 0;
         color: var(--portal-muted);
         font-size: 11px;
+        line-height: 1.5;
     }
 
 
@@ -283,9 +450,10 @@
 }
 
 
-/* =========================
-   SUMMARY
-   ========================= */
+
+/* =========================================================
+   SUMMARY PILL
+   ========================================================= */
 
 .quiz-summary-pill {
     display: inline-flex;
@@ -298,39 +466,52 @@
     color: var(--portal-navy);
     font-size: 11px;
     font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 
-/* =========================
+
+/* =========================================================
    ADD FROM BANK
-   ========================= */
+   Same button hierarchy as other editor buttons.
+   ========================================================= */
 
 .add-from-bank-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: 34px;
-    padding: 6px 13px;
+    min-height: 32px;
+    padding: 6px 14px;
     border: 0;
     border-radius: 999px;
     background: var(--quiz-primary);
     color: var(--portal-white);
-    font-family: inherit;
-    font-size: var(--quiz-button-font-size);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
+
+    .add-from-bank-button i {
+        font-size: 13px;
+    }
 
 
     .add-from-bank-button:hover {
         background: var(--quiz-primary-hover);
+        transform: translateY(-1px);
     }
 
 
-/* =========================
+
+/* =========================================================
    ALLOCATED QUESTION
-   ========================= */
+   ========================================================= */
 
 .allocated-question-row {
     display: grid;
@@ -349,9 +530,10 @@
     }
 
 
-/* =========================
-   ORDER
-   ========================= */
+
+/* =========================================================
+   QUESTION ORDER
+   ========================================================= */
 
 .question-order {
     display: flex;
@@ -367,9 +549,10 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    QUESTION CONTENT
-   ========================= */
+   ========================================================= */
 
 .allocated-question-content {
     min-width: 0;
@@ -414,15 +597,16 @@
 .allocated-question-content h3 {
     margin: 0;
     color: var(--portal-navy);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 1.45;
 }
 
 
-/* =========================
+
+/* =========================================================
    QUESTION CONTROLS
-   ========================= */
+   ========================================================= */
 
 .allocated-question-controls {
     display: flex;
@@ -440,14 +624,14 @@
 
 .question-marks-input {
     width: 58px;
-    height: 34px;
+    height: 32px;
     padding: 5px 8px;
     border: 0;
     border-radius: 999px;
     outline: none;
     background: var(--portal-white);
     color: var(--portal-navy);
-    font-family: inherit;
+    font-family: "Segoe UI", Arial, sans-serif;
     font-size: 12px;
     text-align: center;
 }
@@ -458,30 +642,61 @@
     }
 
 
-/* =========================
+
+/* =========================================================
    DELETE QUESTION
-   ========================= */
+   ========================================================= */
 
 .remove-question-button {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     border: 0;
     border-radius: 50%;
     background: #ffdeda;
     color: #e1342c;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 
     .remove-question-button:hover {
         background: #ffcfc9;
+        transform: translateY(-1px);
     }
+
+
+
+/* =========================================================
+   EMPTY QUESTIONS STATE
+   ========================================================= */
+
+.empty-questions-state {
+    padding: 28px 10px 12px;
+}
+
+
+    .empty-questions-state h3 {
+        margin: 0 0 8px;
+        color: var(--portal-navy);
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+
+    .empty-questions-state p {
+        margin: 0;
+        color: var(--portal-muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
 
 
 /* =========================================================
@@ -493,30 +708,32 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-height: 52px;
+    min-height: 48px;
     margin: 0 0 20px;
-    padding: 13px 16px;
+    padding: 12px 15px;
     border: 1px solid #b9e7c5;
     border-radius: 14px;
     background: #e9f8ed;
     color: #26733b;
-    box-sizing: border-box;
     font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 1.4;
 }
 
+
     .quiz-save-message i {
         flex-shrink: 0;
         color: #26733b;
-        font-size: 17px;
+        font-size: 16px;
         line-height: 1;
     }
+
 
     .quiz-save-message span {
         color: #26733b;
     }
+
 
 
 /* =========================================================
@@ -535,30 +752,34 @@
 
 
     .question-bank-modal[hidden] {
-        display: none;
+        display: none !important;
     }
 
 
-/* =========================
+
+/* =========================================================
    MODAL OVERLAY
-   ========================= */
+   ========================================================= */
 
 .question-bank-modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(41, 32, 82, 0.48);
+    background: rgba( 41, 32, 82, 0.48 );
     backdrop-filter: blur(3px);
 }
 
 
-/* =========================
+
+/* =========================================================
    MODAL DIALOG
-   ========================= */
+   ========================================================= */
 
 .question-bank-modal-dialog {
     position: relative;
     z-index: 1;
-    width: min(650px, 100%);
+    width: min( 650px, 100% );
+    max-height: calc( 100vh - 48px );
+    overflow-y: auto;
     padding: 24px;
     border-radius: 20px;
     background: var(--portal-white);
@@ -566,9 +787,10 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    MODAL HEADER
-   ========================= */
+   ========================================================= */
 
 .question-bank-modal-header {
     display: flex;
@@ -582,46 +804,61 @@
     .question-bank-modal-header h2 {
         margin: 0;
         color: var(--portal-navy);
-        font-size: 20px;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.3;
     }
 
 
     .question-bank-modal-header p {
-        margin: 2px 0 0;
+        margin: 3px 0 0;
         color: var(--portal-muted);
         font-size: 11px;
+        line-height: 1.4;
     }
 
 
-/* =========================
+
+/* =========================================================
    CLOSE BUTTON
-   ========================= */
+   ========================================================= */
 
 .question-bank-modal-close {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     border: 0;
     border-radius: 50%;
     background: var(--portal-lavender);
     color: var(--portal-navy);
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 
-/* =========================
+    .question-bank-modal-close:hover {
+        background: #e4d7fa;
+        transform: translateY(-1px);
+    }
+
+
+
+/* =========================================================
    BANK QUESTION LIST
-   ========================= */
+   ========================================================= */
 
 .bank-question-list {
     display: flex;
     flex-direction: column;
     gap: 9px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 3px;
 }
 
 
@@ -634,7 +871,13 @@
     border-radius: 18px;
     background: #f3ecff;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+
+    .bank-question-item:hover {
+        background: #eadfff;
+    }
 
 
 .bank-question-checkbox {
@@ -649,6 +892,7 @@
 .bank-question-meta {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 4px;
     color: var(--quiz-primary);
     font-size: 10px;
@@ -664,9 +908,10 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    MODAL FOOTER
-   ========================= */
+   ========================================================= */
 
 .question-bank-modal-footer {
     display: flex;
@@ -678,40 +923,57 @@
     border-top: 1px solid var(--portal-border);
 }
 
+
     .question-bank-modal-footer > span {
         color: var(--portal-muted);
         font-size: 10px;
     }
 
+
+
+/* =========================================================
+   ADD SELECTED QUESTIONS
+   ========================================================= */
+
 .add-selected-questions-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 36px;
-    padding: 7px 16px;
+    min-height: 32px;
+    padding: 6px 14px;
     border: 0;
     border-radius: 999px;
-    background: #7c28ef;
+    background: var(--quiz-primary);
     color: var(--portal-white);
-    font-family: inherit;
-    font-size: 13px !important;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px !important;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
+
     .add-selected-questions-button:hover {
-        background: #6920d4;
+        background: var(--quiz-primary-hover);
+        transform: translateY(-1px);
     }
 
 
-/* =========================
+
+/* =========================================================
    TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 900px) {
 
+    .create-quiz-standalone {
+        padding: 28px 24px 40px;
+    }
+
+
     .quiz-general-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat( 2, minmax(0, 1fr) );
     }
 
 
@@ -724,14 +986,26 @@
     .question-allocation-header {
         flex-direction: column;
     }
+
+
+    .question-allocation-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
 
 
-/* =========================
+
+/* =========================================================
    MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
+
+    .create-quiz-standalone {
+        padding: 20px 16px 32px;
+    }
+
 
     .create-quiz-header {
         flex-direction: column;
@@ -739,7 +1013,12 @@
 
 
         .create-quiz-header h1 {
-            font-size: 26px;
+            font-size: 28px;
+        }
+
+
+        .create-quiz-header p {
+            font-size: 12px;
         }
 
 
@@ -794,14 +1073,16 @@
 
 
     .question-bank-modal-dialog {
+        max-height: calc( 100vh - 32px );
         padding: 20px;
     }
 }
 
 
-/* =========================
+
+/* =========================================================
    SMALL MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 430px) {
 
@@ -822,6 +1103,23 @@
     }
 
 
+    .allocated-question-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .question-order {
+        margin-bottom: 2px;
+    }
+
+
+    .allocated-question-controls {
+        grid-column: auto;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+
     .question-bank-modal-footer {
         align-items: stretch;
         flex-direction: column;
@@ -831,4 +1129,32 @@
     .add-selected-questions-button {
         width: 100%;
     }
+}
+
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .create-quiz-cancel-button,
+    .create-quiz-publish-button,
+    .add-from-bank-button,
+    .remove-question-button,
+    .question-bank-modal-close,
+    .add-selected-questions-button {
+        transition: none;
+    }
+
+
+        .create-quiz-cancel-button:hover,
+        .create-quiz-publish-button:hover,
+        .add-from-bank-button:hover,
+        .remove-question-button:hover,
+        .question-bank-modal-close:hover,
+        .add-selected-questions-button:hover {
+            transform: none;
+        }
 }

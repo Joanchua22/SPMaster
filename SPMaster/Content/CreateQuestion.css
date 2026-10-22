@@ -1,6 +1,110 @@
-﻿/* =========================
+﻿/* =========================================================
+   STANDALONE CREATE QUESTION PAGE
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
+
+.create-question-body {
+    /* =====================================================
+       THEME VARIABLES
+       ===================================================== */
+
+    --portal-yellow: #ffe14d;
+    --portal-purple: #8c4dff;
+    --portal-purple-dark: #6930cf;
+    --portal-navy: #292052;
+    --portal-muted: #61596e;
+    --portal-white: #ffffff;
+    --portal-lavender: #f1eaff;
+    --portal-border: #eae5f2;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--portal-yellow);
+    color: var(--portal-navy);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+
+    /* =========================================================
+   GLOBAL BOX SIZING
+   ========================================================= */
+
+    .create-question-body *,
+    .create-question-body *::before,
+    .create-question-body *::after {
+        box-sizing: border-box;
+    }
+
+
+
+    /* =========================================================
+   HIDDEN ELEMENTS
+   ========================================================= */
+
+    .create-question-body [hidden] {
+        display: none !important;
+    }
+
+
+
+    /* =========================================================
+   BASE LINKS
+   ========================================================= */
+
+    .create-question-body a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+
+
+    /* =========================================================
+   BASE IMAGES
+   ========================================================= */
+
+    .create-question-body img {
+        max-width: 100%;
+    }
+
+
+
+    /* =========================================================
+   FORM FONT
+   ========================================================= */
+
+    .create-question-body button,
+    .create-question-body input,
+    .create-question-body select,
+    .create-question-body textarea {
+        font-family: inherit;
+    }
+
+
+
+/* =========================================================
+   STANDALONE WRAPPER
+   ========================================================= */
+
+.create-question-standalone {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+}
+
+
+
+/* =========================================================
    CREATE QUESTION PAGE
-   ========================= */
+   ========================================================= */
 
 .create-question-page {
     width: 100%;
@@ -10,44 +114,59 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    PAGE HEADER
-   ========================= */
+   ========================================================= */
 
 .create-question-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
+
 
     .create-question-header h1 {
         margin: 0;
-        font-size: 30px;
-        line-height: 1.2;
-        letter-spacing: -0.5px;
+        color: var(--portal-navy);
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.7px;
     }
 
+
     .create-question-header p {
-        margin: 4px 0 0;
+        margin: 5px 0 0;
         color: var(--portal-muted);
         font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
     }
+
+
+
+/* =========================================================
+   CANCEL BUTTON
+   ========================================================= */
 
 .cq-cancel-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 34px;
-    padding: 6px 17px;
+    min-height: 36px;
+    padding: 7px 17px;
     border-radius: 999px;
     background: var(--portal-white);
     color: var(--portal-navy);
     font-size: 13px;
     font-weight: 600;
+    line-height: 1;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
 
     .cq-cancel-button:hover {
         background: var(--portal-lavender);
@@ -55,9 +174,10 @@
     }
 
 
-/* =========================
+
+/* =========================================================
    FORM CARD
-   ========================= */
+   ========================================================= */
 
 .create-question-card {
     padding: 24px;
@@ -67,83 +187,112 @@
 }
 
 
-/* =========================
-   FIELD LABELS
-   ========================= */
+
+/* =========================================================
+   FIELD SPACING
+   ========================================================= */
 
 .cq-full-field,
 .cq-answer-section,
 .cq-support-grid {
-    margin-top: 16px;
+    margin-top: 18px;
 }
+
 
 .cq-field {
     min-width: 0;
 }
+
+
+
+    /* =========================================================
+   FIELD LABELS
+   12px = FORM LABEL HIERARCHY
+   ========================================================= */
 
     .cq-field > label,
     .cq-answer-heading > label {
         display: block;
         margin-bottom: 6px;
         color: var(--portal-navy);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
+        line-height: 1.4;
         text-transform: uppercase;
     }
+
 
 .required-mark {
     color: #d92d28;
 }
 
+
 .optional-text {
     color: var(--portal-muted);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
+    text-transform: none;
 }
 
 
-/* =========================
-   TOP DETAILS
-   ========================= */
+
+/* =========================================================
+   TOP DETAILS GRID
+   ========================================================= */
 
 .cq-details-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat( 3, minmax(0, 1fr) );
+    gap: 14px;
+    margin-bottom: 20px;
 }
 
 
-/* =========================
+
+/* =========================================================
    SELECT DROPDOWN
-   ========================= */
+   12px = FORM INPUT HIERARCHY
+   ========================================================= */
 
 .cq-select-wrapper {
     position: relative;
     min-width: 0;
 }
 
+
 .cq-select {
     width: 100%;
     height: 40px;
-    padding: 7px 32px 7px 13px;
+    padding: 7px 32px 7px 14px;
     border: 0;
     border-radius: 999px;
     outline: none;
     background: #f3ecff;
     color: var(--portal-navy);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1.4;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
 
+
+    /* Native dropdown option text */
+
+    .cq-select option {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+
     .cq-select:focus {
         box-shadow: 0 0 0 2px var(--portal-purple);
     }
+
 
 .cq-select-arrow {
     position: absolute;
@@ -156,9 +305,11 @@
 }
 
 
-/* =========================
+
+/* =========================================================
    INPUTS
-   ========================= */
+   12px = FORM INPUT HIERARCHY
+   ========================================================= */
 
 .cq-input,
 .cq-option-input {
@@ -168,8 +319,11 @@
     background: #f3ecff;
     color: var(--portal-navy);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
 }
+
 
 .cq-input {
     height: 40px;
@@ -177,25 +331,38 @@
     border-radius: 999px;
 }
 
+
     .cq-input:focus,
     .cq-option-input:focus {
         box-shadow: 0 0 0 2px var(--portal-purple);
     }
 
+
+
+    /* =========================================================
+   PLACEHOLDERS
+   ========================================================= */
+
     .cq-input::placeholder,
     .cq-option-input::placeholder,
     .cq-textarea::placeholder {
         color: #a39aae;
+        font-size: 12px;
+        font-weight: 400;
+        opacity: 1;
     }
 
 
-/* =========================
-   TEXT AREA
-   ========================= */
+
+/* =========================================================
+   TEXTAREA
+   12px = FORM INPUT HIERARCHY
+   ========================================================= */
 
 .cq-full-field {
     width: 100%;
 }
+
 
 .cq-textarea {
     display: block;
@@ -208,26 +375,31 @@
     background: #f3ecff;
     color: var(--portal-navy);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 400;
     line-height: 1.6;
 }
+
 
     .cq-textarea:focus {
         box-shadow: 0 0 0 2px var(--portal-purple);
     }
 
+
 .cq-question-textarea {
     min-height: 120px;
 }
+
 
 .cq-model-textarea {
     min-height: 120px;
 }
 
 
-/* =========================
+
+/* =========================================================
    IMAGE UPLOAD
-   ========================= */
+   ========================================================= */
 
 .cq-upload-area {
     margin-top: 6px;
@@ -235,6 +407,7 @@
     border-radius: 24px;
     background: #f3ecff;
 }
+
 
 .cq-upload-inner {
     display: flex;
@@ -244,6 +417,7 @@
     border-radius: 20px;
     background: var(--portal-white);
 }
+
 
 .cq-upload-icon {
     display: flex;
@@ -259,20 +433,29 @@
     font-size: 24px;
 }
 
+
 .cq-upload-details {
     display: flex;
     flex-direction: column;
     min-width: 0;
 }
 
+
     .cq-upload-details strong {
+        color: var(--portal-navy);
         font-size: 12px;
+        font-weight: 700;
+        line-height: 1.4;
     }
 
+
     .cq-upload-details > span {
+        margin-top: 2px;
         color: var(--portal-muted);
         font-size: 10px;
+        line-height: 1.4;
     }
+
 
 .cq-upload-actions {
     display: flex;
@@ -281,30 +464,54 @@
     margin-top: 8px;
 }
 
+
+
+/* =========================================================
+   UPLOAD BUTTONS
+   13px = BUTTON HIERARCHY
+   ========================================================= */
+
 .cq-file-button,
 .cq-remove-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 29px;
-    padding: 5px 11px;
+    min-height: 32px;
+    padding: 6px 14px;
     border: 0;
     border-radius: 999px;
-    font-family: inherit;
-    font-size: 11px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
 
 .cq-file-button {
     background: var(--portal-purple);
-    color: white;
+    color: var(--portal-white);
 }
+
 
 .cq-remove-button {
     background: var(--portal-lavender);
     color: var(--portal-navy);
 }
+
+
+.cq-file-button:hover {
+    background: var(--portal-purple-dark);
+    transform: translateY(-1px);
+}
+
+
+.cq-remove-button:hover {
+    background: #e4d7fa;
+    transform: translateY(-1px);
+}
+
 
 .cq-file-name {
     margin-top: 5px;
@@ -313,31 +520,36 @@
 }
 
 
-/* =========================
-   ANSWERS
-   ========================= */
+
+/* =========================================================
+   ANSWER HEADING
+   ========================================================= */
 
 .cq-answer-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 }
+
 
     .cq-answer-heading > label {
         margin: 0;
     }
 
+
     .cq-answer-heading > span {
         color: var(--portal-muted);
         font-size: 10px;
+        line-height: 1.4;
     }
 
 
-/* =========================
+
+/* =========================================================
    MCQ OPTIONS
-   ========================= */
+   ========================================================= */
 
 .cq-option-row {
     display: grid;
@@ -351,12 +563,14 @@
     background: #f3ecff;
 }
 
+
     .cq-option-row input[type="radio"] {
         width: 16px;
         height: 16px;
         accent-color: var(--portal-purple);
         cursor: pointer;
     }
+
 
 .cq-option-letter {
     display: flex;
@@ -370,41 +584,49 @@
     color: var(--portal-navy);
     font-size: 11px !important;
     font-weight: 700 !important;
+    line-height: 1;
     text-transform: none !important;
 }
+
 
 .cq-option-input {
     height: 34px;
     padding: 6px 9px;
     border-radius: 10px;
+    font-size: 12px;
 }
 
 
-/* =========================
+
+/* =========================================================
    SUBJECTIVE
-   ========================= */
+   ========================================================= */
 
 .cq-model-note {
     margin: 8px 0 0;
     color: var(--portal-muted);
     font-size: 10px;
+    line-height: 1.5;
 }
 
 
-/* =========================
+
+/* =========================================================
    HINT + EXPLANATION
-   ========================= */
+   ========================================================= */
 
 .cq-support-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat( 2, minmax(0, 1fr) );
     gap: 14px;
 }
 
 
-/* =========================
-   ACTION BUTTONS
-   ========================= */
+
+/* =========================================================
+   FORM ACTIONS
+   13px = BUTTON HIERARCHY
+   ========================================================= */
 
 .cq-form-actions {
     display: flex;
@@ -414,41 +636,49 @@
     margin-top: 22px;
 }
 
+
 .cq-preview-button,
 .cq-save-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 36px;
-    padding: 7px 16px;
+    min-height: 32px;
+    padding: 6px 14px;
     border: 0;
     border-radius: 999px;
-    font-family: inherit;
-    font-size: 13px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
 
 .cq-preview-button {
     background: var(--portal-lavender);
     color: var(--portal-navy);
 }
 
+
 .cq-save-button {
     background: var(--portal-purple);
     color: var(--portal-white);
 }
+
 
 .cq-preview-button:hover {
     background: #e4d7fa;
     transform: translateY(-1px);
 }
 
+
 .cq-save-button:hover {
     background: var(--portal-purple-dark);
     transform: translateY(-1px);
 }
+
+
 
 /* =========================================================
    QUESTION SUCCESS MESSAGE
@@ -466,12 +696,15 @@
     color: #26733b;
     font-size: 13px;
     font-weight: 600;
+    line-height: 1.4;
 }
+
 
     .cq-save-message i {
         flex-shrink: 0;
         font-size: 16px;
     }
+
 
 
 /* =========================================================
@@ -490,12 +723,15 @@
     color: #b72f28;
     font-size: 13px;
     font-weight: 600;
+    line-height: 1.4;
 }
+
 
     .cq-error-message i {
         flex-shrink: 0;
         font-size: 16px;
     }
+
 
 
 /* =========================================================
@@ -507,10 +743,11 @@
     margin-top: 6px;
     color: #ff334b;
     font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 1.35;
 }
+
 
 
 /* =========================================================
@@ -521,10 +758,12 @@
     width: 100%;
 }
 
+
 .cq-option-validation {
     margin-left: 52px;
     margin-bottom: 6px;
 }
+
 
 
 /* =========================================================
@@ -540,59 +779,85 @@
     pointer-events: none;
 }
 
-/* =========================
+
+
+/* =========================================================
    TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 900px) {
 
+    .create-question-standalone {
+        padding: 28px 24px 40px;
+    }
+
+
     .cq-details-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat( 2, minmax(0, 1fr) );
     }
 }
 
 
-/* =========================
+
+/* =========================================================
    MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
+
+    .create-question-standalone {
+        padding: 20px 16px 32px;
+    }
+
 
     .create-question-header {
         align-items: flex-start;
     }
 
+
         .create-question-header h1 {
-            font-size: 26px;
+            font-size: 28px;
         }
+
+
+        .create-question-header p {
+            font-size: 12px;
+        }
+
 
     .create-question-card {
         padding: 18px;
     }
 
+
     .cq-details-grid {
         grid-template-columns: 1fr;
     }
+
 
     .cq-support-grid {
         grid-template-columns: 1fr;
     }
 
+
     .cq-upload-inner {
         align-items: flex-start;
     }
+
 
     .cq-upload-icon {
         width: 50px;
         height: 50px;
         margin-right: 12px;
+        font-size: 20px;
     }
 }
 
 
-/* =========================
+
+/* =========================================================
    SMALL MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 430px) {
 
@@ -600,17 +865,21 @@
         flex-direction: column;
     }
 
+
     .cq-cancel-button {
         align-self: flex-end;
     }
+
 
     .cq-upload-inner {
         flex-direction: column;
     }
 
+
     .cq-upload-icon {
         margin: 0 0 12px;
     }
+
 
     .cq-answer-heading {
         align-items: flex-start;
@@ -618,12 +887,40 @@
         gap: 3px;
     }
 
+
     .cq-form-actions {
         flex-direction: column;
     }
+
 
     .cq-preview-button,
     .cq-save-button {
         width: 100%;
     }
+}
+
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .cq-cancel-button,
+    .cq-file-button,
+    .cq-remove-button,
+    .cq-preview-button,
+    .cq-save-button {
+        transition: none;
+    }
+
+
+        .cq-cancel-button:hover,
+        .cq-file-button:hover,
+        .cq-remove-button:hover,
+        .cq-preview-button:hover,
+        .cq-save-button:hover {
+            transform: none;
+        }
 }
