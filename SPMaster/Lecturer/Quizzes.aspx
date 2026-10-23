@@ -26,19 +26,82 @@
         </section>
 
         <%-- =====================================================
-             SEARCH
+             SEARCH AND FILTERS
              ===================================================== --%>
 
         <section class="quiz-search-card">
 
+
+            <%-- =============================================
+                 SEARCH
+                 ============================================= --%>
+
             <div class="quiz-search">
 
-                <i class="bi bi-search quiz-search-icon" aria-hidden="true"></i>
+                <i class="bi bi-search quiz-search-icon"
+                   aria-hidden="true"></i>
 
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="quiz-search-input" AutoPostBack="true" OnTextChanged="FilterChanged" placeholder="Search by quiz title or keyword..." aria-label="Search quizzes">
+
+                <asp:TextBox
+                    ID="txtSearch"
+                    runat="server"
+                    CssClass="quiz-search-input"
+                    AutoPostBack="true"
+                    OnTextChanged="FilterChanged"
+                    placeholder="Search by quiz title or keyword..."
+                    aria-label="Search quizzes">
                 </asp:TextBox>
 
             </div>
+
+
+
+            <%-- =============================================
+                 SUBJECT FILTER
+                 ============================================= --%>
+
+            <div class="quiz-filter-select-wrapper">
+
+
+                <asp:DropDownList
+                    ID="ddlSubjectFilter"
+                    runat="server"
+                    CssClass="quiz-filter-select"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="FilterChanged">
+                </asp:DropDownList>
+
+
+                <i class="bi bi-caret-down-fill quiz-filter-arrow"
+                   aria-hidden="true"></i>
+
+
+            </div>
+
+
+
+            <%-- =============================================
+                 FORM FILTER
+                 ============================================= --%>
+
+            <div class="quiz-filter-select-wrapper">
+
+
+                <asp:DropDownList
+                    ID="ddlFormFilter"
+                    runat="server"
+                    CssClass="quiz-filter-select"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="FilterChanged">
+                </asp:DropDownList>
+
+
+                <i class="bi bi-caret-down-fill quiz-filter-arrow"
+                   aria-hidden="true"></i>
+
+
+            </div>
+
 
         </section>
 

@@ -72,22 +72,26 @@ namespace SPMaster.Lecturer
                 return;
             }
 
+
             if (!IsPostBack)
             {
                 string requestedTab = Request.QueryString["tab"];
 
-                if (string.Equals(requestedTab,"public", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(requestedTab, "public", StringComparison.OrdinalIgnoreCase))
                 {
                     QuizMode = "public";
                 }
                 else
                 {
-                    QuizMode ="mine";
+                    QuizMode = "mine";
                 }
 
+                BindSubjectFilter();
+                BindFormFilter();
                 BindQuizCounts();
                 BindQuizzes();
             }
+
 
             UpdateTabStyle();
         }
@@ -124,41 +128,117 @@ namespace SPMaster.Lecturer
 
 
         // =========================================================
+        // BIND SUBJECT FILTER
+        // =========================================================
+
+        private void BindSubjectFilter()
+        {
+            const string sql = @" SELECT SubjectId, SubjectName FROM Subjects WHERE IsActive = 1 ORDER BY SubjectName;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                connection.Open();
+
+                ddlSubjectFilter.DataSource = command.ExecuteReader();
+                ddlSubjectFilter.DataTextField = "SubjectName";
+                ddlSubjectFilter.DataValueField = "SubjectId";
+                ddlSubjectFilter.DataBind();
+            }
+
+            ddlSubjectFilter.Items.Insert(0, new ListItem("All Subjects", ""));
+        }
+
+        // =========================================================
+        // BIND FORM FILTER
+        // =========================================================
+
+        private void BindFormFilter()
+        {
+            const string sql = @"SELECT FormId, FormName FROM Forms WHERE IsActive = 1 ORDER BY FormId;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                connection.Open();
+
+                ddlFormFilter.DataSource = command.ExecuteReader();
+                ddlFormFilter.DataTextField = "FormName";
+                ddlFormFilter.DataValueField = "FormId";
+                ddlFormFilter.DataBind();
+            }
+
+            ddlFormFilter.Items.Insert(0, new ListItem("All Forms", ""));
+        }
+
+
+        // =========================================================
         // BIND QUIZZES
         // =========================================================
 
         private void BindQuizzes()
         {
             const string sql = @"SELECT q.QuizId, q.Title, q.Description, q.TimeLimitMinutes, q.IsPublished, q.CreatedByUserId, q.CreatedAt, s.SubjectName, f.FormName, u.FullName AS CreatorName,
-                                COUNT(qq.QuizQuestionId) AS QuestionCount, ISNULL(SUM(qq.MaxMarks), 0) AS TotalMarks, 
-                                CASE WHEN q.CreatedByUserId = @CurrentUserId THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsOwner FROM Quizzes q
-                                INNER JOIN Subjects s ON q.SubjectId = s.SubjectId
-                                INNER JOIN Forms f ON q.FormId = f.FormId
-                                INNER JOIN Users u ON q.CreatedByUserId = u.UserId
-                                LEFT JOIN QuizQuestions qq ON q.QuizId = qq.QuizId
-                                WHERE q.IsArchived = 0 AND (( @Mode = 'mine' AND q.CreatedByUserId = @CurrentUserId) 
-                                OR ( @Mode = 'public' AND q.CreatedByUserId <> @CurrentUserId AND q.IsPublished = 1)) 
-                                AND (@Search = '' OR q.Title LIKE @SearchPattern OR ISNULL( q.Description, '') LIKE @SearchPattern 
-                                OR s.SubjectName LIKE @SearchPattern OR f.FormName LIKE @SearchPattern OR u.FullName LIKE @SearchPattern) 
-                                GROUP BY q.QuizId,q.Title, q.Description, q.TimeLimitMinutes, q.IsPublished, q.CreatedByUserId, q.CreatedAt, s.SubjectName, f.FormName, u.FullName
-                                ORDER BY q.CreatedAt DESC;";
+                            COUNT(qq.QuizQuestionId) AS QuestionCount, ISNULL(SUM(qq.MaxMarks), 0) AS TotalMarks, CASE WHEN q.CreatedByUserId = @CurrentUserId THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsOwner
+                            FROM Quizzes q INNER JOIN Subjects s ON q.SubjectId = s.SubjectId INNER JOIN Forms f ON q.FormId = f.FormId 
+                            INNER JOIN Users u ON q.CreatedByUserId = u.UserId LEFT JOIN QuizQuestions qq ON q.QuizId = qq.QuizId WHERE q.IsArchived = 0 
+                            AND ((@Mode = 'mine' AND q.CreatedByUserId = @CurrentUserId)
+                            OR (@Mode = 'public' AND q.CreatedByUserId <> @CurrentUserId AND q.IsPublished = 1))
+                            AND (@SubjectId IS NULL OR q.SubjectId = @SubjectId) AND (@FormId IS NULL OR q.FormId = @FormId) 
+                            AND (@Search = '' OR q.Title LIKE @SearchPattern OR ISNULL(q.Description, '') LIKE @SearchPattern OR s.SubjectName LIKE @SearchPattern OR f.FormName LIKE @SearchPattern OR u.FullName LIKE @SearchPattern)
+                            GROUP BY q.QuizId, q.Title, q.Description, q.TimeLimitMinutes, q.IsPublished, q.CreatedByUserId, q.CreatedAt, s.SubjectName, f.FormName, u.FullName ORDER BY q.CreatedAt DESC; ";
 
             DataTable quizTable = new DataTable();
+
             string searchText = txtSearch.Text.Trim();
+            int subjectId;
+            bool hasSubjectFilter = int.TryParse(ddlSubjectFilter.SelectedValue, out subjectId);
+            int formId;
+            bool hasFormFilter = int.TryParse(ddlFormFilter.SelectedValue, out formId);
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.Add("@CurrentUserId", SqlDbType.Int).Value = CurrentUserId;
-                    command.Parameters.Add("@Mode", SqlDbType.VarChar, 10).Value = QuizMode;
-                    command.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value = searchText;
-                    command.Parameters.Add("@SearchPattern", SqlDbType.NVarChar,204).Value = "%" + searchText + "%";
 
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                    {
-                        adapter.Fill(quizTable);
-                    }
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                // =============================================
+                // USER
+                // =============================================
+
+                command.Parameters.Add("@CurrentUserId", SqlDbType.Int).Value = CurrentUserId;
+
+
+                // =============================================
+                // TAB MODE
+                // =============================================
+
+                command.Parameters.Add("@Mode", SqlDbType.VarChar, 10).Value = QuizMode;
+
+
+                // =============================================
+                // SUBJECT FILTER
+                // =============================================
+
+                command.Parameters.Add("@SubjectId", SqlDbType.Int).Value = hasSubjectFilter ? (object)subjectId : DBNull.Value;
+
+
+                // =============================================
+                // FORM FILTER
+                // =============================================
+
+                command.Parameters.Add("@FormId", SqlDbType.Int).Value = hasFormFilter ? (object)formId : DBNull.Value;
+
+
+                // =============================================
+                // SEARCH
+                // =============================================
+
+                command.Parameters.Add("@Search", SqlDbType.NVarChar,200).Value = searchText;
+                command.Parameters.Add("@SearchPattern", SqlDbType.NVarChar,204).Value = "%" + searchText + "%";
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(quizTable);
                 }
             }
 
