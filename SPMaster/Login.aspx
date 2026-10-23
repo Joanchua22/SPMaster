@@ -138,17 +138,6 @@
                     <!-- Remember + Forgot Password -->
                     <div class="login-options">
 
-                        <label class="remember-container">
-
-                            <asp:CheckBox
-                                ID="chkRemember"
-                                runat="server"
-                                CssClass="remember-checkbox" />
-
-                            <span>Remember me</span>
-
-                        </label>
-
                         <asp:HyperLink
                             ID="lnkForgotPassword"
                             runat="server"

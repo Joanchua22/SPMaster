@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -26,6 +25,7 @@ namespace SPMaster.Admin
                     .ConnectionString;
             }
         }
+
 
 
         // =========================================================
@@ -62,6 +62,11 @@ namespace SPMaster.Admin
                 LoadAuditData();
 
 
+
+                // =============================================
+                // UNPUBLISHED SUCCESS
+                // =============================================
+
                 if (
                     Request.QueryString[
                         "unpublished"
@@ -69,13 +74,35 @@ namespace SPMaster.Admin
                 )
                 {
                     lblSuccessMessage.Text =
-                        "Question unpublished successfully.";
+                        "Quiz unpublished successfully.";
+
+
+                    pnlSuccess.Visible =
+                        true;
+                }
+
+
+
+                // =============================================
+                // PUBLISHED SUCCESS
+                // =============================================
+
+                else if (
+                    Request.QueryString[
+                        "published"
+                    ] == "true"
+                )
+                {
+                    lblSuccessMessage.Text =
+                        "Quiz published successfully.";
+
 
                     pnlSuccess.Visible =
                         true;
                 }
             }
         }
+
 
 
         // =========================================================
@@ -86,7 +113,9 @@ namespace SPMaster.Admin
         {
             const string sql = @"
                 SELECT
+
                     SubjectId,
+
                     SubjectName
 
                 FROM Subjects
@@ -144,36 +173,25 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
-        // PUBLISHED QUESTION COUNT
+        // PUBLISHED QUIZ COUNT
         // =========================================================
 
         private void LoadSummary()
         {
             const string sql = @"
                 SELECT
-                    COUNT(
-                        DISTINCT q.QuestionId
-                    )
+                    COUNT(*)
 
-                FROM Questions q
-
-                INNER JOIN QuizQuestions qq
-                    ON q.QuestionId =
-                       qq.QuestionId
-
-                INNER JOIN Quizzes z
-                    ON qq.QuizId =
-                       z.QuizId
+                FROM Quizzes
 
                 WHERE
-                    q.IsArchived = 0
+                    IsPublished = 1
 
                     AND
-                    z.IsPublished = 1
 
-                    AND
-                    z.IsArchived = 0;
+                    IsArchived = 0;
             ";
 
 
@@ -201,15 +219,20 @@ namespace SPMaster.Admin
                         );
 
 
-                    lblPublishedQuestions.Text =
+                    lblPublishedQuizzes.Text =
                         count.ToString();
                 }
             }
         }
 
 
+
         // =========================================================
-        // LOAD PUBLISHED QUESTIONS
+        // LOAD ALL NON-ARCHIVED QUIZZES
+        //
+        // Includes:
+        // Published quizzes
+        // Draft / unpublished quizzes
         // =========================================================
 
         private void LoadAuditData()
@@ -217,11 +240,13 @@ namespace SPMaster.Admin
             string sql = @"
                 SELECT
 
-                    q.QuestionId,
+                    z.QuizId,
 
-                    q.QuestionText,
+                    z.Title,
 
-                    q.CreatedAt,
+                    z.CreatedAt,
+
+                    z.IsPublished,
 
                     s.SubjectName,
 
@@ -229,40 +254,29 @@ namespace SPMaster.Admin
                         AS LecturerName,
 
                     COUNT(
-                        DISTINCT z.QuizId
-                    ) AS PublishedQuizCount
+                        qq.QuestionId
+                    ) AS QuestionCount
 
 
-                FROM Questions q
+                FROM Quizzes z
 
 
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
+                    ON z.SubjectId =
                        s.SubjectId
 
 
                 INNER JOIN Users u
-                    ON q.CreatedByUserId =
+                    ON z.CreatedByUserId =
                        u.UserId
 
 
-                INNER JOIN QuizQuestions qq
-                    ON q.QuestionId =
-                       qq.QuestionId
-
-
-                INNER JOIN Quizzes z
-                    ON qq.QuizId =
-                       z.QuizId
+                LEFT JOIN QuizQuestions qq
+                    ON z.QuizId =
+                       qq.QuizId
 
 
                 WHERE
-                    q.IsArchived = 0
-
-                    AND
-                    z.IsPublished = 1
-
-                    AND
                     z.IsArchived = 0
             ";
 
@@ -283,9 +297,10 @@ namespace SPMaster.Admin
                         connection;
 
 
-                    // -----------------------------------------
+
+                    // =============================================
                     // SUBJECT FILTER
-                    // -----------------------------------------
+                    // =============================================
 
                     if (
                         !string.IsNullOrEmpty(
@@ -297,8 +312,8 @@ namespace SPMaster.Admin
                         sql += @"
 
                             AND
-                            q.SubjectId =
-                                @SubjectId
+                                z.SubjectId =
+                                    @SubjectId
                         ";
 
 
@@ -313,12 +328,14 @@ namespace SPMaster.Admin
                     }
 
 
-                    // -----------------------------------------
+
+                    // =============================================
                     // SEARCH
-                    // -----------------------------------------
+                    // =============================================
 
                     string search =
-                        txtSearch.Text.Trim();
+                        txtSearch.Text
+                            .Trim();
 
 
                     if (
@@ -331,7 +348,7 @@ namespace SPMaster.Admin
 
                             AND
                             (
-                                q.QuestionText
+                                z.Title
                                     LIKE @Search
 
                                 OR
@@ -358,19 +375,22 @@ namespace SPMaster.Admin
                     }
 
 
-                    // -----------------------------------------
+
+                    // =============================================
                     // GROUPING
-                    // -----------------------------------------
+                    // =============================================
 
                     sql += @"
 
                         GROUP BY
 
-                            q.QuestionId,
+                            z.QuizId,
 
-                            q.QuestionText,
+                            z.Title,
 
-                            q.CreatedAt,
+                            z.CreatedAt,
+
+                            z.IsPublished,
 
                             s.SubjectName,
 
@@ -379,7 +399,7 @@ namespace SPMaster.Admin
 
                         ORDER BY
 
-                            q.CreatedAt DESC;
+                            z.CreatedAt DESC;
                     ";
 
 
@@ -411,11 +431,12 @@ namespace SPMaster.Admin
                     rptAudit.DataBind();
 
 
-                    pnlNoQuestions.Visible =
+                    pnlNoQuizzes.Visible =
                         table.Rows.Count == 0;
                 }
             }
         }
+
 
 
         // =========================================================
@@ -430,6 +451,7 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
         // SEARCH CHANGED
         // =========================================================
@@ -442,31 +464,53 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
-        // UNPUBLISH QUESTION
+        // UNPUBLISH QUIZ
         //
-        // Removes the question from every currently published quiz.
+        // Only changes IsPublished.
         //
-        // The original question remains in the lecturer's
-        // Question Bank.
+        // QuizQuestions is NOT modified.
+        // Questions remain linked to the quiz.
         // =========================================================
 
         protected void Unpublish_Command(
             object sender,
             CommandEventArgs e)
         {
-            int questionId;
+            int quizId;
 
 
             if (
                 !int.TryParse(
-                    e.CommandArgument.ToString(),
-                    out questionId
+                    e.CommandArgument
+                        .ToString(),
+                    out quizId
                 )
             )
             {
                 return;
             }
+
+
+            const string sql = @"
+                UPDATE Quizzes
+
+                SET
+                    IsPublished = 0
+
+                WHERE
+                    QuizId =
+                        @QuizId
+
+                    AND
+
+                    IsPublished = 1
+
+                    AND
+
+                    IsArchived = 0;
+            ";
 
 
             using (
@@ -476,251 +520,183 @@ namespace SPMaster.Admin
                     )
             )
             {
-                connection.Open();
-
-
-                SqlTransaction transaction =
-                    connection.BeginTransaction();
-
-
-                try
+                using (
+                    SqlCommand command =
+                        new SqlCommand(
+                            sql,
+                            connection
+                        )
+                )
                 {
-                    // =========================================
-                    // STEP 1
-                    // Find published quizzes currently using
-                    // this question.
-                    // =========================================
-
-                    List<int> affectedQuizIds =
-                        new List<int>();
+                    command.Parameters.Add(
+                        "@QuizId",
+                        SqlDbType.Int
+                    ).Value =
+                        quizId;
 
 
-                    const string findSql = @"
-                        SELECT DISTINCT
-                            z.QuizId
-
-                        FROM Quizzes z
-
-                        INNER JOIN QuizQuestions qq
-                            ON z.QuizId =
-                               qq.QuizId
-
-                        WHERE
-                            qq.QuestionId =
-                                @QuestionId
-
-                            AND
-                            z.IsPublished = 1
-
-                            AND
-                            z.IsArchived = 0;
-                    ";
+                    connection.Open();
 
 
-                    using (
-                        SqlCommand command =
-                            new SqlCommand(
-                                findSql,
-                                connection,
-                                transaction
-                            )
-                    )
-                    {
-                        command.Parameters.Add(
-                            "@QuestionId",
-                            SqlDbType.Int
-                        ).Value =
-                            questionId;
-
-
-                        using (
-                            SqlDataReader reader =
-                                command.ExecuteReader()
-                        )
-                        {
-                            while (
-                                reader.Read()
-                            )
-                            {
-                                affectedQuizIds.Add(
-                                    Convert.ToInt32(
-                                        reader[
-                                            "QuizId"
-                                        ]
-                                    )
-                                );
-                            }
-                        }
-                    }
-
-
-                    if (
-                        affectedQuizIds.Count == 0
-                    )
-                    {
-                        transaction.Rollback();
-
-                        Response.Redirect(
-                            "~/Admin/ContentAudit.aspx"
-                        );
-
-                        return;
-                    }
-
-
-                    // =========================================
-                    // STEP 2
-                    // Remove question only from published
-                    // quizzes.
-                    // =========================================
-
-                    const string deleteSql = @"
-                        DELETE qq
-
-                        FROM QuizQuestions qq
-
-                        INNER JOIN Quizzes z
-                            ON qq.QuizId =
-                               z.QuizId
-
-                        WHERE
-                            qq.QuestionId =
-                                @QuestionId
-
-                            AND
-                            z.IsPublished = 1
-
-                            AND
-                            z.IsArchived = 0;
-                    ";
-
-
-                    using (
-                        SqlCommand command =
-                            new SqlCommand(
-                                deleteSql,
-                                connection,
-                                transaction
-                            )
-                    )
-                    {
-                        command.Parameters.Add(
-                            "@QuestionId",
-                            SqlDbType.Int
-                        ).Value =
-                            questionId;
-
-
-                        command.ExecuteNonQuery();
-                    }
-
-
-                    // =========================================
-                    // STEP 3
-                    // A published quiz is not allowed to have
-                    // zero questions.
-                    //
-                    // If removing this question makes one of
-                    // the affected quizzes empty, return that
-                    // quiz to Draft status.
-                    // =========================================
-
-                    foreach (
-                        int quizId
-                        in affectedQuizIds
-                    )
-                    {
-                        const string countSql = @"
-                            SELECT COUNT(*)
-
-                            FROM QuizQuestions
-
-                            WHERE
-                                QuizId =
-                                    @QuizId;
-                        ";
-
-
-                        int remainingQuestions;
-
-
-                        using (
-                            SqlCommand command =
-                                new SqlCommand(
-                                    countSql,
-                                    connection,
-                                    transaction
-                                )
-                        )
-                        {
-                            command.Parameters.Add(
-                                "@QuizId",
-                                SqlDbType.Int
-                            ).Value =
-                                quizId;
-
-
-                            remainingQuestions =
-                                Convert.ToInt32(
-                                    command.ExecuteScalar()
-                                );
-                        }
-
-
-                        if (
-                            remainingQuestions == 0
-                        )
-                        {
-                            const string draftSql = @"
-                                UPDATE Quizzes
-
-                                SET
-                                    IsPublished = 0
-
-                                WHERE
-                                    QuizId =
-                                        @QuizId
-
-                                    AND
-                                    IsPublished = 1;
-                            ";
-
-
-                            using (
-                                SqlCommand command =
-                                    new SqlCommand(
-                                        draftSql,
-                                        connection,
-                                        transaction
-                                    )
-                            )
-                            {
-                                command.Parameters.Add(
-                                    "@QuizId",
-                                    SqlDbType.Int
-                                ).Value =
-                                    quizId;
-
-
-                                command.ExecuteNonQuery();
-                            }
-                        }
-                    }
-
-
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-
-                    throw;
+                    command.ExecuteNonQuery();
                 }
             }
 
 
             Response.Redirect(
                 "~/Admin/ContentAudit.aspx?unpublished=true"
+            );
+        }
+
+
+
+        // =========================================================
+        // PUBLISH QUIZ
+        //
+        // Publishes an existing unpublished quiz.
+        //
+        // QuizQuestions is NOT modified.
+        // =========================================================
+
+        protected void Publish_Command(
+            object sender,
+            CommandEventArgs e)
+        {
+            int quizId;
+
+
+            if (
+                !int.TryParse(
+                    e.CommandArgument
+                        .ToString(),
+                    out quizId
+                )
+            )
+            {
+                return;
+            }
+
+
+
+            // =====================================================
+            // MAKE SURE QUIZ HAS QUESTIONS
+            // =====================================================
+
+            const string countSql = @"
+                SELECT
+                    COUNT(*)
+
+                FROM QuizQuestions
+
+                WHERE
+                    QuizId =
+                        @QuizId;
+            ";
+
+
+            int questionCount;
+
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            {
+                using (
+                    SqlCommand command =
+                        new SqlCommand(
+                            countSql,
+                            connection
+                        )
+                )
+                {
+                    command.Parameters.Add(
+                        "@QuizId",
+                        SqlDbType.Int
+                    ).Value =
+                        quizId;
+
+
+                    connection.Open();
+
+
+                    questionCount =
+                        Convert.ToInt32(
+                            command.ExecuteScalar()
+                        );
+                }
+            }
+
+
+
+            // Quiz cannot be published with no questions
+            if (
+                questionCount == 0
+            )
+            {
+                return;
+            }
+
+
+
+            // =====================================================
+            // PUBLISH
+            // =====================================================
+
+            const string sql = @"
+                UPDATE Quizzes
+
+                SET
+                    IsPublished = 1
+
+                WHERE
+                    QuizId =
+                        @QuizId
+
+                    AND
+
+                    IsPublished = 0
+
+                    AND
+
+                    IsArchived = 0;
+            ";
+
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            {
+                using (
+                    SqlCommand command =
+                        new SqlCommand(
+                            sql,
+                            connection
+                        )
+                )
+                {
+                    command.Parameters.Add(
+                        "@QuizId",
+                        SqlDbType.Int
+                    ).Value =
+                        quizId;
+
+
+                    connection.Open();
+
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
+
+            Response.Redirect(
+                "~/Admin/ContentAudit.aspx?published=true"
             );
         }
     }

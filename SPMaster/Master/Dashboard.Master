@@ -284,7 +284,7 @@
     </form>
 
     <script>
-        // Mobile sidebar.
+        // Mobile sidebar
         (function () {
             const layout = document.querySelector(".dashboard-layout");
             const sidebar = document.getElementById("dashboardSidebar");
@@ -293,7 +293,7 @@
             const closeButton = document.getElementById("dashboardMenuClose");
             const overlay = document.getElementById("dashboardMenuOverlay");
 
-            if (!layout || !sidebar || !main ||!openButton || !closeButton || !overlay) {
+            if (!layout || !sidebar || !main || !openButton || !closeButton || !overlay) {
                 return;
             }
 
@@ -306,10 +306,8 @@
                 isOpen = true;
                 layout.classList.add("mobile-menu-open");
                 document.body.classList.add("dashboard-menu-open");
-
                 overlay.hidden = false;
                 openButton.setAttribute("aria-expanded", "true");
-
                 closeButton.focus();
                 main.inert = true;
             }
@@ -324,7 +322,6 @@
 
                 layout.classList.remove("mobile-menu-open");
                 document.body.classList.remove("dashboard-menu-open");
-
                 overlay.hidden = true;
                 openButton.setAttribute("aria-expanded", "false");
             }
@@ -349,8 +346,10 @@
                 }
 
                 if (event.key === "Tab") {
-                    const items = Array.from(sidebar.querySelectorAll('a[href], button:not([disabled]), [tabindex="0"]'
-                    )).filter(function (item) {
+                    const items = Array.from(sidebar.querySelectorAll(
+                            'a[href], button:not([disabled]), [tabindex="0"]'
+                        )
+                    ).filter(function (item) {
                         return item.getClientRects().length > 0;
                     });
 
@@ -371,28 +370,62 @@
 
             smallScreen.addEventListener("change", function () {
                 const focusInSidebar = sidebar.contains(document.activeElement);
-
-                const focusOnMobileControl = document.activeElement === openButton || document.activeElement === closeButton;
+                const focusOnMobileControl =
+                    document.activeElement === openButton ||
+                    document.activeElement === closeButton;
 
                 closeMenu(smallScreen.matches && focusInSidebar);
 
                 if (!smallScreen.matches && focusOnMobileControl) {
                     const firstLink = sidebar.querySelector("a[href]");
-                    if (firstLink) firstLink.focus();
+
+                    if (firstLink) {
+                        firstLink.focus();
+                    }
                 }
             });
         })();
 
-        // Highlight the navigation link for the current page.
+        // Highlight current sidebar section
         (function () {
             const currentPath = window.location.pathname.toLowerCase();
 
-            const links = document.querySelectorAll("#dashboardSidebar a.nav-item[href]");
+            const links = document.querySelectorAll(
+                "#dashboardSidebar a.nav-item[href]"
+            );
 
             links.forEach(function (link) {
                 const url = new URL(link.href, window.location.href);
+                const linkPath = url.pathname.toLowerCase();
 
-                const isCurrentPage = url.origin === window.location.origin && url.pathname.toLowerCase() === currentPath;
+                let isCurrentPage =
+                    url.origin === window.location.origin &&
+                    linkPath === currentPath;
+
+                // User Management pages
+                const isUserManagementPage =
+                    currentPath.endsWith("/admin/usermanagement.aspx") ||
+                    currentPath.endsWith("/admin/adduser.aspx") ||
+                    currentPath.endsWith("/admin/edituser.aspx");
+
+                const isUserManagementLink =
+                    linkPath.endsWith("/admin/usermanagement.aspx");
+
+                if (isUserManagementPage && isUserManagementLink) {
+                    isCurrentPage = true;
+                }
+
+                // Content Audit pages
+                const isContentAuditPage =
+                    currentPath.endsWith("/admin/contentaudit.aspx") ||
+                    currentPath.endsWith("/admin/viewcontent.aspx");
+
+                const isContentAuditLink =
+                    linkPath.endsWith("/admin/contentaudit.aspx");
+
+                if (isContentAuditPage && isContentAuditLink) {
+                    isCurrentPage = true;
+                }
 
                 link.classList.toggle("active", isCurrentPage);
 

@@ -33,13 +33,22 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.Label lblError;
 
         /// <summary>
-        /// pnlQuestion control.
+        /// pnlQuiz control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlQuestion;
+        protected global::System.Web.UI.WebControls.Panel pnlQuiz;
+
+        /// <summary>
+        /// lblQuizTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQuizTitle;
 
         /// <summary>
         /// lblSubject control.
@@ -69,120 +78,84 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.Label lblCreatedDate;
 
         /// <summary>
-        /// lblQuestionText control.
+        /// lblQuestionCount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblQuestionText;
+        protected global::System.Web.UI.WebControls.Label lblQuestionCount;
 
         /// <summary>
-        /// lblQuestionType control.
+        /// lblForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblQuestionType;
+        protected global::System.Web.UI.WebControls.Label lblForm;
 
         /// <summary>
-        /// lblDifficulty control.
+        /// lblTimeLimit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDifficulty;
+        protected global::System.Web.UI.WebControls.Label lblTimeLimit;
 
         /// <summary>
-        /// pnlMedia control.
+        /// lblPassPercentage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlMedia;
+        protected global::System.Web.UI.WebControls.Label lblPassPercentage;
 
         /// <summary>
-        /// imgQuestion control.
+        /// lblQuizStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgQuestion;
+        protected global::System.Web.UI.WebControls.Label lblQuizStatus;
 
         /// <summary>
-        /// pnlMcq control.
+        /// pnlDescription control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlMcq;
+        protected global::System.Web.UI.WebControls.Panel pnlDescription;
 
         /// <summary>
-        /// rptOptions control.
+        /// lblDescription control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptOptions;
+        protected global::System.Web.UI.WebControls.Label lblDescription;
 
         /// <summary>
-        /// pnlSubjective control.
+        /// rptQuestions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSubjective;
+        protected global::System.Web.UI.WebControls.Repeater rptQuestions;
 
         /// <summary>
-        /// lblModelAnswer control.
+        /// pnlNoQuestions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblModelAnswer;
-
-        /// <summary>
-        /// pnlExplanation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlExplanation;
-
-        /// <summary>
-        /// lblExplanation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblExplanation;
-
-        /// <summary>
-        /// rptPublishedQuizzes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptPublishedQuizzes;
-
-        /// <summary>
-        /// pnlNoPublishedQuiz control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNoPublishedQuiz;
+        protected global::System.Web.UI.WebControls.Panel pnlNoQuestions;
     }
 }

@@ -51,13 +51,13 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.TextBox txtSearch;
 
         /// <summary>
-        /// lblPublishedQuestions control.
+        /// lblPublishedQuizzes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPublishedQuestions;
+        protected global::System.Web.UI.WebControls.Label lblPublishedQuizzes;
 
         /// <summary>
         /// rptAudit control.
@@ -69,12 +69,12 @@ namespace SPMaster.Admin
         protected global::System.Web.UI.WebControls.Repeater rptAudit;
 
         /// <summary>
-        /// pnlNoQuestions control.
+        /// pnlNoQuizzes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNoQuestions;
+        protected global::System.Web.UI.WebControls.Panel pnlNoQuizzes;
     }
 }
