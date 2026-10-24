@@ -408,34 +408,6 @@
 
                 </div>
 
-
-                <!-- ==============================
-                     TERMS
-                =============================== -->
-
-                <div class="terms-container">
-
-                    <asp:CheckBox
-                        ID="chkTerms"
-                        runat="server"
-                        CssClass="terms-checkbox" />
-
-                    <span>
-
-                        I agree to the
-
-                        <a href="#"
-                           class="terms-link">
-
-                            Terms &amp; Privacy Policy
-
-                        </a>
-
-                    </span>
-
-                </div>
-
-
                 <!-- ==============================
                      CREATE ACCOUNT
                 =============================== -->

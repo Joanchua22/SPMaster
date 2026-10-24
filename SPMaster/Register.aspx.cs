@@ -24,18 +24,7 @@ namespace SPMaster
                 return;
             }
 
-            // 2. Terms must be accepted
-            if (!chkTerms.Checked)
-            {
-                ShowError(
-                    "Please agree to the Terms & Privacy Policy."
-                );
-
-                return;
-            }
-
-
-            // 3. Get form values
+            // 2. Get form values
             string fullName =
                 txtFullName.Text.Trim();
 
@@ -55,7 +44,7 @@ namespace SPMaster
                 hfRole.Value;
 
 
-            // 4. Convert selected role to RoleId
+            // 3. Convert selected role to RoleId
             int roleId;
 
             if (selectedRole == "Student")
@@ -73,7 +62,7 @@ namespace SPMaster
             }
 
 
-            // 5. Connection string
+            // 4. Connection string
             string connectionString =
                 ConfigurationManager
                 .ConnectionStrings[
