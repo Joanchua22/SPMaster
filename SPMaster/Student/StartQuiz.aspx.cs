@@ -84,6 +84,9 @@ namespace SPMaster.Student
             {
                 ViewState["AttemptId"] =
                     value;
+
+                hfAttemptId.Value =
+                    value.ToString();
             }
         }
 
@@ -146,8 +149,13 @@ namespace SPMaster.Student
                     "CurrentQuizQuestionId"
                 ] =
                     value;
+
+
+                hfQuizQuestionId.Value =
+                    value.ToString();
             }
         }
+
 
 
         // =========================================================
@@ -1893,9 +1901,30 @@ namespace SPMaster.Student
             SaveCurrentAnswer();
 
 
+            // Automatically grade MCQ and
+            // change attempt status to
+            // Graded / PendingGrading
             FinalizeAttempt();
 
+            pnlQuizInterface.Visible =
+                false;
 
+            pnlExpiredAttempt.Visible =
+                false;
+
+            pnlTimeUpSubmitted.Visible =
+                true;
+        }
+
+
+        // =========================================================
+        // TIME UP - CONTINUE
+        // =========================================================
+
+        protected void btnTimeUpContinue_Click(
+            object sender,
+            EventArgs e)
+        {
             Response.Redirect(
                 "~/Student/Quizzes.aspx?tab=attempts"
             );

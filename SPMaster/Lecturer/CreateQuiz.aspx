@@ -32,7 +32,7 @@
          PAGE CSS
          ========================================================= --%>
 
-    <link href="<%= ResolveUrl("~/Content/LecturerCreateQuiz.css") %>?v=4"
+    <link href="<%= ResolveUrl("~/Content/LecturerCreateQuiz.css") %>?v=5"
           rel="stylesheet"
           type="text/css" />
 

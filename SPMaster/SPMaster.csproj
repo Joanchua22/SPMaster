@@ -248,6 +248,12 @@
     <Compile Include="Admin\ViewContent.aspx.designer.cs">
       <DependentUpon>ViewContent.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Api\QuizAttemptStatus.ashx.cs">
+      <DependentUpon>QuizAttemptStatus.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\SaveQuizAnswer.ashx.cs">
+      <DependentUpon>SaveQuizAnswer.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Lecturer\CreateQuestion.aspx.cs">
       <DependentUpon>CreateQuestion.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -422,6 +428,8 @@
     <Content Include="Master\Dashboard.Master" />
     <Content Include="Master\Site.Master" />
     <Content Include="Master\Portal.Master" />
+    <Content Include="Api\QuizAttemptStatus.ashx" />
+    <Content Include="Api\SaveQuizAnswer.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

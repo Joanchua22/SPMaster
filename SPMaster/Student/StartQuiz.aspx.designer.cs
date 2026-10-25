@@ -33,6 +33,24 @@ namespace SPMaster.Student
         protected global::System.Web.UI.WebControls.HiddenField hfRemainingSeconds;
 
         /// <summary>
+        /// hfAttemptId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfAttemptId;
+
+        /// <summary>
+        /// hfQuizQuestionId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfQuizQuestionId;
+
+        /// <summary>
         /// hfGoQuestionIndex control.
         /// </summary>
         /// <remarks>
@@ -256,5 +274,23 @@ namespace SPMaster.Student
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnConfirmSubmit;
+
+        /// <summary>
+        /// pnlTimeUpSubmitted control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlTimeUpSubmitted;
+
+        /// <summary>
+        /// btnTimeUpContinue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnTimeUpContinue;
     }
 }

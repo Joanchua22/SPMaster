@@ -1688,6 +1688,10 @@ namespace SPMaster.Lecturer
             // DATABASE TRANSACTION
             // =====================================================
 
+            int savedQuizId =
+                0;
+
+
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -1698,114 +1702,138 @@ namespace SPMaster.Lecturer
                 connection.Open();
 
 
-                SqlTransaction transaction =
-                    connection.BeginTransaction();
-
-
-                try
+                using (
+                    SqlTransaction transaction =
+                        connection.BeginTransaction()
+                )
                 {
-                    int quizId;
-
-
-                    // =============================================
-                    // UPDATE EXISTING DRAFT
-                    // =============================================
-
-                    if (
-                        EditingQuizId.HasValue
-                    )
+                    try
                     {
-                        quizId =
-                            EditingQuizId.Value;
+                        // =============================================
+                        // UPDATE EXISTING DRAFT
+                        // =============================================
+
+                        if (
+                            EditingQuizId.HasValue
+                        )
+                        {
+                            savedQuizId =
+                                EditingQuizId.Value;
 
 
-                        UpdateQuiz(
-                            connection,
-                            transaction,
-                            quizId,
-                            timeLimit,
-                            passPercentage
-                        );
-                    }
-
-
-                    // =============================================
-                    // INSERT NEW DRAFT
-                    // =============================================
-
-                    else
-                    {
-                        quizId =
-                            InsertQuiz(
+                            UpdateQuiz(
                                 connection,
                                 transaction,
+                                savedQuizId,
                                 timeLimit,
                                 passPercentage
                             );
-                    }
+                        }
 
 
-                    // =============================================
-                    // REPLACE QUESTION MAPPINGS
-                    // =============================================
+                        // =============================================
+                        // INSERT NEW DRAFT
+                        // =============================================
 
-                    DeleteQuizQuestions(
-                        connection,
-                        transaction,
-                        quizId
-                    );
-
-
-                    InsertQuizQuestions(
-                        connection,
-                        transaction,
-                        quizId
-                    );
+                        else
+                        {
+                            savedQuizId =
+                                InsertQuiz(
+                                    connection,
+                                    transaction,
+                                    timeLimit,
+                                    passPercentage
+                                );
+                        }
 
 
-                    transaction.Commit();
+                        // =============================================
+                        // REPLACE QUESTION MAPPINGS
+                        // =============================================
 
-
-                    // =============================================
-                    // PREVIEW
-                    // =============================================
-
-                    if (goToPreview)
-                    {
-                        Response.Redirect(
-                            "~/Lecturer/PreviewQuiz.aspx?id="
-                            + quizId
-                            + "&from=editor"
+                        DeleteQuizQuestions(
+                            connection,
+                            transaction,
+                            savedQuizId
                         );
+
+
+                        InsertQuizQuestions(
+                            connection,
+                            transaction,
+                            savedQuizId
+                        );
+
+
+                        // =============================================
+                        // COMMIT
+                        // =============================================
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Rollback only when transaction
+                        // is still active
+                        if (
+                            transaction.Connection != null
+                        )
+                        {
+                            transaction.Rollback();
+                        }
+
+
+                        ShowQuestionMessage(
+                            "Unable to save the quiz. "
+                            + ex.Message
+                        );
+
 
                         return;
                     }
-
-
-                    // =============================================
-                    // SAVE DRAFT
-                    //
-                    // Reload same quiz as Edit mode.
-                    // This also resets the unsaved-changes flag.
-                    // =============================================
-
-                    Response.Redirect(
-                        "~/Lecturer/CreateQuiz.aspx?id="
-                        + quizId
-                        + "&saved=1"
-                    );
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-
-
-                    ShowQuestionMessage(
-                        "Unable to save the quiz. "
-                        + ex.Message
-                    );
                 }
             }
+
+
+            // =====================================================
+            // PREVIEW
+            // =====================================================
+
+            if (goToPreview)
+            {
+                Response.Redirect(
+                    "~/Lecturer/PreviewQuiz.aspx?id="
+                    + savedQuizId
+                    + "&from=editor",
+                    false
+                );
+
+
+                Context.ApplicationInstance
+                    .CompleteRequest();
+
+
+                return;
+            }
+
+
+            // =====================================================
+            // SAVE DRAFT
+            //
+            // Reload same quiz as Edit mode.
+            // This also resets the unsaved-changes flag.
+            // =====================================================
+
+            Response.Redirect(
+                "~/Lecturer/CreateQuiz.aspx?id="
+                + savedQuizId
+                + "&saved=1",
+                false
+            );
+
+
+            Context.ApplicationInstance
+                .CompleteRequest();
         }
 
 

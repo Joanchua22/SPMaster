@@ -10,10 +10,6 @@ body {
 
 
 .create-quiz-body {
-    /* =====================================================
-       THEME VARIABLES
-       ===================================================== */
-
     --portal-yellow: #ffe14d;
     --portal-purple: #8c4dff;
     --portal-purple-dark: #6930cf;
@@ -22,6 +18,9 @@ body {
     --portal-white: #ffffff;
     --portal-lavender: #f1eaff;
     --portal-border: #eae5f2;
+    --quiz-primary: #7c28ef;
+    --quiz-primary-hover: #6920d4;
+    --quiz-button-font-size: 13px;
     min-height: 100vh;
     margin: 0;
     background: var(--portal-yellow);
@@ -109,8 +108,6 @@ body {
    ========================================================= */
 
 .create-quiz-page {
-    --quiz-primary: #7c28ef;
-    --quiz-primary-hover: #6920d4;
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;

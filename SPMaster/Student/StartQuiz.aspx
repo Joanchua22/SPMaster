@@ -27,7 +27,7 @@
 
     <%-- PAGE CSS --%>
 
-    <link href="<%= ResolveUrl("~/Content/StudentStartQuiz.css") %>?v=3"
+    <link href="<%= ResolveUrl("~/Content/StudentStartQuiz.css") %>?v=5"
           rel="stylesheet"
           type="text/css" />
 
@@ -46,6 +46,16 @@
 
     <asp:HiddenField
         ID="hfRemainingSeconds"
+        runat="server"
+        ClientIDMode="Static" />
+
+    <asp:HiddenField
+        ID="hfAttemptId"
+        runat="server"
+        ClientIDMode="Static" />
+
+    <asp:HiddenField
+        ID="hfQuizQuestionId"
         runat="server"
         ClientIDMode="Static" />
 
@@ -384,6 +394,13 @@
                 </asp:PlaceHolder>
 
 
+                <div class="answer-auto-save-row">
+                    <span id="autoSaveStatus"
+                          class="answer-auto-save-status">
+                        Auto-save ready
+                    </span>
+                </div>
+
 
                 <%-- =================================================
                      QUESTION FOOTER
@@ -449,8 +466,6 @@
 
     <%-- =====================================================
          EXPIRED SESSION
-         IMPORTANT:
-         THIS MUST BE OUTSIDE pnlQuizInterface
          ===================================================== --%>
 
     <asp:Panel
@@ -596,6 +611,57 @@
 
 
     </div>
+
+    <%-- =====================================================
+         TIME UP / AUTO SUBMITTED MODAL
+         ===================================================== --%>
+
+    <asp:Panel
+        ID="pnlTimeUpSubmitted"
+        runat="server"
+        Visible="false"
+        CssClass="time-up-layer">
+
+
+        <div class="time-up-overlay">
+        </div>
+
+
+        <div class="time-up-dialog">
+
+
+            <div class="time-up-icon">
+
+                <i class="bi bi-clock-history"
+                   aria-hidden="true"></i>
+
+            </div>
+
+
+            <h2>
+                Time's Up!
+            </h2>
+
+
+            <p>
+                Your quiz time has ended and your answers
+                have been submitted automatically.
+            </p>
+
+
+            <asp:Button
+                ID="btnTimeUpContinue"
+                runat="server"
+                CausesValidation="false"
+                CssClass="time-up-continue-button"
+                Text="View My Attempts"
+                OnClick="btnTimeUpContinue_Click" />
+
+
+        </div>
+
+
+    </asp:Panel>
 
 
 </form>
@@ -746,8 +812,336 @@
 
 
         updateCharacterCount();
+}
+
+    /* =========================================================
+       ANSWER AUTO-SAVE API
+       ========================================================= */
+
+    let answerSaveTimer =
+        null;
+
+
+    let answerSaveInProgress =
+        false;
+
+
+    let answerSavePending =
+        false;
+
+
+
+    function setAutoSaveStatus(
+        message,
+        state
+    ) {
+
+        const status =
+            document.getElementById(
+                "autoSaveStatus"
+            );
+
+
+        if (!status) {
+            return;
+        }
+
+
+        status.textContent =
+            message;
+
+
+        status.className =
+            "answer-auto-save-status";
+
+
+        if (state) {
+
+            status.classList.add(
+                state
+            );
+        }
     }
 
+
+
+    /* ---------------------------------------------------------
+       SAVE CURRENT ANSWER
+       --------------------------------------------------------- */
+
+    async function saveAnswerWithApi() {
+
+        // If another save is currently running,
+        // queue one more save using the newest answer.
+
+        if (answerSaveInProgress) {
+
+            answerSavePending =
+                true;
+
+            return;
+        }
+
+
+        const attemptField =
+            document.getElementById(
+                "hfAttemptId"
+            );
+
+
+        const quizQuestionField =
+            document.getElementById(
+                "hfQuizQuestionId"
+            );
+
+
+        if (
+            !attemptField ||
+            !attemptField.value ||
+            !quizQuestionField ||
+            !quizQuestionField.value
+        ) {
+            return;
+        }
+
+
+        answerSaveInProgress =
+            true;
+
+
+        setAutoSaveStatus(
+            "Saving...",
+            "is-saving"
+        );
+
+
+        try {
+
+            // -----------------------------------------------------
+            // CURRENT MCQ OPTION
+            // -----------------------------------------------------
+
+            const selectedOption =
+                document.querySelector(
+                    'input[name="objectiveAnswer"]:checked'
+                );
+
+
+            // -----------------------------------------------------
+            // REQUEST BODY
+            // -----------------------------------------------------
+
+            const formData =
+                new URLSearchParams();
+
+
+            formData.append(
+                "attemptId",
+                attemptField.value
+            );
+
+
+            formData.append(
+                "quizQuestionId",
+                quizQuestionField.value
+            );
+
+
+            if (selectedOption) {
+
+                formData.append(
+                    "selectedOptionId",
+                    selectedOption.value
+                );
+            }
+
+
+            if (subjectiveBox) {
+
+                formData.append(
+                    "answerText",
+                    subjectiveBox.value
+                );
+            }
+
+
+            // -----------------------------------------------------
+            // CALL API
+            // -----------------------------------------------------
+
+            const response =
+                await fetch(
+                    '<%= ResolveUrl("~/Api/SaveQuizAnswer.ashx") %>',
+                    {
+                        method: "POST",
+
+                        credentials:
+                            "same-origin",
+
+                        cache:
+                            "no-store",
+
+                        headers:
+                        {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded; charset=UTF-8"
+                        },
+
+                        body:
+                            formData.toString()
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            // -----------------------------------------------------
+            // EXPIRED ATTEMPT
+            // -----------------------------------------------------
+
+            if (
+                response.status === 409
+            ) {
+
+                setAutoSaveStatus(
+                    "Quiz session expired",
+                    "is-error"
+                );
+
+
+                if (
+                    typeof syncTimerWithServer ===
+                    "function"
+                ) {
+                    syncTimerWithServer();
+                }
+
+
+                return;
+            }
+
+
+            // -----------------------------------------------------
+            // FAILED
+            // -----------------------------------------------------
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                setAutoSaveStatus(
+                    "Auto-save failed",
+                    "is-error"
+                );
+
+
+                return;
+            }
+
+
+            // -----------------------------------------------------
+            // SUCCESS
+            // -----------------------------------------------------
+
+            setAutoSaveStatus(
+                "Answer Saved",
+                "is-saved"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Answer auto-save failed:",
+                error
+            );
+
+
+            setAutoSaveStatus(
+                "Auto-save failed",
+                "is-error"
+            );
+        }
+        finally {
+
+            answerSaveInProgress =
+                false;
+
+
+            // If the student changed the answer while
+            // the previous save was running, save again.
+
+            if (answerSavePending) {
+
+                answerSavePending =
+                    false;
+
+
+                saveAnswerWithApi();
+            }
+        }
+    }
+
+
+
+    /* ---------------------------------------------------------
+       MCQ AUTO-SAVE
+       Save immediately after selecting an option.
+       --------------------------------------------------------- */
+
+    document.addEventListener(
+        "change",
+        function(event) {
+
+            if (
+                event.target.matches(
+                    'input[name="objectiveAnswer"]'
+                )
+            ) {
+
+                saveAnswerWithApi();
+            }
+        }
+    );
+
+
+
+    /* ---------------------------------------------------------
+       SUBJECTIVE AUTO-SAVE
+       Wait 1 second after student stops typing.
+       --------------------------------------------------------- */
+
+    if (subjectiveBox) {
+
+        subjectiveBox.addEventListener(
+            "input",
+            function() {
+
+                setAutoSaveStatus(
+                    "",
+                    ""
+                );
+
+
+                if (answerSaveTimer) {
+
+                    clearTimeout(
+                        answerSaveTimer
+                    );
+                }
+
+
+                answerSaveTimer =
+                    setTimeout(
+                        saveAnswerWithApi,
+                        1000
+                    );
+            }
+            );
+        }
 
 
     /* =========================================================
@@ -782,6 +1176,10 @@
 
 
     let quizTimerInterval =
+        null;
+
+
+    let timerSyncInterval =
         null;
 
 
@@ -898,7 +1296,14 @@
             clearInterval(
                 quizTimerInterval
             );
+        }
 
+
+        if (timerSyncInterval) {
+
+            clearInterval(
+                timerSyncInterval
+            );
         }
 
 
@@ -911,26 +1316,147 @@
         if (timeUpButton) {
 
             timeUpButton.click();
+            }
+        }
+
+
+    /* =========================================================
+       TIMER API SYNCHRONISATION
+       ========================================================= */
+
+
+    async function syncTimerWithServer() {
+
+        const attemptField =
+            document.getElementById(
+                "hfAttemptId"
+            );
+
+
+        if (
+            !attemptField ||
+            !attemptField.value ||
+            timerSubmitted
+        ) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                '<%= ResolveUrl("~/Api/QuizAttemptStatus.ashx") %>'
+                + "?attemptId="
+                + encodeURIComponent(
+                    attemptField.value
+                ),
+                {
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+            return;
+        }
+
+
+        // ---------------------------------------------------------
+        // ATTEMPT IS NO LONGER ACTIVE
+        // ---------------------------------------------------------
+
+        if (
+            data.status !== "InProgress"
+        ) {
+            return;
+        }
+
+
+        // ---------------------------------------------------------
+        // SERVER SAYS TIME HAS EXPIRED
+        // ---------------------------------------------------------
+
+        if (
+            data.expired ||
+            data.remainingSeconds <= 0
+        ) {
+            remainingSeconds =
+                0;
+
+
+            renderTimer();
+
+
+            submitTimeUp();
+
+
+            return;
+        }
+
+
+        // ---------------------------------------------------------
+        // SYNCHRONISE LOCAL TIMER
+        // ---------------------------------------------------------
+
+        remainingSeconds =
+            data.remainingSeconds;
+
+
+        renderTimer();
+
+        }
+        catch (error) {
+
+            console.error(
+                "Timer synchronisation failed:",
+                error
+            );
 
         }
     }
 
 
 
-    // ---------------------------------------------------------
-    // START TIMER ONLY WHEN NORMAL QUIZ EXISTS
-    // ---------------------------------------------------------
+    /* =========================================================
+       START TIMER ONLY WHEN NORMAL QUIZ EXISTS
+       ========================================================= */
 
     if (timerElement) {
 
+        // Show initial timer
         renderTimer();
 
 
+        // Normal local countdown every 1 second
         quizTimerInterval =
             setInterval(
                 timerTick,
                 1000
             );
+
+
+        // Check server immediately
+        syncTimerWithServer();
+
+
+        // Synchronise with server every 30 seconds
+        timerSyncInterval =
+            setInterval(
+                syncTimerWithServer,
+                30000
+                );
     }
 
 </script>

@@ -22,8 +22,7 @@
     <form id="form1" runat="server">
 
         <main class="login-page">
-
-            <!-- Decorative background shapes -->
+                        <!-- Decorative background shapes -->
             <div class="background-shape shape-one"></div>
             <div class="background-shape shape-two"></div>
             <div class="background-shape shape-three"></div>
