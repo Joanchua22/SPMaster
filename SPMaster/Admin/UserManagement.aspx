@@ -92,7 +92,7 @@
 
     <nav aria-label="Admin account navigation">
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Profile.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">
@@ -104,7 +104,7 @@
         </a>
 
 
-        <a href="#"
+        <a href="<%= ResolveUrl("~/Account/Settings.aspx") %>"
            class="nav-item">
 
             <span class="nav-icon">

@@ -5,6 +5,7 @@
     CodeBehind="ContentAudit.aspx.cs"
     Inherits="SPMaster.Admin.ContentAudit" %>
 
+
 <asp:Content
     ID="ContentAuditHead"
     ContentPlaceHolderID="DashboardHead"
@@ -15,6 +16,7 @@
         rel="stylesheet" />
 
 </asp:Content>
+
 
 <asp:Content
     ID="AdminTitle"
@@ -126,27 +128,6 @@
     ID="AdminUser"
     ContentPlaceHolderID="DashboardUser"
     runat="server">
-
-    <div class="user-summary">
-
-        <span class="user-avatar">
-            AD
-        </span>
-
-        <div class="user-details">
-
-            <span class="user-name">
-                Admin
-            </span>
-
-            <span class="user-role">
-                Admin
-            </span>
-
-        </div>
-
-    </div>
-
 </asp:Content>
 
 
@@ -158,7 +139,10 @@
     <section class="content-audit-page">
 
 
-        <%-- SUCCESS POPUP --%>
+        <%-- =====================================================
+             SUCCESS POPUP
+             ===================================================== --%>
+
         <asp:Panel
             ID="pnlSuccess"
             runat="server"
@@ -172,10 +156,12 @@
                     ✓
                 </span>
 
+
                 <asp:Label
                     ID="lblSuccessMessage"
                     runat="server">
                 </asp:Label>
+
 
                 <button
                     type="button"
@@ -191,13 +177,21 @@
         </asp:Panel>
 
 
-               <%-- PAGE DESCRIPTION --%>
+
+        <%-- =====================================================
+             PAGE DESCRIPTION
+             ===================================================== --%>
+
         <p class="content-audit-description">
-            View and manage questions currently used in published quizzes
+            View and manage quizzes and their linked questions
         </p>
 
 
-        <%-- FILTER BAR --%>
+
+        <%-- =====================================================
+             FILTER BAR
+             ===================================================== --%>
+
         <div class="audit-filter-bar">
 
             <asp:DropDownList
@@ -219,7 +213,7 @@
                 ID="txtSearch"
                 runat="server"
                 CssClass="user-search"
-                placeholder="Search questions..."
+                placeholder="Search quizzes..."
                 AutoPostBack="true"
                 OnTextChanged="SearchChanged">
             </asp:TextBox>
@@ -227,19 +221,23 @@
         </div>
 
 
-        <%-- SUMMARY --%>
+
+        <%-- =====================================================
+             SUMMARY
+             ===================================================== --%>
+
         <div class="audit-summary-grid audit-summary-single">
 
             <div class="audit-summary-card">
 
                 <span class="audit-summary-label">
-                    Published Questions
+                    Published Quizzes
                 </span>
 
                 <span class="audit-summary-value">
 
                     <asp:Label
-                        ID="lblPublishedQuestions"
+                        ID="lblPublishedQuizzes"
                         runat="server"
                         Text="0">
                     </asp:Label>
@@ -251,7 +249,11 @@
         </div>
 
 
-        <%-- TABLE --%>
+
+        <%-- =====================================================
+             TABLE
+             ===================================================== --%>
+
         <div class="audit-table-card">
 
             <div class="audit-table-wrapper">
@@ -262,10 +264,11 @@
 
                         <tr>
 
-                            <th>Question</th>
+                            <th>Quiz Title</th>
                             <th>Subject</th>
                             <th>Lecturer</th>
-                            <th>Published In</th>
+                            <th>Questions</th>
+                            <th>Status</th>
                             <th>Created Date</th>
                             <th>Actions</th>
 
@@ -284,12 +287,18 @@
 
                                 <tr>
 
+
+                                    <%-- QUIZ TITLE --%>
+
                                     <td class="audit-question-cell">
 
-                                        <%# Eval("QuestionText") %>
+                                        <%# Eval("Title") %>
 
                                     </td>
 
+
+
+                                    <%-- SUBJECT --%>
 
                                     <td>
 
@@ -298,6 +307,9 @@
                                     </td>
 
 
+
+                                    <%-- LECTURER --%>
+
                                     <td>
 
                                         <%# Eval("LecturerName") %>
@@ -305,19 +317,44 @@
                                     </td>
 
 
+
+                                    <%-- QUESTION COUNT --%>
+
                                     <td>
 
-                                        <%# Eval("PublishedQuizCount") %>
-                                        <%#
-                                            Convert.ToInt32(
-                                                Eval("PublishedQuizCount")
-                                            ) == 1
-                                            ? " quiz"
-                                            : " quizzes"
-                                        %>
+                                        <%# Eval("QuestionCount") %>
 
                                     </td>
 
+
+
+                                    <%-- STATUS --%>
+
+                                    <td>
+
+                                        <span class='<%#
+                                            Convert.ToBoolean(
+                                                Eval("IsPublished")
+                                            )
+                                            ? "audit-status audit-status-published"
+                                            : "audit-status audit-status-draft"
+                                        %>'>
+
+                                            <%#
+                                                Convert.ToBoolean(
+                                                    Eval("IsPublished")
+                                                )
+                                                ? "Published"
+                                                : "Draft"
+                                            %>
+
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <%-- CREATED DATE --%>
 
                                     <td>
 
@@ -332,16 +369,20 @@
                                     </td>
 
 
+
+                                    <%-- ACTIONS --%>
+
                                     <td>
 
                                         <div class="audit-action-buttons">
 
 
                                             <%-- VIEW --%>
+
                                             <a
                                                 href='<%#
                                                     "ViewContent.aspx?id="
-                                                    + Eval("QuestionId")
+                                                    + Eval("QuizId")
                                                 %>'
                                                 class="audit-view-button">
 
@@ -352,21 +393,54 @@
                                             </a>
 
 
+
                                             <%-- UNPUBLISH --%>
+
                                             <asp:LinkButton
                                                 ID="btnUnpublish"
                                                 runat="server"
                                                 CssClass="audit-unpublish-button"
                                                 CommandArgument='<%#
-                                                    Eval("QuestionId")
+                                                    Eval("QuizId")
                                                 %>'
                                                 OnCommand="Unpublish_Command"
                                                 CausesValidation="false"
-                                                OnClientClick="return confirm('Are you sure you want to unpublish this question from all published quizzes?');">
+                                                Visible='<%#
+                                                    Convert.ToBoolean(
+                                                        Eval("IsPublished")
+                                                    )
+                                                %>'
+                                                OnClientClick="return confirm('Are you sure you want to unpublish this quiz? Students will no longer be able to attempt it.');">
 
                                                 <i class="bi bi-eye-slash"></i>
 
                                                 Unpublish
+
+                                            </asp:LinkButton>
+
+
+
+                                            <%-- PUBLISH --%>
+
+                                            <asp:LinkButton
+                                                ID="btnPublish"
+                                                runat="server"
+                                                CssClass="audit-publish-button"
+                                                CommandArgument='<%#
+                                                    Eval("QuizId")
+                                                %>'
+                                                OnCommand="Publish_Command"
+                                                CausesValidation="false"
+                                                Visible='<%#
+                                                    !Convert.ToBoolean(
+                                                        Eval("IsPublished")
+                                                    )
+                                                %>'
+                                                OnClientClick="return confirm('Are you sure you want to publish this quiz?');">
+
+                                                <i class="bi bi-eye"></i>
+
+                                                Publish
 
                                             </asp:LinkButton>
 
@@ -386,9 +460,13 @@
                 </table>
 
 
-                <%-- EMPTY STATE --%>
+
+                <%-- =================================================
+                     EMPTY STATE
+                     ================================================= --%>
+
                 <asp:Panel
-                    ID="pnlNoQuestions"
+                    ID="pnlNoQuizzes"
                     runat="server"
                     CssClass="audit-empty-state"
                     Visible="false">
@@ -396,7 +474,7 @@
                     <i class="bi bi-file-earmark-x"></i>
 
                     <p>
-                        No published questions found.
+                        No quizzes found.
                     </p>
 
                 </asp:Panel>

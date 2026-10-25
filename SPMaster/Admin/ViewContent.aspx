@@ -61,7 +61,8 @@
 
 
         <a href="<%= ResolveUrl("~/Admin/ContentAudit.aspx") %>"
-           class="nav-item active">
+           class="nav-item active"
+           aria-current="page">
 
             <span class="nav-icon">
                 <i class="bi bi-file-earmark-text"></i>
@@ -127,27 +128,6 @@
     ID="AdminUser"
     ContentPlaceHolderID="DashboardUser"
     runat="server">
-
-    <div class="user-summary">
-
-        <span class="user-avatar">
-            AD
-        </span>
-
-        <div class="user-details">
-
-            <span class="user-name">
-                Admin
-            </span>
-
-            <span class="user-role">
-                Admin
-            </span>
-
-        </div>
-
-    </div>
-
 </asp:Content>
 
 
@@ -159,7 +139,10 @@
     <section class="view-content-page">
 
 
-        <%-- BACK + HEADER --%>
+        <%-- =====================================================
+             BACK + HEADER
+             ===================================================== --%>
+
         <div class="view-content-header">
 
             <a
@@ -176,11 +159,11 @@
             <div>
 
                 <h2>
-                    Question Details
+                    Quiz Details
                 </h2>
 
                 <p>
-                    Review the published question information
+                    Review the published quiz and all questions included in it
                 </p>
 
             </div>
@@ -188,7 +171,11 @@
         </div>
 
 
-        <%-- ERROR --%>
+
+        <%-- =====================================================
+             ERROR
+             ===================================================== --%>
+
         <asp:Panel
             ID="pnlError"
             runat="server"
@@ -203,17 +190,43 @@
         </asp:Panel>
 
 
-        <%-- MAIN CONTENT --%>
+
+        <%-- =====================================================
+             QUIZ CONTENT
+             ===================================================== --%>
+
         <asp:Panel
-            ID="pnlQuestion"
+            ID="pnlQuiz"
             runat="server"
             Visible="false">
 
 
+            <%-- QUIZ INFORMATION --%>
+
             <div class="view-content-card">
 
 
-                <%-- TOP META --%>
+                <div class="view-content-section">
+
+                    <span class="view-content-label">
+                        QUIZ TITLE
+                    </span>
+
+                    <div class="view-question-text">
+
+                        <asp:Label
+                            ID="lblQuizTitle"
+                            runat="server">
+                        </asp:Label>
+
+                    </div>
+
+                </div>
+
+
+
+                <%-- QUIZ META --%>
+
                 <div class="view-question-meta">
 
                     <span class="view-meta-item">
@@ -251,275 +264,420 @@
 
                     </span>
 
+
+                    <span class="view-meta-item">
+
+                        <i class="bi bi-list-check"></i>
+
+                        <asp:Label
+                            ID="lblQuestionCount"
+                            runat="server">
+                        </asp:Label>
+
+                    </span>
+
                 </div>
 
 
-                <%-- QUESTION --%>
-                <div class="view-content-section">
+
+                <%-- QUIZ INFORMATION --%>
+
+                <div class="view-info-grid">
+
+
+                    <div class="view-info-item">
+
+                        <span class="view-content-label">
+                            FORM
+                        </span>
+
+                        <div class="view-readonly-field">
+
+                            <asp:Label
+                                ID="lblForm"
+                                runat="server">
+                            </asp:Label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="view-info-item">
+
+                        <span class="view-content-label">
+                            TIME LIMIT
+                        </span>
+
+                        <div class="view-readonly-field">
+
+                            <asp:Label
+                                ID="lblTimeLimit"
+                                runat="server">
+                            </asp:Label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="view-info-item">
+
+                        <span class="view-content-label">
+                            PASS PERCENTAGE
+                        </span>
+
+                        <div class="view-readonly-field">
+
+                            <asp:Label
+                                ID="lblPassPercentage"
+                                runat="server">
+                            </asp:Label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="view-info-item">
+
+                        <span class="view-content-label">
+                            STATUS
+                        </span>
+
+                        <div class="view-readonly-field">
+
+                            <div class="view-readonly-field">
+
+                                <asp:Label
+                                    ID="lblQuizStatus"
+                                    runat="server">
+                                </asp:Label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <%-- DESCRIPTION --%>
+
+                <asp:Panel
+                    ID="pnlDescription"
+                    runat="server"
+                    CssClass="view-content-section"
+                    Visible="false">
 
                     <span class="view-content-label">
-                        QUESTION
+                        DESCRIPTION
                     </span>
 
-                    <div class="view-question-text">
+                    <div class="view-answer-box">
 
                         <asp:Label
-                            ID="lblQuestionText"
+                            ID="lblDescription"
                             runat="server">
                         </asp:Label>
 
                     </div>
 
-                </div>
-
-
-                <%-- TYPE + DIFFICULTY --%>
-                <div class="view-info-grid">
-
-                    <div class="view-info-item">
-
-                        <span class="view-content-label">
-                            QUESTION TYPE
-                        </span>
-
-                        <div class="view-readonly-field">
-
-                            <asp:Label
-                                ID="lblQuestionType"
-                                runat="server">
-                            </asp:Label>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="view-info-item">
-
-                        <span class="view-content-label">
-                            DIFFICULTY
-                        </span>
-
-                        <div class="view-readonly-field">
-
-                            <asp:Label
-                                ID="lblDifficulty"
-                                runat="server">
-                            </asp:Label>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <%-- MEDIA --%>
-                <asp:Panel
-                    ID="pnlMedia"
-                    runat="server"
-                    CssClass="view-content-section"
-                    Visible="false">
-
-                    <span class="view-content-label">
-                        QUESTION IMAGE
-                    </span>
-
-                    <div class="view-question-image-wrapper">
-
-                        <asp:Image
-                            ID="imgQuestion"
-                            runat="server"
-                            CssClass="view-question-image"
-                            AlternateText="Question image" />
-
-                    </div>
-
                 </asp:Panel>
 
+            </div>
 
-                <%-- MCQ OPTIONS --%>
-                <asp:Panel
-                    ID="pnlMcq"
-                    runat="server"
-                    CssClass="view-content-section"
-                    Visible="false">
+
+
+            <%-- =================================================
+                 QUESTIONS
+                 ================================================= --%>
+
+            <div class="view-content-card">
+
+                <div class="view-content-section">
 
                     <span class="view-content-label">
-                        ANSWER OPTIONS
+                        QUESTIONS IN THIS QUIZ
                     </span>
 
-
-                    <div class="view-options-list">
-
-                        <asp:Repeater
-                            ID="rptOptions"
-                            runat="server">
-
-                            <ItemTemplate>
-
-                                <div class='<%#
-                                    Convert.ToBoolean(
-                                        Eval("IsCorrect")
-                                    )
-                                    ? "view-option correct"
-                                    : "view-option"
-                                %>'>
-
-                                    <span class="view-option-letter">
-
-                                        <%#
-                                            Convert.ToChar(
-                                                64 +
-                                                Convert.ToInt32(
-                                                    Eval("DisplayOrder")
-                                                )
-                                            )
-                                        %>
-
-                                    </span>
+                </div>
 
 
-                                    <span class="view-option-text">
+                <asp:Repeater
+                    ID="rptQuestions"
+                    runat="server"
+                    OnItemDataBound="rptQuestions_ItemDataBound">
 
-                                        <%# Eval("OptionText") %>
-
-                                    </span>
+                    <ItemTemplate>
 
 
-                                    <asp:PlaceHolder
-                                        ID="phCorrect"
-                                        runat="server"
-                                        Visible='<%#
-                                            Convert.ToBoolean(
-                                                Eval("IsCorrect")
-                                            )
-                                        %>'>
+                        <div class="view-quiz-question">
 
-                                        <span class="view-correct-badge">
 
-                                            <i class="bi bi-check-circle"></i>
+                            <%-- QUESTION NUMBER --%>
 
-                                            Correct
+                            <div class="view-question-heading">
 
-                                        </span>
+                                <span class="view-question-number">
 
-                                    </asp:PlaceHolder>
+                                    Question
+                                    <%# Eval("QuestionOrder") %>
+
+                                </span>
+
+
+                                <span class="view-question-type-badge">
+
+                                    <%# GetQuestionTypeDisplay(
+                                            Eval("QuestionType").ToString()
+                                        ) %>
+
+                                </span>
+
+                            </div>
+
+
+
+                            <%-- QUESTION TEXT --%>
+
+                            <div class="view-content-section">
+
+                                <span class="view-content-label">
+                                    QUESTION
+                                </span>
+
+                                <div class="view-question-text">
+
+                                    <%# Eval("QuestionText") %>
 
                                 </div>
 
-                            </ItemTemplate>
-
-                        </asp:Repeater>
-
-                    </div>
-
-                </asp:Panel>
+                            </div>
 
 
-                <%-- SUBJECTIVE ANSWER --%>
-                <asp:Panel
-                    ID="pnlSubjective"
-                    runat="server"
-                    CssClass="view-content-section"
-                    Visible="false">
 
-                    <span class="view-content-label">
-                        MODEL ANSWER
-                    </span>
+                            <%-- TYPE + DIFFICULTY --%>
 
-                    <div class="view-answer-box">
-
-                        <asp:Label
-                            ID="lblModelAnswer"
-                            runat="server">
-                        </asp:Label>
-
-                    </div>
-
-                </asp:Panel>
+                            <div class="view-info-grid">
 
 
-                <%-- EXPLANATION --%>
-                <asp:Panel
-                    ID="pnlExplanation"
-                    runat="server"
-                    CssClass="view-content-section"
-                    Visible="false">
+                                <div class="view-info-item">
 
-                    <span class="view-content-label">
-                        EXPLANATION
-                    </span>
+                                    <span class="view-content-label">
+                                        QUESTION TYPE
+                                    </span>
 
-                    <div class="view-answer-box">
+                                    <div class="view-readonly-field">
 
-                        <asp:Label
-                            ID="lblExplanation"
-                            runat="server">
-                        </asp:Label>
-
-                    </div>
-
-                </asp:Panel>
-
-
-                <%-- PUBLISHED QUIZZES --%>
-                <div class="view-content-section">
-
-                    <span class="view-content-label">
-                        CURRENTLY PUBLISHED IN
-                    </span>
-
-
-                    <div class="view-published-list">
-
-                        <asp:Repeater
-                            ID="rptPublishedQuizzes"
-                            runat="server">
-
-                            <ItemTemplate>
-
-                                <div class="view-published-item">
-
-                                    <div>
-
-                                        <strong>
-                                            <%# Eval("Title") %>
-                                        </strong>
-
-                                        <span>
-                                            <%# Eval("FormName") %>
-                                        </span>
+                                        <%# GetQuestionTypeDisplay(
+                                                Eval("QuestionType")
+                                                    .ToString()
+                                            ) %>
 
                                     </div>
 
+                                </div>
 
-                                    <span class="view-published-badge">
-                                        Published
+
+                                <div class="view-info-item">
+
+                                    <span class="view-content-label">
+                                        DIFFICULTY
                                     </span>
+
+                                    <div class="view-readonly-field">
+
+                                        <%# Eval("Difficulty") %>
+
+                                    </div>
 
                                 </div>
 
-                            </ItemTemplate>
-
-                        </asp:Repeater>
+                            </div>
 
 
-                        <asp:Panel
-                            ID="pnlNoPublishedQuiz"
-                            runat="server"
-                            CssClass="view-no-published"
-                            Visible="false">
 
-                            This question is not currently used in any published quiz.
+                            <%-- QUESTION IMAGE --%>
 
-                        </asp:Panel>
+                            <asp:Panel
+                                ID="pnlQuestionMedia"
+                                runat="server"
+                                CssClass="view-content-section"
+                                Visible="false">
 
-                    </div>
+                                <span class="view-content-label">
+                                    QUESTION IMAGE
+                                </span>
 
-                </div>
+                                <div class="view-question-image-wrapper">
+
+                                    <asp:Image
+                                        ID="imgQuestion"
+                                        runat="server"
+                                        CssClass="view-question-image"
+                                        AlternateText="Question image" />
+
+                                </div>
+
+                            </asp:Panel>
+
+
+
+                            <%-- MCQ OPTIONS --%>
+
+                            <asp:Panel
+                                ID="pnlQuestionMcq"
+                                runat="server"
+                                CssClass="view-content-section"
+                                Visible="false">
+
+                                <span class="view-content-label">
+                                    ANSWER OPTIONS
+                                </span>
+
+
+                                <div class="view-options-list">
+
+                                    <asp:Repeater
+                                        ID="rptOptions"
+                                        runat="server">
+
+                                        <ItemTemplate>
+
+                                            <div class='<%#
+                                                Convert.ToBoolean(
+                                                    Eval("IsCorrect")
+                                                )
+                                                ? "view-option correct"
+                                                : "view-option"
+                                            %>'>
+
+                                                <span class="view-option-letter">
+
+                                                    <%#
+                                                        Convert.ToChar(
+                                                            64 +
+                                                            Convert.ToInt32(
+                                                                Eval("DisplayOrder")
+                                                            )
+                                                        )
+                                                    %>
+
+                                                </span>
+
+
+                                                <span class="view-option-text">
+
+                                                    <%# Eval("OptionText") %>
+
+                                                </span>
+
+
+                                                <asp:PlaceHolder
+                                                    ID="phCorrect"
+                                                    runat="server"
+                                                    Visible='<%#
+                                                        Convert.ToBoolean(
+                                                            Eval("IsCorrect")
+                                                        )
+                                                    %>'>
+
+                                                    <span class="view-correct-badge">
+
+                                                        <i class="bi bi-check-circle"></i>
+
+                                                        Correct
+
+                                                    </span>
+
+                                                </asp:PlaceHolder>
+
+                                            </div>
+
+                                        </ItemTemplate>
+
+                                    </asp:Repeater>
+
+                                </div>
+
+                            </asp:Panel>
+
+
+
+                            <%-- SUBJECTIVE ANSWER --%>
+
+                            <asp:Panel
+                                ID="pnlQuestionSubjective"
+                                runat="server"
+                                CssClass="view-content-section"
+                                Visible="false">
+
+                                <span class="view-content-label">
+                                    MODEL ANSWER
+                                </span>
+
+                                <div class="view-answer-box">
+
+                                    <asp:Label
+                                        ID="lblModelAnswer"
+                                        runat="server">
+                                    </asp:Label>
+
+                                </div>
+
+                            </asp:Panel>
+
+
+
+                            <%-- EXPLANATION --%>
+
+                            <asp:Panel
+                                ID="pnlQuestionExplanation"
+                                runat="server"
+                                CssClass="view-content-section"
+                                Visible="false">
+
+                                <span class="view-content-label">
+                                    EXPLANATION
+                                </span>
+
+                                <div class="view-answer-box">
+
+                                    <asp:Label
+                                        ID="lblExplanation"
+                                        runat="server">
+                                    </asp:Label>
+
+                                </div>
+
+                            </asp:Panel>
+
+
+                        </div>
+
+                    </ItemTemplate>
+
+                </asp:Repeater>
+
+
+
+                <%-- NO QUESTIONS --%>
+
+                <asp:Panel
+                    ID="pnlNoQuestions"
+                    runat="server"
+                    CssClass="view-no-published"
+                    Visible="false">
+
+                    No questions are currently linked to this quiz.
+
+                </asp:Panel>
 
             </div>
+
 
         </asp:Panel>
 

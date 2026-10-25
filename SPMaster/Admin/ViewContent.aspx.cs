@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
 
 namespace SPMaster.Admin
@@ -26,31 +27,33 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
-        // QUESTION ID
+        // QUIZ ID
         // =========================================================
 
-        private int QuestionId
+        private int QuizId
         {
             get
             {
-                int questionId;
+                int quizId;
 
 
                 if (
                     int.TryParse(
                         Request.QueryString["id"],
-                        out questionId
+                        out quizId
                     )
                 )
                 {
-                    return questionId;
+                    return quizId;
                 }
 
 
                 return 0;
             }
         }
+
 
 
         // =========================================================
@@ -61,6 +64,7 @@ namespace SPMaster.Admin
             object sender,
             EventArgs e)
         {
+            // User must be logged in
             if (
                 Session["UserId"] == null
             )
@@ -73,12 +77,13 @@ namespace SPMaster.Admin
             }
 
 
+            // Must have valid QuizId
             if (
-                QuestionId <= 0
+                QuizId <= 0
             )
             {
                 ShowError(
-                    "Unable to identify the selected question."
+                    "Unable to identify the selected quiz."
                 );
 
                 return;
@@ -88,76 +93,101 @@ namespace SPMaster.Admin
             if (!IsPostBack)
             {
                 bool loaded =
-                    LoadQuestion();
+                    LoadQuiz();
 
 
-                if (!loaded)
+                if (
+                    !loaded
+                )
                 {
                     ShowError(
-                        "The selected question could not be found."
+                        "The selected quiz could not be found."
                     );
 
                     return;
                 }
 
 
-                LoadOptions();
-
-                LoadPublishedQuizzes();
+                LoadQuestions();
             }
         }
 
 
+
         // =========================================================
-        // LOAD QUESTION
+        // LOAD QUIZ
+        //
+        // IMPORTANT:
+        // Admin can view BOTH:
+        //
+        // IsPublished = 1
+        // IsPublished = 0
+        //
+        // Only archived quizzes are excluded.
         // =========================================================
 
-        private bool LoadQuestion()
+        private bool LoadQuiz()
         {
             const string sql = @"
                 SELECT
 
-                    q.QuestionId,
+                    z.QuizId,
 
-                    q.QuestionText,
+                    z.Title,
 
-                    q.QuestionType,
+                    z.Description,
 
-                    q.Difficulty,
+                    z.TimeLimitMinutes,
 
-                    q.ModelAnswer,
+                    z.PassPercentage,
 
-                    q.Explanation,
+                    z.IsPublished,
 
-                    q.MediaPath,
-
-                    q.CreatedAt,
+                    z.CreatedAt,
 
                     s.SubjectName,
 
+                    f.FormName,
+
                     u.FullName
-                        AS LecturerName
+                        AS LecturerName,
+
+                    (
+                        SELECT COUNT(*)
+
+                        FROM QuizQuestions qq
+
+                        WHERE
+                            qq.QuizId =
+                                z.QuizId
+                    ) AS QuestionCount
 
 
-                FROM Questions q
+                FROM Quizzes z
 
 
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
+                    ON z.SubjectId =
                        s.SubjectId
 
 
+                INNER JOIN Forms f
+                    ON z.FormId =
+                       f.FormId
+
+
                 INNER JOIN Users u
-                    ON q.CreatedByUserId =
+                    ON z.CreatedByUserId =
                        u.UserId
 
 
                 WHERE
-                    q.QuestionId =
-                        @QuestionId
+                    z.QuizId =
+                        @QuizId
 
                     AND
-                    q.IsArchived = 0;
+
+                    z.IsArchived = 0;
             ";
 
 
@@ -177,10 +207,10 @@ namespace SPMaster.Admin
                 )
                 {
                     command.Parameters.Add(
-                        "@QuestionId",
+                        "@QuizId",
                         SqlDbType.Int
                     ).Value =
-                        QuestionId;
+                        QuizId;
 
 
                     connection.Open();
@@ -191,195 +221,191 @@ namespace SPMaster.Admin
                             command.ExecuteReader()
                     )
                     {
-                        if (!reader.Read())
+                        if (
+                            !reader.Read()
+                        )
                         {
                             return false;
                         }
 
 
-                        string questionType =
+
+                        // =========================================
+                        // TITLE
+                        // =========================================
+
+                        lblQuizTitle.Text =
                             Convert.ToString(
-                                reader[
-                                    "QuestionType"
-                                ]
+                                reader["Title"]
                             );
 
 
-                        lblQuestionText.Text =
-                            Convert.ToString(
-                                reader[
-                                    "QuestionText"
-                                ]
-                            );
 
+                        // =========================================
+                        // SUBJECT
+                        // =========================================
 
                         lblSubject.Text =
                             Convert.ToString(
-                                reader[
-                                    "SubjectName"
-                                ]
+                                reader["SubjectName"]
                             );
 
+
+
+                        // =========================================
+                        // LECTURER
+                        // =========================================
 
                         lblLecturer.Text =
                             Convert.ToString(
-                                reader[
-                                    "LecturerName"
-                                ]
+                                reader["LecturerName"]
                             );
 
 
-                        lblQuestionType.Text =
-                            GetQuestionTypeDisplay(
-                                questionType
-                            );
 
+                        // =========================================
+                        // FORM
+                        // =========================================
 
-                        lblDifficulty.Text =
+                        lblForm.Text =
                             Convert.ToString(
-                                reader[
-                                    "Difficulty"
-                                ]
+                                reader["FormName"]
                             );
 
+
+
+                        // =========================================
+                        // CREATED DATE
+                        // =========================================
 
                         lblCreatedDate.Text =
                             Convert.ToDateTime(
-                                reader[
-                                    "CreatedAt"
-                                ]
+                                reader["CreatedAt"]
                             ).ToString(
                                 "dd MMM yyyy"
                             );
 
 
+
                         // =========================================
-                        // QUESTION TYPE
+                        // QUESTION COUNT
                         // =========================================
 
-                        bool isMcq =
-                            questionType.Equals(
-                                "MCQ",
-                                StringComparison
-                                    .OrdinalIgnoreCase
+                        int questionCount =
+                            Convert.ToInt32(
+                                reader["QuestionCount"]
                             );
 
 
-                        pnlMcq.Visible =
-                            isMcq;
+                        lblQuestionCount.Text =
+                            questionCount
+                            +
+                            (
+                                questionCount == 1
+                                ? " question"
+                                : " questions"
+                            );
 
-
-                        pnlSubjective.Visible =
-                            !isMcq;
 
 
                         // =========================================
-                        // MODEL ANSWER
+                        // TIME LIMIT
                         // =========================================
 
-                        string modelAnswer =
-                            reader[
-                                "ModelAnswer"
-                            ] == DBNull.Value
+                        int timeLimit =
+                            Convert.ToInt32(
+                                reader["TimeLimitMinutes"]
+                            );
+
+
+                        lblTimeLimit.Text =
+                            timeLimit
+                            +
+                            (
+                                timeLimit == 1
+                                ? " minute"
+                                : " minutes"
+                            );
+
+
+
+                        // =========================================
+                        // PASS PERCENTAGE
+                        // =========================================
+
+                        decimal passPercentage =
+                            Convert.ToDecimal(
+                                reader["PassPercentage"]
+                            );
+
+
+                        lblPassPercentage.Text =
+                            passPercentage
+                                .ToString("0.##")
+                            + "%";
+
+
+
+                        // =========================================
+                        // STATUS
+                        // =========================================
+
+                        bool isPublished =
+                            Convert.ToBoolean(
+                                reader["IsPublished"]
+                            );
+
+
+                        lblQuizStatus.Text =
+                            isPublished
+                            ? "Published"
+                            : "Draft";
+
+
+                        lblQuizStatus.CssClass =
+                            isPublished
+                            ? "view-status-badge published"
+                            : "view-status-badge draft";
+
+
+
+                        // =========================================
+                        // DESCRIPTION
+                        // =========================================
+
+                        string description =
+                            reader["Description"]
+                                == DBNull.Value
 
                             ? ""
 
                             : Convert.ToString(
-                                reader[
-                                    "ModelAnswer"
-                                ]
-                            );
-
-
-                        lblModelAnswer.Text =
-                            string.IsNullOrWhiteSpace(
-                                modelAnswer
-                            )
-
-                            ? "No model answer provided."
-
-                            : modelAnswer;
-
-
-                        // =========================================
-                        // EXPLANATION
-                        // =========================================
-
-                        string explanation =
-                            reader[
-                                "Explanation"
-                            ] == DBNull.Value
-
-                            ? ""
-
-                            : Convert.ToString(
-                                reader[
-                                    "Explanation"
-                                ]
+                                reader["Description"]
                             );
 
 
                         if (
                             !string.IsNullOrWhiteSpace(
-                                explanation
+                                description
                             )
                         )
                         {
-                            lblExplanation.Text =
-                                explanation;
+                            lblDescription.Text =
+                                description;
 
 
-                            pnlExplanation.Visible =
+                            pnlDescription.Visible =
                                 true;
                         }
                         else
                         {
-                            pnlExplanation.Visible =
+                            pnlDescription.Visible =
                                 false;
                         }
 
 
-                        // =========================================
-                        // IMAGE
-                        // =========================================
 
-                        string mediaPath =
-                            reader[
-                                "MediaPath"
-                            ] == DBNull.Value
-
-                            ? ""
-
-                            : Convert.ToString(
-                                reader[
-                                    "MediaPath"
-                                ]
-                            );
-
-
-                        if (
-                            !string.IsNullOrWhiteSpace(
-                                mediaPath
-                            )
-                        )
-                        {
-                            imgQuestion.ImageUrl =
-                                GetMediaUrl(
-                                    mediaPath
-                                );
-
-
-                            pnlMedia.Visible =
-                                true;
-                        }
-                        else
-                        {
-                            pnlMedia.Visible =
-                                false;
-                        }
-
-
-                        pnlQuestion.Visible =
+                        pnlQuiz.Visible =
                             true;
 
 
@@ -390,18 +416,385 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
-        // LOAD MCQ OPTIONS
+        // LOAD QUESTIONS IN QUIZ
+        //
+        // Questions remain linked even when quiz is unpublished.
         // =========================================================
 
-        private void LoadOptions()
+        private void LoadQuestions()
         {
-            if (!pnlMcq.Visible)
+            const string sql = @"
+                SELECT
+
+                    q.QuestionId,
+
+                    q.QuestionText,
+
+                    q.QuestionType,
+
+                    q.Difficulty,
+
+                    q.ModelAnswer,
+
+                    q.Explanation,
+
+                    q.MediaPath,
+
+                    qq.QuestionOrder
+
+
+                FROM QuizQuestions qq
+
+
+                INNER JOIN Questions q
+                    ON qq.QuestionId =
+                       q.QuestionId
+
+
+                WHERE
+                    qq.QuizId =
+                        @QuizId
+
+
+                ORDER BY
+                    qq.QuestionOrder;
+            ";
+
+
+            DataTable table =
+                new DataTable();
+
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            {
+                using (
+                    SqlCommand command =
+                        new SqlCommand(
+                            sql,
+                            connection
+                        )
+                )
+                {
+                    command.Parameters.Add(
+                        "@QuizId",
+                        SqlDbType.Int
+                    ).Value =
+                        QuizId;
+
+
+                    using (
+                        SqlDataAdapter adapter =
+                            new SqlDataAdapter(
+                                command
+                            )
+                    )
+                    {
+                        adapter.Fill(
+                            table
+                        );
+                    }
+                }
+            }
+
+
+            rptQuestions.DataSource =
+                table;
+
+
+            rptQuestions.DataBind();
+
+
+            pnlNoQuestions.Visible =
+                table.Rows.Count == 0;
+        }
+
+
+
+        // =========================================================
+        // QUESTION ITEM DATA BOUND
+        // =========================================================
+
+        protected void rptQuestions_ItemDataBound(
+            object sender,
+            RepeaterItemEventArgs e)
+        {
+            if (
+                e.Item.ItemType
+                    != ListItemType.Item
+                &&
+                e.Item.ItemType
+                    != ListItemType.AlternatingItem
+            )
             {
                 return;
             }
 
 
+            DataRowView row =
+                e.Item.DataItem
+                    as DataRowView;
+
+
+            if (
+                row == null
+            )
+            {
+                return;
+            }
+
+
+
+            int questionId =
+                Convert.ToInt32(
+                    row["QuestionId"]
+                );
+
+
+            string questionType =
+                Convert.ToString(
+                    row["QuestionType"]
+                );
+
+
+            bool isMcq =
+                questionType.Equals(
+                    "MCQ",
+                    StringComparison.OrdinalIgnoreCase
+                );
+
+
+
+            // =====================================================
+            // FIND CONTROLS
+            // =====================================================
+
+            Panel pnlQuestionMcq =
+                e.Item.FindControl(
+                    "pnlQuestionMcq"
+                ) as Panel;
+
+
+            Panel pnlQuestionSubjective =
+                e.Item.FindControl(
+                    "pnlQuestionSubjective"
+                ) as Panel;
+
+
+            Panel pnlQuestionExplanation =
+                e.Item.FindControl(
+                    "pnlQuestionExplanation"
+                ) as Panel;
+
+
+            Panel pnlQuestionMedia =
+                e.Item.FindControl(
+                    "pnlQuestionMedia"
+                ) as Panel;
+
+
+            Repeater rptOptions =
+                e.Item.FindControl(
+                    "rptOptions"
+                ) as Repeater;
+
+
+            Label lblModelAnswer =
+                e.Item.FindControl(
+                    "lblModelAnswer"
+                ) as Label;
+
+
+            Label lblExplanation =
+                e.Item.FindControl(
+                    "lblExplanation"
+                ) as Label;
+
+
+            Image imgQuestion =
+                e.Item.FindControl(
+                    "imgQuestion"
+                ) as Image;
+
+
+
+            // =====================================================
+            // MCQ / SUBJECTIVE
+            // =====================================================
+
+            if (
+                pnlQuestionMcq != null
+            )
+            {
+                pnlQuestionMcq.Visible =
+                    isMcq;
+            }
+
+
+            if (
+                pnlQuestionSubjective != null
+            )
+            {
+                pnlQuestionSubjective.Visible =
+                    !isMcq;
+            }
+
+
+
+            // =====================================================
+            // LOAD MCQ OPTIONS
+            // =====================================================
+
+            if (
+                isMcq
+                &&
+                rptOptions != null
+            )
+            {
+                LoadOptions(
+                    questionId,
+                    rptOptions
+                );
+            }
+
+
+
+            // =====================================================
+            // SUBJECTIVE MODEL ANSWER
+            // =====================================================
+
+            if (
+                !isMcq
+                &&
+                lblModelAnswer != null
+            )
+            {
+                string modelAnswer =
+                    row["ModelAnswer"]
+                        == DBNull.Value
+
+                    ? ""
+
+                    : Convert.ToString(
+                        row["ModelAnswer"]
+                    );
+
+
+                lblModelAnswer.Text =
+                    string.IsNullOrWhiteSpace(
+                        modelAnswer
+                    )
+
+                    ? "No model answer provided."
+
+                    : modelAnswer;
+            }
+
+
+
+            // =====================================================
+            // EXPLANATION
+            // =====================================================
+
+            string explanation =
+                row["Explanation"]
+                    == DBNull.Value
+
+                ? ""
+
+                : Convert.ToString(
+                    row["Explanation"]
+                );
+
+
+            if (
+                pnlQuestionExplanation != null
+                &&
+                lblExplanation != null
+            )
+            {
+                if (
+                    !string.IsNullOrWhiteSpace(
+                        explanation
+                    )
+                )
+                {
+                    lblExplanation.Text =
+                        explanation;
+
+
+                    pnlQuestionExplanation.Visible =
+                        true;
+                }
+                else
+                {
+                    pnlQuestionExplanation.Visible =
+                        false;
+                }
+            }
+
+
+
+            // =====================================================
+            // QUESTION IMAGE
+            // =====================================================
+
+            string mediaPath =
+                row["MediaPath"]
+                    == DBNull.Value
+
+                ? ""
+
+                : Convert.ToString(
+                    row["MediaPath"]
+                );
+
+
+            if (
+                pnlQuestionMedia != null
+                &&
+                imgQuestion != null
+            )
+            {
+                if (
+                    !string.IsNullOrWhiteSpace(
+                        mediaPath
+                    )
+                )
+                {
+                    imgQuestion.ImageUrl =
+                        GetMediaUrl(
+                            mediaPath
+                        );
+
+
+                    pnlQuestionMedia.Visible =
+                        true;
+                }
+                else
+                {
+                    pnlQuestionMedia.Visible =
+                        false;
+                }
+            }
+        }
+
+
+
+        // =========================================================
+        // LOAD MCQ OPTIONS
+        // =========================================================
+
+        private void LoadOptions(
+            int questionId,
+            Repeater repeater)
+        {
             const string sql = @"
                 SELECT
 
@@ -445,7 +838,7 @@ namespace SPMaster.Admin
                         "@QuestionId",
                         SqlDbType.Int
                     ).Value =
-                        QuestionId;
+                        questionId;
 
 
                     using (
@@ -463,117 +856,20 @@ namespace SPMaster.Admin
             }
 
 
-            rptOptions.DataSource =
+            repeater.DataSource =
                 table;
 
 
-            rptOptions.DataBind();
+            repeater.DataBind();
         }
 
-
-        // =========================================================
-        // LOAD PUBLISHED QUIZZES
-        // =========================================================
-
-        private void LoadPublishedQuizzes()
-        {
-            const string sql = @"
-                SELECT DISTINCT
-
-                    z.QuizId,
-
-                    z.Title,
-
-                    f.FormName
-
-
-                FROM Quizzes z
-
-
-                INNER JOIN QuizQuestions qq
-                    ON z.QuizId =
-                       qq.QuizId
-
-
-                INNER JOIN Forms f
-                    ON z.FormId =
-                       f.FormId
-
-
-                WHERE
-                    qq.QuestionId =
-                        @QuestionId
-
-                    AND
-                    z.IsPublished = 1
-
-                    AND
-                    z.IsArchived = 0
-
-
-                ORDER BY
-                    z.Title;
-            ";
-
-
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuestionId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
-                }
-            }
-
-
-            rptPublishedQuizzes.DataSource =
-                table;
-
-
-            rptPublishedQuizzes.DataBind();
-
-
-            pnlNoPublishedQuiz.Visible =
-                table.Rows.Count == 0;
-        }
 
 
         // =========================================================
         // QUESTION TYPE DISPLAY
         // =========================================================
 
-        private string GetQuestionTypeDisplay(
+        protected string GetQuestionTypeDisplay(
             string questionType)
         {
             if (
@@ -589,6 +885,7 @@ namespace SPMaster.Admin
 
             return "Subjective";
         }
+
 
 
         // =========================================================
@@ -633,6 +930,7 @@ namespace SPMaster.Admin
         }
 
 
+
         // =========================================================
         // ERROR
         // =========================================================
@@ -640,7 +938,7 @@ namespace SPMaster.Admin
         private void ShowError(
             string message)
         {
-            pnlQuestion.Visible =
+            pnlQuiz.Visible =
                 false;
 
 

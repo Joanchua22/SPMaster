@@ -63,10 +63,6 @@ namespace SPMaster
                         Request.Cookies[
                             "RememberedEmail"
                         ].Value;
-
-
-                    chkRemember.Checked =
-                        true;
                 }
             }
         }
@@ -270,16 +266,6 @@ namespace SPMaster
                                 .ToString()
                                 .Trim();
 
-
-                            // =====================================
-                            // REMEMBER EMAIL
-                            // =====================================
-
-                            HandleRememberEmail(
-                                email
-                            );
-
-
                             // =====================================
                             // REDIRECT USER
                             // =====================================
@@ -466,52 +452,7 @@ namespace SPMaster
 
 
             return difference == 0;
-        }
-
-
-
-        // =========================================================
-        // REMEMBER EMAIL
-        // =========================================================
-
-        private void HandleRememberEmail(
-            string email)
-        {
-            if (
-                chkRemember.Checked
-            )
-            {
-                Response.Cookies[
-                    "RememberedEmail"
-                ].Value =
-                    email;
-
-
-                Response.Cookies[
-                    "RememberedEmail"
-                ].Expires =
-                    DateTime.Now
-                        .AddDays(30);
-            }
-            else
-            {
-                if (
-                    Request.Cookies[
-                        "RememberedEmail"
-                    ]
-                    != null
-                )
-                {
-                    Response.Cookies[
-                        "RememberedEmail"
-                    ].Expires =
-                        DateTime.Now
-                            .AddDays(-1);
-                }
-            }
-        }
-
-
+        }    
 
         // =========================================================
         // REDIRECT USER BY ROLE

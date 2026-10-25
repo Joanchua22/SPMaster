@@ -51,11 +51,12 @@
 
 
 /* =========================================================
-   MAIN CARD
+   MAIN CARDS
    ========================================================= */
 
 .view-content-card {
     padding: 28px;
+    margin-top: 28px;
     border-radius: 14px;
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(44, 37, 82, 0.08);
@@ -63,13 +64,55 @@
 
 
 /* =========================================================
-   META
+   SECTIONS
+   ========================================================= */
+
+.view-content-section {
+    margin-top: 24px;
+}
+
+
+/* First section inside each card */
+.view-content-card > .view-content-section:first-child {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+
+.view-content-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #373049;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   QUIZ TITLE / QUESTION TEXT
+   ========================================================= */
+
+.view-question-text {
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: #f8f5fc;
+    color: #38323d;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   QUIZ META
    ========================================================= */
 
 .view-question-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-top: 20px;
     margin-bottom: 24px;
 }
 
@@ -89,36 +132,6 @@
     .view-meta-item i {
         color: #7c28ef;
     }
-
-
-/* =========================================================
-   SECTIONS
-   ========================================================= */
-
-.view-content-section {
-    margin-top: 22px;
-}
-
-
-.view-content-label {
-    display: block;
-    margin-bottom: 7px;
-    color: #373049;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-}
-
-
-.view-question-text {
-    padding: 16px 18px;
-    border-radius: 10px;
-    background: #f8f5fc;
-    color: #38323d;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.5;
-}
 
 
 /* =========================================================
@@ -146,7 +159,52 @@
 
 
 /* =========================================================
-   IMAGE
+   QUIZ QUESTIONS
+   ========================================================= */
+
+.view-quiz-question {
+    margin-top: 28px;
+    margin-bottom: 42px;
+}
+
+
+    /* Add separation between questions */
+    .view-quiz-question + .view-quiz-question {
+        padding-top: 30px;
+        border-top: 1px solid #eee9f3;
+    }
+
+
+.view-question-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+
+.view-question-number {
+    color: #2f236f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.view-question-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 14px;
+    background: #f0e7ff;
+    color: #6725cf;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   QUESTION IMAGE
    ========================================================= */
 
 .view-question-image-wrapper {
@@ -195,12 +253,12 @@
 
 
 .view-option-letter {
+    width: 30px;
+    height: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 30px;
-    height: 30px;
     border-radius: 50%;
     background: #efe6ff;
     color: #6828ce;
@@ -230,7 +288,7 @@
 
 
 /* =========================================================
-   ANSWER / EXPLANATION
+   ANSWER / DESCRIPTION / EXPLANATION
    ========================================================= */
 
 .view-answer-box {
@@ -244,57 +302,32 @@
 
 
 /* =========================================================
-   PUBLISHED QUIZZES
+   PUBLISHED STATUS
    ========================================================= */
-
-.view-published-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-
-.view-published-item {
-    display: flex;
+.view-status-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 13px 15px;
-    border: 1px solid #eee9f3;
-    border-radius: 10px;
-    background: #ffffff;
-}
-
-
-    .view-published-item div {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-
-    .view-published-item strong {
-        color: #373049;
-        font-size: 13px;
-    }
-
-
-    .view-published-item span {
-        color: #8a8390;
-        font-size: 11px;
-    }
-
-
-.view-published-badge {
-    flex-shrink: 0;
     padding: 5px 10px;
     border-radius: 13px;
-    background: #e7f7ed;
-    color: #267543 !important;
-    font-size: 10px !important;
+    font-size: 10px;
     font-weight: 700;
 }
 
+
+    .view-status-badge.published {
+        background: #e7f7ed;
+        color: #267543;
+    }
+
+
+    .view-status-badge.draft {
+        background: #f1eaff;
+        color: #6930cf;
+    }
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
 .view-no-published {
     padding: 14px;
@@ -331,6 +364,7 @@
 
     .view-content-card {
         padding: 20px;
+        margin-top: 28px;
     }
 
 
@@ -339,7 +373,12 @@
     }
 
 
-    .view-published-item {
+    .view-question-heading {
+        align-items: flex-start;
+    }
+
+
+    .view-option {
         align-items: flex-start;
     }
 }
