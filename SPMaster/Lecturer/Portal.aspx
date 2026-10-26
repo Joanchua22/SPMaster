@@ -89,10 +89,8 @@
             </a>
 
 
-
             <%-- =================================================
                  LIVE SESSIONS
-                 KEEP HARD-CODED FOR NOW
                  ================================================= --%>
 
             <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="lecturer-stat-card">
@@ -101,12 +99,17 @@
                     <i class="bi bi-people-fill" aria-hidden="true"></i>
                 </div>
 
-
                 <div class="lecturer-stat-content">
 
                     <span class="lecturer-stat-heading">Live Sessions</span>
-                    <strong>3 Active</strong>
-                    <span class="lecturer-stat-detail">148 Total attempts</span>
+
+                    <strong>
+                        <asp:Literal ID="litActiveSessionCount" runat="server"></asp:Literal>
+                    </strong>
+
+                    <span class="lecturer-stat-detail">
+                        <asp:Literal ID="litSessionAttemptCount" runat="server"></asp:Literal>
+                    </span>
 
                 </div>
 
@@ -228,89 +231,95 @@
                 </section>
 
 
-                <%-- ACTIVE CLASSROOM SESSIONS (need to connect) --%>
+                <%-- =========================================
+                     ACTIVE CLASSROOM SESSIONS
+                     ========================================= --%>
 
                 <section class="dashboard-card classroom-card">
 
                     <div class="dashboard-card-header">
                         <h2>Active Classroom Sessions</h2>
-                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="card-header-link">Manage All Sessions →</a>
+                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="card-header-link">
+                            Manage All Sessions →
+                        </a>
                     </div>
 
 
-                    <div class="session-table-wrapper">
+                    <asp:Panel ID="pnlActiveSessions" runat="server">
 
-                        <table class="session-table">
+                        <div class="session-table-wrapper">
 
-                            <thead>
+                            <table class="session-table">
 
-                                <tr>
+                                <thead>
+                                    <tr>
+                                        <th>Session Title</th>
+                                        <th>Code</th>
+                                        <th>Status</th>
+                                        <th>Attempts</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
 
-                                    <th>Session Title</th>
-                                    <th>Code</th>
-                                    <th>Status</th>
-                                    <th>Attempts</th>
-                                    <th>Actions</th>
+                                <tbody>
 
-                                </tr>
+                                    <asp:Repeater ID="rptActiveSessions" runat="server">
 
-                            </thead>
+                                        <ItemTemplate>
 
-                            <tbody>
+                                            <tr>
 
-                                <tr>
-                                    <td>
-                                        <strong>Maths Form 5 Intensive Rev</strong>
-                                        <span>Maths Final-Year Practice</span>
-                                    </td>
+                                                <td>
+                                                    <strong><%#: Eval("SessionTitle") %></strong>
+                                                    <span><%#: Eval("QuizTitle") %></span>
+                                                </td>
 
-                                    <td>
-                                        <span class="session-code">MATH-582</span>
-                                    </td>
+                                                <td>
+                                                    <span class="session-code">
+                                                        <%#: Eval("JoinCode") %>
+                                                    </span>
+                                                </td>
 
-                                    <td>
-                                        <span class="session-status">Open</span>
-                                    </td>
+                                                <td>
+                                                    <span class="session-status">
+                                                        Open
+                                                    </span>
+                                                </td>
 
-                                    <td>42 attempts</td>
+                                                <td>
+                                                    <%#: Eval("AttemptCount") %> attempts
 
-                                    <td>
-                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>"class="table-action-link">Details</a>
-                                    </td>
-                                </tr>
+                                                    <asp:PlaceHolder runat="server" Visible='<%# Convert.ToInt32(Eval("PendingCount")) > 0 %>'>
+                                                        <span class="pending-attempts">
+                                                            (<%#: Eval("PendingCount") %> pending)
+                                                        </span>
+                                                    </asp:PlaceHolder>
+                                                </td>
+
+                                                <td>
+                                                    <a href='<%# ResolveUrl("~/Lecturer/SessionDetails.aspx?id=" + Eval("SessionId")) %>' class="table-action-link">
+                                                        Details
+                                                    </a>
+                                                </td>
+
+                                            </tr>
+
+                                        </ItemTemplate>
+
+                                    </asp:Repeater>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </asp:Panel>
 
 
-                                <tr>
-
-                                    <td>
-                                        <strong>Sejarah SPM Trial Prep</strong>
-                                        <span>Sejarah Kertas 2:Kedaulatan</span>
-                                    </td>
-
-                                    <td>
-                                        <span class="session-code">SEJ-481</span>
-                                    </td>
-
-                                    <td>
-                                        <span class="session-status">Open</span>
-                                    </td>
-
-                                    <td>
-                                        28
-                                        <span class="pending-attempts">(4 pending)</span>
-                                    </td>
-
-                                    <td>
-                                        <a href="<%= ResolveUrl("~/Lecturer/Sessions.aspx") %>" class="table-action-link">Details</a>
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
+                    <asp:Panel ID="pnlNoActiveSessions" runat="server" Visible="false" CssClass="dashboard-empty-message">
+                        No active classroom sessions.
+                    </asp:Panel>
 
                 </section>
 

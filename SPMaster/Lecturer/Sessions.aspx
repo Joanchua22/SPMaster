@@ -113,7 +113,7 @@
                 <strong>No active sessions</strong>
 
                 <span>
-                    Host a host sessionto create a session.
+                    Host a new session to get started.
                 </span>
 
             </asp:Panel>

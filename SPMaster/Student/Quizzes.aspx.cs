@@ -49,6 +49,7 @@ namespace SPMaster.Student
             if (!IsPostBack)
             {
                 BindSubjects();
+                ApplySubjectFilterFromQueryString();
                 BindExploreQuizzes();
                 BindAttempts();
             }
@@ -87,6 +88,34 @@ namespace SPMaster.Student
                 0,
                 new ListItem("All Subjects", "")
             );
+        }
+
+
+        // =========================================================
+        // SUBJECT FILTER FROM URL
+        // =========================================================
+
+        private void ApplySubjectFilterFromQueryString()
+        {
+            int subjectId;
+
+            if (!int.TryParse(Request.QueryString["subject"], out subjectId))
+            {
+                return;
+            }
+
+            ListItem subjectItem =
+                ddlStudentSubject.Items.FindByValue(
+                    subjectId.ToString()
+                );
+
+            if (subjectItem == null)
+            {
+                return;
+            }
+
+            ddlStudentSubject.ClearSelection();
+            subjectItem.Selected = true;
         }
 
 
