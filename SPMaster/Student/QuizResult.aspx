@@ -405,76 +405,119 @@
 
 
 
-                    <%-- =========================================
-                         SUBJECTIVE RESULT
-                         ========================================= --%>
+<%-- =========================================
+     SUBJECTIVE RESULT
+     ========================================= --%>
 
-                    <asp:Panel
-                        ID="pnlSubjectiveResult"
-                        runat="server"
-                        Visible='<%# !IsMcq(
-                            Eval("QuestionType")
-                        ) %>'>
-
-
-                        <div class="result-submitted-answer">
-
-                            <strong>
-                                Your Submitted Answer:
-                            </strong>
+<asp:Panel
+    ID="pnlSubjectiveResult"
+    runat="server"
+    Visible='<%# !IsMcq(
+        Eval("QuestionType")
+    ) %>'>
 
 
-                            <div class="result-submitted-answer-content">
+    <%-- STUDENT ANSWER --%>
 
-                                <%#: GetSubjectiveAnswer(
-                                    Eval("AnswerText")
-                                ) %>
+    <div class="result-submitted-answer">
 
-                            </div>
+        <strong>
+            Your Submitted Answer:
+        </strong>
 
-                        </div>
+        <div class="result-submitted-answer-content">
 
+            <%#: GetSubjectiveAnswer(
+                Eval("AnswerText")
+            ) %>
 
+        </div>
 
-                        <%-- =====================================
-                             FEEDBACK
-                             Will connect after Feedback
-                             table structure is confirmed
-                             ===================================== --%>
-
-                        <asp:Panel
-                            ID="pnlLecturerFeedback"
-                            runat="server"
-                            Visible="false"
-                            CssClass="result-feedback-box">
-
-                            <div class="result-feedback-title">
-
-                                <i class="bi bi-chat-square-text"
-                                   aria-hidden="true"></i>
-
-                                Lecturer Feedback
-
-                            </div>
-
-                        </asp:Panel>
+    </div>
 
 
-                    </asp:Panel>
+    <%-- MODEL / SAMPLE ANSWER --%>
+
+    <asp:Panel
+        ID="pnlModelAnswer"
+        runat="server"
+        Visible='<%# HasText(
+            Eval("ModelAnswer")
+        ) %>'
+        CssClass="result-explanation-box">
+
+        <strong>
+            Sample / Model Answer:
+        </strong>
+
+        <div>
+            <%#: Eval("ModelAnswer") %>
+        </div>
+
+    </asp:Panel>
 
 
-                </article>
+    <%-- EXPLANATION --%>
+
+    <asp:Panel
+        ID="pnlSubjectiveExplanation"
+        runat="server"
+        Visible='<%# HasText(
+            Eval("Explanation")
+        ) %>'
+        CssClass="result-explanation-box">
+
+        <strong>
+            Explanation:
+        </strong>
+
+        <div>
+            <%#: Eval("Explanation") %>
+        </div>
+
+    </asp:Panel>
+
+    <%-- LECTURER FEEDBACK --%>
+
+    <asp:Panel
+        ID="pnlLecturerFeedback"
+        runat="server"
+        Visible='<%# HasText(
+            Eval("LecturerFeedback")
+        ) %>'
+        CssClass="result-feedback-box">
+
+        <div class="result-feedback-title">
+
+            <i class="bi bi-chat-square-text"
+               aria-hidden="true"></i>
+
+            Lecturer Feedback
+
+        </div>
+
+        <div class="result-feedback-content">
+
+            <%#: Eval("LecturerFeedback") %>
+
+        </div>
+
+    </asp:Panel>
 
 
-            </ItemTemplate>
-
-        </asp:Repeater>
+</asp:Panel>
 
 
+</article>
 
-        <%-- =====================================================
-             ACTION BUTTONS
-             ===================================================== --%>
+</ItemTemplate>
+
+</asp:Repeater>
+
+
+<%-- =====================================================
+     ACTION BUTTONS
+     ===================================================== --%>
 
         <div class="result-page-actions">
 

@@ -59,7 +59,6 @@
         </section>
 
 
-
         <%-- =====================================================
              PAGE MESSAGE
              ===================================================== --%>
@@ -76,7 +75,6 @@
             </asp:Label>
 
         </asp:Panel>
-
 
 
         <%-- =====================================================
@@ -101,7 +99,6 @@
             </p>
 
         </asp:Panel>
-
 
 
         <%-- =====================================================
@@ -173,7 +170,6 @@
                         </div>
 
 
-
                         <%-- QUIZ TITLE --%>
 
                         <h2 class="feedback-card-title">
@@ -187,7 +183,6 @@
                         </h2>
 
 
-
                         <%-- USER MESSAGE --%>
 
                         <p class="feedback-card-message">
@@ -195,7 +190,6 @@
                             <%# Eval("Message") %>
 
                         </p>
-
 
 
                         <%-- =====================================
@@ -219,7 +213,6 @@
                             Your feedback is under review.
 
                         </asp:Panel>
-
 
 
                         <%-- =====================================
@@ -300,7 +293,6 @@
         </section>
 
 
-
         <%-- =====================================================
              SUBMIT FEEDBACK MODAL
              ===================================================== --%>
@@ -318,7 +310,9 @@
             <div class="feedback-modal-dialog">
 
 
-                <%-- HEADER --%>
+                <%-- =============================================
+                     HEADER
+                     ============================================= --%>
 
                 <div class="feedback-modal-header">
 
@@ -346,8 +340,9 @@
                 </div>
 
 
-
-                <%-- SERVER ERROR --%>
+                <%-- =============================================
+                     SERVER ERROR
+                     ============================================= --%>
 
                 <asp:Panel
                     ID="pnlSubmitError"
@@ -363,42 +358,85 @@
                     </asp:Label>
 
                 </asp:Panel>
-
-
-
                 <%-- =============================================
-                     RELATED QUIZ
-                     ============================================= --%>
+     SEARCH QUIZ
+     ============================================= --%>
 
-                <div class="feedback-form-group">
+<div class="feedback-form-group">
 
-                    <label for="<%= ddlRelatedQuiz.ClientID %>">
-
-                        Related Quiz
-
-                        <span class="feedback-optional">
-                            (Optional)
-                        </span>
-
-                    </label>
+    <label for="<%= txtQuizSearch.ClientID %>">
+        Search Quiz
+    </label>
 
 
-                    <asp:DropDownList
-                        ID="ddlRelatedQuiz"
-                        runat="server"
-                        CssClass="feedback-dropdown">
+    <div class="feedback-quiz-search">
 
-                        <asp:ListItem
-                            Text="General Feedback / No Related Quiz"
-                            Value="">
-                        </asp:ListItem>
-
-                    </asp:DropDownList>
-
-                </div>
+        <asp:TextBox
+            ID="txtQuizSearch"
+            runat="server"
+            CssClass="feedback-input"
+            placeholder="Search quiz title...">
+        </asp:TextBox>
 
 
+        <asp:Button
+            ID="btnSearchQuiz"
+            runat="server"
+            Text="Search"
+            CssClass="feedback-search-button"
+            CausesValidation="false"
+            OnClick="btnSearchQuiz_Click" />
 
+
+        <asp:Button
+            ID="btnClearQuizSearch"
+            runat="server"
+            Text="Clear"
+            CssClass="feedback-clear-button"
+            CausesValidation="false"
+            OnClick="btnClearQuizSearch_Click" />
+
+    </div>
+
+</div>
+
+
+<%-- =============================================
+     RELATED QUIZ
+     ============================================= --%>
+
+<div class="feedback-form-group">
+
+    <label for="<%= ddlRelatedQuiz.ClientID %>">
+
+        Related Quiz
+
+        <span class="feedback-required">
+            *
+        </span>
+
+    </label>
+
+
+    <asp:DropDownList
+        ID="ddlRelatedQuiz"
+        runat="server"
+        CssClass="feedback-dropdown">
+    </asp:DropDownList>
+
+
+    <asp:RequiredFieldValidator
+        ID="rfvRelatedQuiz"
+        runat="server"
+        ControlToValidate="ddlRelatedQuiz"
+        InitialValue=""
+        ErrorMessage="Please select a related quiz."
+        ValidationGroup="SubmitFeedback"
+        Display="Dynamic"
+        CssClass="feedback-field-error">
+    </asp:RequiredFieldValidator>
+
+</div>
                 <%-- =============================================
                      MESSAGE
                      ============================================= --%>
@@ -440,7 +478,6 @@
                 </div>
 
 
-
                 <%-- =============================================
                      ACTION BUTTONS
                      ============================================= --%>
@@ -468,7 +505,6 @@
                 </div>
 
 
-
                 <%-- Used to reopen popup after server validation --%>
 
                 <asp:HiddenField
@@ -486,7 +522,6 @@
     </main>
 
 </asp:Content>
-
 
 
 <asp:Content

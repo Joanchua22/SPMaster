@@ -371,6 +371,98 @@
     color: #d92d20;
     font-size: 9px;
 }
+/* ==========================================
+   QUIZ SEARCH
+========================================== */
+
+.feedback-quiz-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+
+/* Search input */
+
+.feedback-input {
+    flex: 1;
+    min-height: 43px;
+    padding: 10px 13px;
+    border: 1px solid #dedbe3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #3d3945;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .feedback-input::placeholder {
+        color: #aaa4b2;
+    }
+
+    .feedback-input:focus {
+        border-color: #7c28ef;
+        box-shadow: 0 0 0 3px rgba(124, 40, 239, 0.10);
+    }
+
+
+/* Search button */
+
+.feedback-search-button {
+    min-height: 43px;
+    padding: 0 18px;
+    border: 1px solid #7c28ef;
+    border-radius: 8px;
+    background: #7c28ef;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+    .feedback-search-button:hover {
+        background: #6920d0;
+        border-color: #6920d0;
+        box-shadow: 0 4px 10px rgba(124, 40, 239, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .feedback-search-button:active {
+        transform: translateY(0);
+    }
+
+
+/* Clear button */
+
+.feedback-clear-button {
+    min-height: 43px;
+    padding: 0 18px;
+    border: 1px solid #7c28ef;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #7c28ef;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+    .feedback-clear-button:hover {
+        background: #f5edff;
+        border-color: #6920d0;
+        color: #6920d0;
+        transform: translateY(-1px);
+    }
+
+    .feedback-clear-button:active {
+        transform: translateY(0);
+    }
 
 
 /* =========================================================

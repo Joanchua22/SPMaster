@@ -5,15 +5,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.WebControls;
 
-
 namespace SPMaster.Lecturer
 {
     public partial class Grading : System.Web.UI.Page
     {
-        // =========================================================
-        // DATABASE CONNECTION
-        // =========================================================
-
         private string ConnectionString
         {
             get
@@ -26,11 +21,6 @@ namespace SPMaster.Lecturer
             }
         }
 
-
-        // =========================================================
-        // CURRENT LECTURER
-        // =========================================================
-
         private int CurrentUserId
         {
             get
@@ -41,17 +31,11 @@ namespace SPMaster.Lecturer
             }
         }
 
-
-        // =========================================================
-        // CURRENT ATTEMPT
-        // =========================================================
-
         private int CurrentAttemptId
         {
             get
             {
                 int attemptId;
-
 
                 if (
                     int.TryParse(
@@ -63,15 +47,9 @@ namespace SPMaster.Lecturer
                     return attemptId;
                 }
 
-
                 return 0;
             }
         }
-
-
-        // =========================================================
-        // PAGE LOAD
-        // =========================================================
 
         protected void Page_Load(
             object sender,
@@ -86,13 +64,8 @@ namespace SPMaster.Lecturer
                 return;
             }
 
-
             if (!IsPostBack)
             {
-                // =============================================
-                // QUEUE MODE
-                // =============================================
-
                 if (CurrentAttemptId <= 0)
                 {
                     ShowQueueView();
@@ -101,30 +74,13 @@ namespace SPMaster.Lecturer
 
                     BindGradingQueue();
 
-
-                    if (
-                        Request.QueryString[
-                            "published"
-                        ] == "1"
-                    )
-                    {
-                        ShowMessage(
-                            "Result published successfully."
-                        );
-                    }
+                    BindReviewHistory();
                 }
-
-                // =============================================
-                // INDIVIDUAL GRADING MODE
-                // =============================================
-
                 else
                 {
                     ShowDetailView();
 
-                    if (
-                        !LoadGradingAttempt()
-                    )
+                    if (!LoadGradingAttempt())
                     {
                         Response.Redirect(
                             "~/Lecturer/Grading.aspx"
@@ -132,14 +88,20 @@ namespace SPMaster.Lecturer
 
                         return;
                     }
+
+                    if (
+                        Request.QueryString[
+                            "published"
+                        ] == "1"
+                    )
+                    {
+                        ShowDetailSuccess(
+                            "Result published successfully. This grading is now available for review and can no longer be modified."
+                        );
+                    }
                 }
             }
         }
-
-
-        // =========================================================
-        // VIEW CONTROL
-        // =========================================================
 
         private void ShowQueueView()
         {
@@ -150,7 +112,6 @@ namespace SPMaster.Lecturer
                 false;
         }
 
-
         private void ShowDetailView()
         {
             pnlQueueView.Visible =
@@ -160,21 +121,16 @@ namespace SPMaster.Lecturer
                 true;
         }
 
-
         // =========================================================
-        // LOAD QUIZ FILTER
+        // QUIZ FILTER
         // =========================================================
 
         private void LoadQuizFilter()
         {
             const string sql = @"
-                SELECT
+                SELECT DISTINCT
                     Q.QuizId,
-                    Q.Title,
-
-                    COUNT(
-                        DISTINCT QA.AttemptId
-                    ) AS PendingCount
+                    Q.Title
 
                 FROM QuizAttempts QA
 
@@ -187,8 +143,8 @@ namespace SPMaster.Lecturer
                        QS.SessionId
 
                 WHERE
-                    QA.AttemptStatus =
-                        'PendingGrading'
+                    QA.SubmittedAt
+                        IS NOT NULL
 
                     AND
                     (
@@ -201,18 +157,12 @@ namespace SPMaster.Lecturer
                             @LecturerId
                     )
 
-                GROUP BY
-                    Q.QuizId,
-                    Q.Title
-
                 ORDER BY
                     Q.Title;
             ";
 
-
             DataTable table =
                 new DataTable();
-
 
             using (
                 SqlConnection connection =
@@ -234,99 +184,79 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentUserId;
 
-
-                SqlDataAdapter adapter =
-                    new SqlDataAdapter(
-                        command
+                using (
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(
+                            command
+                        )
+                )
+                {
+                    adapter.Fill(
+                        table
                     );
-
-
-                adapter.Fill(
-                    table
-                );
+                }
             }
-
-
-            table.Columns.Add(
-                "DisplayText",
-                typeof(string)
-            );
-
-
-            int totalPending = 0;
-
-
-            foreach (
-                DataRow row
-                in table.Rows
-            )
-            {
-                int count =
-                    Convert.ToInt32(
-                        row["PendingCount"]
-                    );
-
-
-                totalPending +=
-                    count;
-
-
-                row["DisplayText"] =
-                    row["Title"].ToString()
-                    + " ("
-                    + count
-                    + " Pending)";
-            }
-
 
             ddlQuizFilter.DataSource =
                 table;
 
             ddlQuizFilter.DataTextField =
-                "DisplayText";
+                "Title";
 
             ddlQuizFilter.DataValueField =
                 "QuizId";
 
             ddlQuizFilter.DataBind();
 
-
             ddlQuizFilter.Items.Insert(
                 0,
                 new ListItem(
-                    "All Quizzes ("
-                    + totalPending
-                    + " Pending)",
+                    "All Quizzes",
                     ""
                 )
             );
         }
-
-
-        // =========================================================
-        // QUIZ FILTER CHANGED
-        // =========================================================
 
         protected void ddlQuizFilter_SelectedIndexChanged(
             object sender,
             EventArgs e)
         {
             BindGradingQueue();
+
+            BindReviewHistory();
         }
 
-
         // =========================================================
-        // BIND GRADING QUEUE
+        // SEARCH
         // =========================================================
 
-        private void BindGradingQueue()
+        protected void btnSearch_Click(
+            object sender,
+            EventArgs e)
         {
-            int? selectedQuizId =
-                null;
+            BindGradingQueue();
 
+            BindReviewHistory();
+        }
 
+        protected void btnClearSearch_Click(
+            object sender,
+            EventArgs e)
+        {
+            txtSearch.Text =
+                "";
+
+            ddlQuizFilter.SelectedIndex =
+                0;
+
+            BindGradingQueue();
+
+            BindReviewHistory();
+        }
+
+        private int? GetSelectedQuizId()
+        {
             int quizId;
-
 
             if (
                 int.TryParse(
@@ -335,10 +265,29 @@ namespace SPMaster.Lecturer
                 )
             )
             {
-                selectedQuizId =
-                    quizId;
+                return quizId;
             }
 
+            return null;
+        }
+
+        private string GetSearchText()
+        {
+            return txtSearch.Text
+                .Trim();
+        }
+
+        // =========================================================
+        // PENDING GRADING
+        // =========================================================
+
+        private void BindGradingQueue()
+        {
+            int? selectedQuizId =
+                GetSelectedQuizId();
+
+            string search =
+                GetSearchText();
 
             const string sql = @"
                 SELECT
@@ -421,6 +370,29 @@ namespace SPMaster.Lecturer
                             @QuizId
                     )
 
+                    AND
+                    (
+                        @Search = ''
+
+                        OR
+
+                        Student.FullName
+                            LIKE '%' + @Search + '%'
+
+                        OR
+
+                        Q.Title
+                            LIKE '%' + @Search + '%'
+
+                        OR
+
+                        ISNULL(
+                            QS.SessionTitle,
+                            ''
+                        )
+                            LIKE '%' + @Search + '%'
+                    )
+
                 GROUP BY
                     QA.AttemptId,
                     QA.QuizId,
@@ -454,10 +426,8 @@ namespace SPMaster.Lecturer
                     QA.SubmittedAt ASC;
             ";
 
-
             DataTable table =
                 new DataTable();
-
 
             using (
                 SqlConnection connection =
@@ -479,6 +449,380 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentUserId;
 
+                command.Parameters.Add(
+                    "@QuizId",
+                    SqlDbType.Int
+                ).Value =
+                    selectedQuizId.HasValue
+
+                    ? (object)
+                        selectedQuizId.Value
+
+                    : DBNull.Value;
+
+                command.Parameters.Add(
+                    "@Search",
+                    SqlDbType.NVarChar,
+                    300
+                ).Value =
+                    search;
+
+                using (
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(
+                            command
+                        )
+                )
+                {
+                    adapter.Fill(
+                        table
+                    );
+                }
+            }
+
+            table.Columns.Add(
+                "StudentInitials",
+                typeof(string)
+            );
+
+            table.Columns.Add(
+                "HasSession",
+                typeof(bool)
+            );
+
+            table.Columns.Add(
+                "SubjectiveCountText",
+                typeof(string)
+            );
+
+            table.Columns.Add(
+                "SubmittedAtText",
+                typeof(string)
+            );
+
+            table.Columns.Add(
+                "GradeUrl",
+                typeof(string)
+            );
+
+            foreach (
+                DataRow row
+                in table.Rows
+            )
+            {
+                string studentName =
+                    row["StudentName"]
+                    .ToString();
+
+                row["StudentInitials"] =
+                    GetInitials(
+                        studentName
+                    );
+
+                row["StudentName"] =
+                    Server.HtmlEncode(
+                        studentName
+                    );
+
+                row["QuizTitle"] =
+                    Server.HtmlEncode(
+                        row["QuizTitle"]
+                        .ToString()
+                    );
+
+                bool hasSession =
+                    row["SessionId"]
+                    != DBNull.Value;
+
+                row["HasSession"] =
+                    hasSession;
+
+                if (hasSession)
+                {
+                    row["SessionTitle"] =
+                        Server.HtmlEncode(
+                            row["SessionTitle"]
+                            .ToString()
+                        );
+                }
+
+                int subjectiveCount =
+                    Convert.ToInt32(
+                        row[
+                            "SubjectiveCount"
+                        ]
+                    );
+
+                row[
+                    "SubjectiveCountText"
+                ] =
+                    subjectiveCount
+                    + (
+                        subjectiveCount == 1
+                            ? " Subjective Item"
+                            : " Subjective Items"
+                    );
+
+                DateTime submittedAt =
+                    Convert.ToDateTime(
+                        row[
+                            "SubmittedAt"
+                        ]
+                    );
+
+                row["SubmittedAtText"] =
+                    submittedAt.ToString(
+                        "dd MMM yyyy, hh:mm tt"
+                    );
+
+                row["GradeUrl"] =
+                    ResolveUrl(
+                        "~/Lecturer/Grading.aspx?attemptId="
+                        + row["AttemptId"]
+                    );
+            }
+            rptGradingQueue.DataSource =
+                table;
+
+            rptGradingQueue.DataBind();
+
+
+            bool hasFilter =
+                selectedQuizId.HasValue
+                ||
+                !string.IsNullOrWhiteSpace(
+                    search
+                );
+
+
+            if (table.Rows.Count == 0)
+            {
+                pnlNoPending.Visible =
+                    true;
+
+                pnlQueueList.Visible =
+                    false;
+
+
+                if (hasFilter)
+                {
+                    lblNoPendingTitle.Text =
+                        "No matching pending submissions";
+
+                    lblNoPendingDescription.Text =
+                        "No pending grading matches your current search or filter.";
+                }
+                else
+                {
+                    lblNoPendingTitle.Text =
+                        "You're all caught up!";
+
+                    lblNoPendingDescription.Text =
+                        "There are currently no subjective submissions waiting for grading.";
+                }
+            }
+            else
+            {
+                pnlNoPending.Visible =
+                    false;
+
+                pnlQueueList.Visible =
+                    true;
+            }
+        }
+
+        // =========================================================
+        // PAST GRADING REVIEWS
+        // =========================================================
+
+        private void BindReviewHistory()
+        {
+            int? selectedQuizId =
+                GetSelectedQuizId();
+
+            string search =
+                GetSearchText();
+
+            const string sql = @"
+                SELECT
+                    QA.AttemptId,
+                    QA.QuizId,
+                    QA.SessionId,
+                    QA.SubmittedAt,
+
+                    Student.FullName
+                        AS StudentName,
+
+                    Q.Title
+                        AS QuizTitle,
+
+                    QS.SessionTitle,
+
+                    (
+                        SELECT
+                            MAX(
+                                SAHistory.GradedAt
+                            )
+
+                        FROM StudentAnswers SAHistory
+
+                        WHERE
+                            SAHistory.AttemptId =
+                                QA.AttemptId
+
+                            AND SAHistory.GradedByUserId =
+                                @LecturerId
+                    ) AS GradedAt,
+
+                    (
+                        SELECT
+                            ISNULL(
+                                SUM(
+                                    ISNULL(
+                                        SAScore.MarksAwarded,
+                                        0
+                                    )
+                                ),
+                                0
+                            )
+
+                        FROM QuizQuestions QQScore
+
+                        LEFT JOIN StudentAnswers SAScore
+                            ON SAScore.AttemptId =
+                               QA.AttemptId
+
+                            AND SAScore.QuizQuestionId =
+                               QQScore.QuizQuestionId
+
+                        WHERE
+                            QQScore.QuizId =
+                                QA.QuizId
+                    ) AS AwardedMarks,
+
+                    (
+                        SELECT
+                            ISNULL(
+                                SUM(
+                                    QQTotal.MaxMarks
+                                ),
+                                0
+                            )
+
+                        FROM QuizQuestions QQTotal
+
+                        WHERE
+                            QQTotal.QuizId =
+                                QA.QuizId
+                    ) AS TotalMarks
+
+                FROM QuizAttempts QA
+
+                INNER JOIN Quizzes Q
+                    ON QA.QuizId =
+                       Q.QuizId
+
+                INNER JOIN Users Student
+                    ON QA.StudentUserId =
+                       Student.UserId
+
+                LEFT JOIN QuizSessions QS
+                    ON QA.SessionId =
+                       QS.SessionId
+
+                WHERE
+                    QA.AttemptStatus =
+                        'Graded'
+
+                    AND
+                    QA.SubmittedAt
+                        IS NOT NULL
+
+                    AND
+                    (
+                        Q.CreatedByUserId =
+                            @LecturerId
+
+                        OR
+
+                        QS.LecturerUserId =
+                            @LecturerId
+                    )
+
+                    AND EXISTS
+                    (
+                        SELECT 1
+
+                        FROM StudentAnswers SAGraded
+
+                        WHERE
+                            SAGraded.AttemptId =
+                                QA.AttemptId
+
+                            AND SAGraded.GradedByUserId =
+                                @LecturerId
+                    )
+
+                    AND
+                    (
+                        @QuizId IS NULL
+
+                        OR
+
+                        QA.QuizId =
+                            @QuizId
+                    )
+
+                    AND
+                    (
+                        @Search = ''
+
+                        OR
+
+                        Student.FullName
+                            LIKE '%' + @Search + '%'
+
+                        OR
+
+                        Q.Title
+                            LIKE '%' + @Search + '%'
+
+                        OR
+
+                        ISNULL(
+                            QS.SessionTitle,
+                            ''
+                        )
+                            LIKE '%' + @Search + '%'
+                    )
+
+                ORDER BY
+                    GradedAt DESC,
+                    QA.AttemptId DESC;
+            ";
+
+            DataTable table =
+                new DataTable();
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            using (
+                SqlCommand command =
+                    new SqlCommand(
+                        sql,
+                        connection
+                    )
+            )
+            {
+                command.Parameters.Add(
+                    "@LecturerId",
+                    SqlDbType.Int
+                ).Value =
+                    CurrentUserId;
 
                 command.Parameters.Add(
                     "@QuizId",
@@ -491,52 +835,50 @@ namespace SPMaster.Lecturer
 
                     : DBNull.Value;
 
+                command.Parameters.Add(
+                    "@Search",
+                    SqlDbType.NVarChar,
+                    300
+                ).Value =
+                    search;
 
-                SqlDataAdapter adapter =
-                    new SqlDataAdapter(
-                        command
+                using (
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(
+                            command
+                        )
+                )
+                {
+                    adapter.Fill(
+                        table
                     );
-
-
-                adapter.Fill(
-                    table
-                );
+                }
             }
-
-
-            // =====================================================
-            // UI COLUMNS
-            // =====================================================
 
             table.Columns.Add(
                 "StudentInitials",
                 typeof(string)
             );
 
-
             table.Columns.Add(
                 "HasSession",
                 typeof(bool)
             );
 
-
             table.Columns.Add(
-                "SubjectiveCountText",
+                "FinalScoreText",
                 typeof(string)
             );
 
-
             table.Columns.Add(
-                "SubmittedAtText",
+                "GradedAtText",
                 typeof(string)
             );
 
-
             table.Columns.Add(
-                "GradeUrl",
+                "ReviewUrl",
                 typeof(string)
             );
-
 
             foreach (
                 DataRow row
@@ -545,36 +887,30 @@ namespace SPMaster.Lecturer
             {
                 string studentName =
                     row["StudentName"]
-                        .ToString();
-
+                    .ToString();
 
                 row["StudentInitials"] =
                     GetInitials(
                         studentName
                     );
 
-
                 row["StudentName"] =
                     Server.HtmlEncode(
                         studentName
                     );
 
-
                 row["QuizTitle"] =
                     Server.HtmlEncode(
                         row["QuizTitle"]
-                            .ToString()
+                        .ToString()
                     );
-
 
                 bool hasSession =
                     row["SessionId"]
-                        != DBNull.Value;
-
+                    != DBNull.Value;
 
                 row["HasSession"] =
                     hasSession;
-
 
                 if (hasSession)
                 {
@@ -587,63 +923,114 @@ namespace SPMaster.Lecturer
                         );
                 }
 
-
-                int subjectiveCount =
-                    Convert.ToInt32(
+                decimal awarded =
+                    Convert.ToDecimal(
                         row[
-                            "SubjectiveCount"
+                            "AwardedMarks"
                         ]
                     );
 
-
-                row[
-                    "SubjectiveCountText"
-                ] =
-                    subjectiveCount
-                    + (
-                        subjectiveCount == 1
-                            ? " Subjective Item"
-                            : " Subjective Items"
+                decimal total =
+                    Convert.ToDecimal(
+                        row[
+                            "TotalMarks"
+                        ]
                     );
 
+                decimal percentage =
+                    total > 0
+                    ? awarded / total * 100
+                    : 0;
 
-                DateTime submittedAt =
-                    Convert.ToDateTime(
-                        row["SubmittedAt"]
-                    );
+                row["FinalScoreText"] =
+                    awarded.ToString(
+                        "0.##"
+                    )
+                    + " / "
+                    + total.ToString(
+                        "0.##"
+                    )
+                    + " Marks ("
+                    + percentage.ToString(
+                        "0.##"
+                    )
+                    + "%)";
 
+                if (
+                    row["GradedAt"]
+                    == DBNull.Value
+                )
+                {
+                    row["GradedAtText"] =
+                        "—";
+                }
+                else
+                {
+                    row["GradedAtText"] =
+                        Convert.ToDateTime(
+                            row["GradedAt"]
+                        )
+                        .ToString(
+                            "dd MMM yyyy, hh:mm tt"
+                        );
+                }
 
-                row[
-                    "SubmittedAtText"
-                ] =
-                    submittedAt.ToString(
-                        "dd MMM yyyy, hh:mm tt"
-                    );
-
-
-                row["GradeUrl"] =
+                row["ReviewUrl"] =
                     ResolveUrl(
-                        "~/Lecturer/Grading.aspx"
-                        + "?attemptId="
+                        "~/Lecturer/Grading.aspx?attemptId="
                         + row["AttemptId"]
                     );
             }
 
+            rptReviewHistory.DataSource =
+    table;
 
-            rptGradingQueue.DataSource =
-                table;
-
-            rptGradingQueue.DataBind();
-
-
-            pnlNoPending.Visible =
-                table.Rows.Count == 0;
+            rptReviewHistory.DataBind();
 
 
-            pnlQueueList.Visible =
-                table.Rows.Count > 0;
+            bool hasFilter =
+                selectedQuizId.HasValue
+                ||
+                !string.IsNullOrWhiteSpace(
+                    search
+                );
+
+
+            if (table.Rows.Count == 0)
+            {
+                pnlNoReviews.Visible =
+                    true;
+
+                pnlReviewList.Visible =
+                    false;
+
+
+                if (hasFilter)
+                {
+                    lblNoReviewsTitle.Text =
+                        "No matching grading history";
+
+                    lblNoReviewsDescription.Text =
+                        "No past grading reviews match your current search or filter.";
+                }
+                else
+                {
+                    lblNoReviewsTitle.Text =
+                        "No grading history found";
+
+                    lblNoReviewsDescription.Text =
+                        "Finalised subjective grading will appear here for future review.";
+                }
+            }
+            else
+            {
+                pnlNoReviews.Visible =
+                    false;
+
+                pnlReviewList.Visible =
+                    true;
+            }
         }
-
 
         // =========================================================
         // LOAD INDIVIDUAL ATTEMPT
@@ -651,40 +1038,32 @@ namespace SPMaster.Lecturer
 
         private bool LoadGradingAttempt()
         {
-            bool attemptLoaded =
+            bool loaded =
                 LoadAttemptInformation();
 
-
-            if (!attemptLoaded)
+            if (!loaded)
             {
                 return false;
             }
 
-
             LoadObjectiveSummary();
-
 
             int subjectiveCount =
                 LoadSubjectiveQuestions();
 
-
             pnlNoSubjective.Visible =
                 subjectiveCount == 0;
-
 
             pnlGradingFooter.Visible =
                 subjectiveCount > 0;
 
-
             LoadProvisionalScore();
-
 
             return true;
         }
 
-
         // =========================================================
-        // LOAD ATTEMPT INFORMATION
+        // ATTEMPT INFORMATION
         // =========================================================
 
         private bool LoadAttemptInformation()
@@ -739,7 +1118,6 @@ namespace SPMaster.Lecturer
                     );
             ";
 
-
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -760,16 +1138,13 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentAttemptId;
 
-
                 command.Parameters.Add(
                     "@LecturerId",
                     SqlDbType.Int
                 ).Value =
                     CurrentUserId;
 
-
                 connection.Open();
-
 
                 using (
                     SqlDataReader reader =
@@ -781,33 +1156,21 @@ namespace SPMaster.Lecturer
                         return false;
                     }
 
-
                     string quizTitle =
-                        reader[
-                            "QuizTitle"
-                        ].ToString();
-
+                        reader["QuizTitle"]
+                        .ToString();
 
                     string studentName =
-                        reader[
-                            "StudentName"
-                        ].ToString();
-
+                        reader["StudentName"]
+                        .ToString();
 
                     lblStudentName.Text =
                         Server.HtmlEncode(
                             studentName
                         );
 
-
-                    lblAttemptBadge.Text =
-                        "Attempt #"
-                        + CurrentAttemptId;
-
-
                     string context =
                         quizTitle;
-
 
                     if (
                         reader["SessionId"]
@@ -815,27 +1178,21 @@ namespace SPMaster.Lecturer
                     )
                     {
                         string sessionTitle =
-                            reader[
-                                "SessionTitle"
-                            ].ToString();
-
+                            reader["SessionTitle"]
+                            .ToString();
 
                         context +=
                             " • "
                             + sessionTitle;
                     }
 
-
                     lblDetailContext.Text =
                         Server.HtmlEncode(
                             context
                         );
 
-
                     bool alreadyGraded =
-                        reader[
-                            "AttemptStatus"
-                        ]
+                        reader["AttemptStatus"]
                         .ToString()
                         .Equals(
                             "Graded",
@@ -843,18 +1200,29 @@ namespace SPMaster.Lecturer
                                 .OrdinalIgnoreCase
                         );
 
-
                     ViewState[
                         "AttemptAlreadyGraded"
                     ] =
                         alreadyGraded;
 
+                    if (alreadyGraded)
+                    {
+                        lblAttemptBadge.Text =
+                            "Attempt #"
+                            + CurrentAttemptId
+                            + " • Review Only";
+                    }
+                    else
+                    {
+                        lblAttemptBadge.Text =
+                            "Attempt #"
+                            + CurrentAttemptId;
+                    }
 
                     return true;
                 }
             }
         }
-
 
         // =========================================================
         // OBJECTIVE SCORE
@@ -890,7 +1258,6 @@ namespace SPMaster.Lecturer
                         ),
                         0
                     ) AS AwardedMarks,
-
 
                     ISNULL(
                         SUM(
@@ -936,7 +1303,6 @@ namespace SPMaster.Lecturer
                         @AttemptId;
             ";
 
-
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -957,9 +1323,7 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentAttemptId;
 
-
                 connection.Open();
-
 
                 using (
                     SqlDataReader reader =
@@ -974,14 +1338,12 @@ namespace SPMaster.Lecturer
                         return;
                     }
 
-
                     decimal awarded =
                         Convert.ToDecimal(
                             reader[
                                 "AwardedMarks"
                             ]
                         );
-
 
                     decimal maximum =
                         Convert.ToDecimal(
@@ -990,16 +1352,10 @@ namespace SPMaster.Lecturer
                             ]
                         );
 
-
                     decimal percentage =
                         maximum > 0
-
-                        ? awarded
-                          / maximum
-                          * 100
-
+                        ? awarded / maximum * 100
                         : 0;
-
 
                     lblObjectiveScore.Text =
                         awarded.ToString(
@@ -1017,7 +1373,6 @@ namespace SPMaster.Lecturer
                 }
             }
         }
-
 
         // =========================================================
         // SUBJECTIVE QUESTIONS
@@ -1073,10 +1428,8 @@ namespace SPMaster.Lecturer
                     QQ.QuestionOrder;
             ";
 
-
             DataTable table =
                 new DataTable();
-
 
             using (
                 SqlConnection connection =
@@ -1098,56 +1451,46 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentAttemptId;
 
-
-                SqlDataAdapter adapter =
-                    new SqlDataAdapter(
-                        command
+                using (
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(
+                            command
+                        )
+                )
+                {
+                    adapter.Fill(
+                        table
                     );
-
-
-                adapter.Fill(
-                    table
-                );
+                }
             }
-
-
-            // =====================================================
-            // UI COLUMNS
-            // =====================================================
 
             table.Columns.Add(
                 "QuestionHeading",
                 typeof(string)
             );
 
-
             table.Columns.Add(
                 "MaxMarksText",
                 typeof(string)
             );
-
 
             table.Columns.Add(
                 "StudentAnswerText",
                 typeof(string)
             );
 
-
             table.Columns.Add(
                 "ModelAnswerText",
                 typeof(string)
             );
-
 
             table.Columns.Add(
                 "MarksText",
                 typeof(string)
             );
 
-
             int itemNumber =
                 2;
-
 
             foreach (
                 DataRow row
@@ -1161,24 +1504,19 @@ namespace SPMaster.Lecturer
                         ]
                     );
 
-
-                row[
-                    "QuestionHeading"
-                ] =
+                row["QuestionHeading"] =
                     itemNumber
                     + ". Subjective Question "
                     + questionOrder;
 
-
                 decimal maxMarks =
                     Convert.ToDecimal(
-                        row["MaxMarks"]
+                        row[
+                            "MaxMarks"
+                        ]
                     );
 
-
-                row[
-                    "MaxMarksText"
-                ] =
+                row["MaxMarksText"] =
                     maxMarks.ToString(
                         "0.##"
                     )
@@ -1188,33 +1526,18 @@ namespace SPMaster.Lecturer
                             : " Marks"
                     );
 
-
-                // =============================================
-                // QUESTION
-                // =============================================
-
                 row["QuestionText"] =
                     Server.HtmlEncode(
-                        row[
-                            "QuestionText"
-                        ]
+                        row["QuestionText"]
                         .ToString()
                     );
 
-
-                // =============================================
-                // STUDENT ANSWER
-                // =============================================
-
                 string studentAnswer =
                     row["AnswerText"]
-                        == DBNull.Value
-
+                    == DBNull.Value
                     ? ""
-
                     : row["AnswerText"]
                         .ToString();
-
 
                 if (
                     string.IsNullOrWhiteSpace(
@@ -1226,30 +1549,17 @@ namespace SPMaster.Lecturer
                         "No answer submitted.";
                 }
 
-
-                row[
-                    "StudentAnswerText"
-                ] =
+                row["StudentAnswerText"] =
                     Server.HtmlEncode(
                         studentAnswer
                     );
 
-
-                // =============================================
-                // MODEL ANSWER
-                // =============================================
-
                 string modelAnswer =
                     row["ModelAnswer"]
-                        == DBNull.Value
-
+                    == DBNull.Value
                     ? ""
-
-                    : row[
-                        "ModelAnswer"
-                    ]
-                    .ToString();
-
+                    : row["ModelAnswer"]
+                        .ToString();
 
                 if (
                     string.IsNullOrWhiteSpace(
@@ -1261,25 +1571,15 @@ namespace SPMaster.Lecturer
                         "No model answer was provided for this question.";
                 }
 
-
-                row[
-                    "ModelAnswerText"
-                ] =
+                row["ModelAnswerText"] =
                     Server.HtmlEncode(
                         modelAnswer
                     );
 
-
-                // =============================================
-                // EXISTING MARK
-                // =============================================
-
                 row["MarksText"] =
                     row["MarksAwarded"]
-                        == DBNull.Value
-
+                    == DBNull.Value
                     ? ""
-
                     : Convert.ToDecimal(
                         row[
                             "MarksAwarded"
@@ -1289,44 +1589,27 @@ namespace SPMaster.Lecturer
                         "0.##"
                     );
 
-
-                // =============================================
-                // EXISTING FEEDBACK
-                // =============================================
-
                 if (
-                    row[
-                        "LecturerFeedback"
-                    ]
+                    row["LecturerFeedback"]
                     == DBNull.Value
                 )
                 {
-                    row[
-                        "LecturerFeedback"
-                    ] =
+                    row["LecturerFeedback"] =
                         "";
                 }
 
-
                 itemNumber++;
             }
-
 
             rptSubjectiveQuestions.DataSource =
                 table;
 
             rptSubjectiveQuestions.DataBind();
 
-
-            // =====================================================
-            // READ-ONLY IF ALREADY GRADED
-            // =====================================================
-
             bool alreadyGraded =
                 ViewState[
                     "AttemptAlreadyGraded"
                 ] != null
-
                 &&
                 Convert.ToBoolean(
                     ViewState[
@@ -1334,34 +1617,21 @@ namespace SPMaster.Lecturer
                     ]
                 );
 
-
             if (alreadyGraded)
             {
                 SetGradingFieldsReadOnly();
-
-                btnSaveDraft.Visible =
-                    false;
 
                 btnFinalize.Visible =
                     false;
             }
             else
             {
-                btnSaveDraft.Visible =
-                    true;
-
                 btnFinalize.Visible =
                     true;
             }
 
-
             return table.Rows.Count;
         }
-
-
-        // =========================================================
-        // MAKE PUBLISHED RESULT READ ONLY
-        // =========================================================
 
         private void SetGradingFieldsReadOnly()
         {
@@ -1376,32 +1646,28 @@ namespace SPMaster.Lecturer
                     )
                     as TextBox;
 
-
                 TextBox txtFeedback =
                     item.FindControl(
                         "txtLecturerFeedback"
                     )
                     as TextBox;
 
-
                 if (txtMarks != null)
                 {
-                    txtMarks.Enabled =
-                        false;
+                    txtMarks.ReadOnly =
+                        true;
                 }
-
 
                 if (txtFeedback != null)
                 {
-                    txtFeedback.Enabled =
-                        false;
+                    txtFeedback.ReadOnly =
+                        true;
                 }
             }
         }
 
-
         // =========================================================
-        // PROVISIONAL SCORE
+        // TOTAL SCORE
         // =========================================================
 
         private void LoadProvisionalScore()
@@ -1418,7 +1684,6 @@ namespace SPMaster.Lecturer
                         ),
                         0
                     ) AS AwardedMarks,
-
 
                     ISNULL(
                         SUM(
@@ -1445,7 +1710,6 @@ namespace SPMaster.Lecturer
                         @AttemptId;
             ";
 
-
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -1466,9 +1730,7 @@ namespace SPMaster.Lecturer
                 ).Value =
                     CurrentAttemptId;
 
-
                 connection.Open();
-
 
                 using (
                     SqlDataReader reader =
@@ -1483,14 +1745,12 @@ namespace SPMaster.Lecturer
                         return;
                     }
 
-
                     decimal awarded =
                         Convert.ToDecimal(
                             reader[
                                 "AwardedMarks"
                             ]
                         );
-
 
                     decimal total =
                         Convert.ToDecimal(
@@ -1499,16 +1759,10 @@ namespace SPMaster.Lecturer
                             ]
                         );
 
-
                     decimal percentage =
                         total > 0
-
-                        ? awarded
-                          / total
-                          * 100
-
+                        ? awarded / total * 100
                         : 0;
-
 
                     lblProvisionalScore.Text =
                         awarded.ToString(
@@ -1527,82 +1781,8 @@ namespace SPMaster.Lecturer
             }
         }
 
-
         // =========================================================
-        // SAVE DRAFT
-        // =========================================================
-
-        protected void btnSaveDraft_Click(
-            object sender,
-            EventArgs e)
-        {
-            pnlDetailMessage.Visible =
-                false;
-
-
-            if (
-                !CanGradeAttempt(
-                    CurrentAttemptId
-                )
-            )
-            {
-                ShowDetailError(
-                    "You do not have permission to grade this submission."
-                );
-
-                return;
-            }
-
-
-            List<GradeEntry> entries;
-
-
-            if (
-                !CollectGradeEntries(
-                    false,
-                    out entries
-                )
-            )
-            {
-                ShowDetailError(
-                    "Please correct the grading errors shown below."
-                );
-
-                return;
-            }
-
-
-            try
-            {
-                SaveGradeEntries(
-                    entries
-                );
-
-
-                LoadGradingAttempt();
-
-
-                ShowDetailSuccess(
-                    "Draft grading saved successfully."
-                );
-            }
-            catch (SqlException)
-            {
-                ShowDetailError(
-                    "Unable to save the grading draft. Please try again."
-                );
-            }
-            catch (Exception)
-            {
-                ShowDetailError(
-                    "Something went wrong while saving the grading draft."
-                );
-            }
-        }
-
-
-        // =========================================================
-        // FINALISE AND PUBLISH
+        // FINALISE
         // =========================================================
 
         protected void btnFinalize_Click(
@@ -1612,7 +1792,6 @@ namespace SPMaster.Lecturer
             pnlDetailMessage.Visible =
                 false;
 
-
             if (
                 !CanGradeAttempt(
                     CurrentAttemptId
@@ -1626,14 +1805,25 @@ namespace SPMaster.Lecturer
                 return;
             }
 
+            if (
+                IsAttemptAlreadyGraded(
+                    CurrentAttemptId
+                )
+            )
+            {
+                LoadGradingAttempt();
+
+                ShowDetailError(
+                    "This result has already been finalised and can no longer be modified."
+                );
+
+                return;
+            }
 
             List<GradeEntry> entries;
 
-
-            // true = every subjective question requires marks
             if (
                 !CollectGradeEntries(
-                    true,
                     out entries
                 )
             )
@@ -1645,137 +1835,117 @@ namespace SPMaster.Lecturer
                 return;
             }
 
-
-            SqlConnection connection =
-                new SqlConnection(
-                    ConnectionString
-                );
-
-
-            connection.Open();
-
-
-            SqlTransaction transaction =
-                connection.BeginTransaction();
-
-
-            try
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
             {
-                // =============================================
-                // SAVE ALL SUBJECTIVE GRADES
-                // =============================================
-
-                SaveGradeEntries(
-                    entries,
-                    connection,
-                    transaction
-                );
-
-
-                // =============================================
-                // PUBLISH ATTEMPT
-                // =============================================
-
-                const string updateAttemptSql = @"
-                    UPDATE QuizAttempts
-
-                    SET
-                        AttemptStatus =
-                            'Graded'
-
-                    WHERE
-                        AttemptId =
-                            @AttemptId
-
-                        AND SubmittedAt
-                            IS NOT NULL;
-                ";
-
+                connection.Open();
 
                 using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            updateAttemptSql,
-                            connection,
-                            transaction
-                        )
+                    SqlTransaction transaction =
+                        connection.BeginTransaction()
                 )
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentAttemptId;
-
-
-                    int rows =
-                        command.ExecuteNonQuery();
-
-
-                    if (rows == 0)
+                    try
                     {
-                        throw new Exception(
-                            "Unable to publish the result."
+                        SaveGradeEntries(
+                            entries,
+                            connection,
+                            transaction
+                        );
+
+                        const string updateAttemptSql = @"
+                            UPDATE QuizAttempts
+
+                            SET
+                                AttemptStatus =
+                                    'Graded'
+
+                            WHERE
+                                AttemptId =
+                                    @AttemptId
+
+                                AND SubmittedAt
+                                    IS NOT NULL
+
+                                AND AttemptStatus =
+                                    'PendingGrading';
+                        ";
+
+                        using (
+                            SqlCommand command =
+                                new SqlCommand(
+                                    updateAttemptSql,
+                                    connection,
+                                    transaction
+                                )
+                        )
+                        {
+                            command.Parameters.Add(
+                                "@AttemptId",
+                                SqlDbType.Int
+                            ).Value =
+                                CurrentAttemptId;
+
+                            int rows =
+                                command.ExecuteNonQuery();
+
+                            if (rows == 0)
+                            {
+                                throw new Exception(
+                                    "Unable to publish the result."
+                                );
+                            }
+                        }
+
+                        transaction.Commit();
+
+                        Response.Redirect(
+                            "~/Lecturer/Grading.aspx?attemptId="
+                            + CurrentAttemptId
+                            + "&published=1",
+                            false
+                        );
+
+                        Context
+                            .ApplicationInstance
+                            .CompleteRequest();
+                    }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+
+                        ShowDetailError(
+                            "Unable to publish the result. Please try again."
+                        );
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+
+                        ShowDetailError(
+                            "Something went wrong while publishing the result."
                         );
                     }
                 }
-
-
-                transaction.Commit();
-
-
-                Response.Redirect(
-                    "~/Lecturer/Grading.aspx?published=1",
-                    false
-                );
-
-
-                Context
-                    .ApplicationInstance
-                    .CompleteRequest();
-            }
-            catch (SqlException)
-            {
-                transaction.Rollback();
-
-
-                ShowDetailError(
-                    "Unable to publish the result. Please try again."
-                );
-            }
-            catch (Exception)
-            {
-                transaction.Rollback();
-
-
-                ShowDetailError(
-                    "Something went wrong while publishing the result."
-                );
-            }
-            finally
-            {
-                connection.Close();
-
-                connection.Dispose();
             }
         }
 
-
         // =========================================================
-        // COLLECT + VALIDATE SUBJECTIVE MARKS
+        // COLLECT GRADES
         // =========================================================
 
         private bool CollectGradeEntries(
-            bool requireAllMarks,
             out List<GradeEntry> entries)
         {
             entries =
                 new List<GradeEntry>();
 
-
             bool valid =
                 true;
-
 
             foreach (
                 RepeaterItem item
@@ -1788,13 +1958,11 @@ namespace SPMaster.Lecturer
                     )
                     as HiddenField;
 
-
                 TextBox txtMarks =
                     item.FindControl(
                         "txtAwardedMarks"
                     )
                     as TextBox;
-
 
                 TextBox txtFeedback =
                     item.FindControl(
@@ -1802,13 +1970,11 @@ namespace SPMaster.Lecturer
                     )
                     as TextBox;
 
-
                 Label lblMarkError =
                     item.FindControl(
                         "lblMarkError"
                     )
                     as Label;
-
 
                 if (
                     hfQuizQuestionId == null
@@ -1826,16 +1992,13 @@ namespace SPMaster.Lecturer
                     continue;
                 }
 
-
                 lblMarkError.Visible =
                     false;
 
                 lblMarkError.Text =
                     "";
 
-
                 int quizQuestionId;
-
 
                 if (
                     !int.TryParse(
@@ -1856,13 +2019,11 @@ namespace SPMaster.Lecturer
                     continue;
                 }
 
-
                 decimal? maximumMarks =
                     GetMaximumMarks(
                         CurrentAttemptId,
                         quizQuestionId
                     );
-
 
                 if (!maximumMarks.HasValue)
                 {
@@ -1878,19 +2039,9 @@ namespace SPMaster.Lecturer
                     continue;
                 }
 
-
                 string marksText =
                     txtMarks.Text
-                        .Trim();
-
-
-                decimal? awardedMarks =
-                    null;
-
-
-                // =============================================
-                // EMPTY MARK
-                // =============================================
+                    .Trim();
 
                 if (
                     string.IsNullOrWhiteSpace(
@@ -1898,135 +2049,104 @@ namespace SPMaster.Lecturer
                     )
                 )
                 {
-                    if (requireAllMarks)
-                    {
-                        lblMarkError.Text =
-                            "Please enter a mark.";
+                    lblMarkError.Text =
+                        "Please enter a mark.";
 
-                        lblMarkError.Visible =
-                            true;
+                    lblMarkError.Visible =
+                        true;
 
-                        valid =
-                            false;
-                    }
+                    valid =
+                        false;
+
+                    continue;
                 }
 
-                // =============================================
-                // INVALID NUMBER
-                // =============================================
+                decimal parsedMarks;
 
-                else
+                if (
+                    !decimal.TryParse(
+                        marksText,
+                        out parsedMarks
+                    )
+                )
                 {
-                    decimal parsedMarks;
+                    lblMarkError.Text =
+                        "Enter a valid number.";
 
+                    lblMarkError.Visible =
+                        true;
 
-                    if (
-                        !decimal.TryParse(
-                            marksText,
-                            out parsedMarks
-                        )
-                    )
-                    {
-                        lblMarkError.Text =
-                            "Enter a valid number.";
+                    valid =
+                        false;
 
-                        lblMarkError.Visible =
-                            true;
-
-                        valid =
-                            false;
-                    }
-
-                    // =========================================
-                    // BELOW ZERO
-                    // =========================================
-
-                    else if (
-                        parsedMarks < 0
-                    )
-                    {
-                        lblMarkError.Text =
-                            "Marks cannot be below 0.";
-
-                        lblMarkError.Visible =
-                            true;
-
-                        valid =
-                            false;
-                    }
-
-                    // =========================================
-                    // ABOVE MAXIMUM
-                    // =========================================
-
-                    else if (
-                        parsedMarks
-                        > maximumMarks.Value
-                    )
-                    {
-                        lblMarkError.Text =
-                            "Maximum mark is "
-                            + maximumMarks.Value
-                                .ToString(
-                                    "0.##"
-                                )
-                            + ".";
-
-                        lblMarkError.Visible =
-                            true;
-
-                        valid =
-                            false;
-                    }
-
-                    else
-                    {
-                        awardedMarks =
-                            parsedMarks;
-                    }
+                    continue;
                 }
 
+                if (parsedMarks < 0)
+                {
+                    lblMarkError.Text =
+                        "Marks cannot be below 0.";
+
+                    lblMarkError.Visible =
+                        true;
+
+                    valid =
+                        false;
+
+                    continue;
+                }
+
+                if (
+                    parsedMarks
+                    > maximumMarks.Value
+                )
+                {
+                    lblMarkError.Text =
+                        "Maximum mark is "
+                        + maximumMarks.Value
+                        .ToString(
+                            "0.##"
+                        )
+                        + ".";
+
+                    lblMarkError.Visible =
+                        true;
+
+                    valid =
+                        false;
+
+                    continue;
+                }
 
                 GradeEntry entry =
                     new GradeEntry();
 
-
                 entry.QuizQuestionId =
                     quizQuestionId;
 
-
                 entry.MarksAwarded =
-                    awardedMarks;
-
+                    parsedMarks;
 
                 entry.Feedback =
                     txtFeedback.Text
-                        .Trim();
-
+                    .Trim();
 
                 entries.Add(
                     entry
                 );
             }
 
-
-            if (
-                entries.Count == 0
-            )
+            if (entries.Count == 0)
             {
                 valid =
                     false;
             }
 
-
             return valid;
         }
 
-
         // =========================================================
-        // GET MAXIMUM MARKS FROM DATABASE
-        //
-        // Do not trust the hidden field value from the browser.
+        // MAX MARK
         // =========================================================
 
         private decimal? GetMaximumMarks(
@@ -2064,7 +2184,6 @@ namespace SPMaster.Lecturer
                     ) <> 'MCQ';
             ";
 
-
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -2085,20 +2204,16 @@ namespace SPMaster.Lecturer
                 ).Value =
                     attemptId;
 
-
                 command.Parameters.Add(
                     "@QuizQuestionId",
                     SqlDbType.Int
                 ).Value =
                     quizQuestionId;
 
-
                 connection.Open();
-
 
                 object result =
                     command.ExecuteScalar();
-
 
                 if (
                     result == null
@@ -2109,60 +2224,14 @@ namespace SPMaster.Lecturer
                     return null;
                 }
 
-
                 return Convert.ToDecimal(
                     result
                 );
             }
         }
 
-
         // =========================================================
-        // SAVE GRADE ENTRIES
-        // =========================================================
-
-        private void SaveGradeEntries(
-            List<GradeEntry> entries)
-        {
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            {
-                connection.Open();
-
-
-                using (
-                    SqlTransaction transaction =
-                        connection.BeginTransaction()
-                )
-                {
-                    try
-                    {
-                        SaveGradeEntries(
-                            entries,
-                            connection,
-                            transaction
-                        );
-
-
-                        transaction.Commit();
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-
-                        throw;
-                    }
-                }
-            }
-        }
-
-
-        // =========================================================
-        // SAVE GRADE ENTRIES USING TRANSACTION
+        // SAVE GRADES
         // =========================================================
 
         private void SaveGradeEntries(
@@ -2242,7 +2311,6 @@ namespace SPMaster.Lecturer
                 END
             ";
 
-
             foreach (
                 GradeEntry entry
                 in entries
@@ -2263,13 +2331,11 @@ namespace SPMaster.Lecturer
                     ).Value =
                         CurrentAttemptId;
 
-
                     command.Parameters.Add(
                         "@QuizQuestionId",
                         SqlDbType.Int
                     ).Value =
                         entry.QuizQuestionId;
-
 
                     SqlParameter marksParameter =
                         command.Parameters.Add(
@@ -2277,24 +2343,14 @@ namespace SPMaster.Lecturer
                             SqlDbType.Decimal
                         );
 
-
                     marksParameter.Precision =
                         6;
 
                     marksParameter.Scale =
                         2;
 
-
                     marksParameter.Value =
-                        entry.MarksAwarded
-                            .HasValue
-
-                        ? (object)
-                            entry.MarksAwarded
-                                .Value
-
-                        : DBNull.Value;
-
+                        entry.MarksAwarded;
 
                     command.Parameters.Add(
                         "@LecturerFeedback",
@@ -2304,12 +2360,8 @@ namespace SPMaster.Lecturer
                         string.IsNullOrWhiteSpace(
                             entry.Feedback
                         )
-
-                        ? (object)
-                            DBNull.Value
-
+                        ? (object)DBNull.Value
                         : entry.Feedback;
-
 
                     command.Parameters.Add(
                         "@LecturerId",
@@ -2317,20 +2369,66 @@ namespace SPMaster.Lecturer
                     ).Value =
                         CurrentUserId;
 
-
                     command.ExecuteNonQuery();
                 }
             }
         }
 
+        // =========================================================
+        // ALREADY GRADED
+        // =========================================================
+
+        private bool IsAttemptAlreadyGraded(
+            int attemptId)
+        {
+            if (attemptId <= 0)
+            {
+                return false;
+            }
+
+            const string sql = @"
+                SELECT COUNT(*)
+
+                FROM QuizAttempts
+
+                WHERE
+                    AttemptId =
+                        @AttemptId
+
+                    AND AttemptStatus =
+                        'Graded';
+            ";
+
+            using (
+                SqlConnection connection =
+                    new SqlConnection(
+                        ConnectionString
+                    )
+            )
+            using (
+                SqlCommand command =
+                    new SqlCommand(
+                        sql,
+                        connection
+                    )
+            )
+            {
+                command.Parameters.Add(
+                    "@AttemptId",
+                    SqlDbType.Int
+                ).Value =
+                    attemptId;
+
+                connection.Open();
+
+                return Convert.ToInt32(
+                    command.ExecuteScalar()
+                ) > 0;
+            }
+        }
 
         // =========================================================
-        // CHECK LECTURER CAN GRADE ATTEMPT
-        //
-        // Allowed when:
-        // 1. Lecturer owns the quiz
-        // OR
-        // 2. Lecturer hosted the session
+        // AUTHORIZATION
         // =========================================================
 
         private bool CanGradeAttempt(
@@ -2340,7 +2438,6 @@ namespace SPMaster.Lecturer
             {
                 return false;
             }
-
 
             const string sql = @"
                 SELECT COUNT(*)
@@ -2374,7 +2471,6 @@ namespace SPMaster.Lecturer
                     );
             ";
 
-
             using (
                 SqlConnection connection =
                     new SqlConnection(
@@ -2395,25 +2491,19 @@ namespace SPMaster.Lecturer
                 ).Value =
                     attemptId;
 
-
                 command.Parameters.Add(
                     "@LecturerId",
                     SqlDbType.Int
                 ).Value =
                     CurrentUserId;
 
-
                 connection.Open();
 
-
-                return
-                    Convert.ToInt32(
-                        command.ExecuteScalar()
-                    )
-                    > 0;
+                return Convert.ToInt32(
+                    command.ExecuteScalar()
+                ) > 0;
             }
         }
-
 
         // =========================================================
         // STUDENT INITIALS
@@ -2431,7 +2521,6 @@ namespace SPMaster.Lecturer
                 return "S";
             }
 
-
             string[] parts =
                 fullName.Split(
                     new char[]
@@ -2439,9 +2528,8 @@ namespace SPMaster.Lecturer
                         ' '
                     },
                     StringSplitOptions
-                        .RemoveEmptyEntries
+                    .RemoveEmptyEntries
                 );
-
 
             if (parts.Length == 1)
             {
@@ -2453,17 +2541,14 @@ namespace SPMaster.Lecturer
                     .ToUpper();
             }
 
-
             return
                 (
                     parts[0]
-                        .Substring(
-                            0,
-                            1
-                        )
-
+                    .Substring(
+                        0,
+                        1
+                    )
                     +
-
                     parts[
                         parts.Length - 1
                     ]
@@ -2475,9 +2560,8 @@ namespace SPMaster.Lecturer
                 .ToUpper();
         }
 
-
         // =========================================================
-        // QUEUE MESSAGE
+        // MESSAGE
         // =========================================================
 
         private void ShowMessage(
@@ -2486,15 +2570,9 @@ namespace SPMaster.Lecturer
             lblMessage.Text =
                 message;
 
-
             pnlMessage.Visible =
                 true;
         }
-
-
-        // =========================================================
-        // DETAIL ERROR
-        // =========================================================
 
         private void ShowDetailError(
             string message)
@@ -2502,20 +2580,13 @@ namespace SPMaster.Lecturer
             lblDetailMessage.Text =
                 message;
 
-
             pnlDetailMessage.CssClass =
                 "grading-detail-message "
                 + "grading-detail-error";
 
-
             pnlDetailMessage.Visible =
                 true;
         }
-
-
-        // =========================================================
-        // DETAIL SUCCESS
-        // =========================================================
 
         private void ShowDetailSuccess(
             string message)
@@ -2523,16 +2594,13 @@ namespace SPMaster.Lecturer
             lblDetailMessage.Text =
                 message;
 
-
             pnlDetailMessage.CssClass =
                 "grading-detail-message "
                 + "grading-detail-success";
 
-
             pnlDetailMessage.Visible =
                 true;
         }
-
 
         // =========================================================
         // GRADE MODEL
@@ -2546,13 +2614,11 @@ namespace SPMaster.Lecturer
                 set;
             }
 
-
-            public decimal? MarksAwarded
+            public decimal MarksAwarded
             {
                 get;
                 set;
             }
-
 
             public string Feedback
             {

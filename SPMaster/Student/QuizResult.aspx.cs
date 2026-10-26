@@ -643,57 +643,49 @@ namespace SPMaster.Student
         private void BindQuestionBreakdown()
         {
             const string sql = @"
-                SELECT
-                    qq.QuizQuestionId,
-                    qq.QuestionOrder,
-                    qq.MaxMarks,
+    SELECT
+        qq.QuizQuestionId,
+        qq.QuestionOrder,
+        qq.MaxMarks,
 
-                    ques.QuestionId,
-                    ques.QuestionText,
-                    ques.QuestionType,
-                    ques.Explanation,
-                    ques.ModelAnswer,
+        ques.QuestionId,
+        ques.QuestionText,
+        ques.QuestionType,
+        ques.Explanation,
+        ques.ModelAnswer,
 
-                    sa.SelectedOptionId,
-                    sa.AnswerText,
-
-
-                    /* -----------------------------------------
-                       DISPLAY MARKS
-
-                       Unanswered MCQ = 0 marks.
-
-                       Pending subjective = NULL.
-                       ----------------------------------------- */
-
-                    CASE
-
-                        WHEN ques.QuestionType = 'MCQ'
-                        THEN
-                            ISNULL(
-                                sa.MarksAwarded,
-                                0
-                            )
-
-                        ELSE
-                            sa.MarksAwarded
-
-                    END AS DisplayMarksAwarded,
+        sa.SelectedOptionId,
+        sa.AnswerText,
+        sa.LecturerFeedback,
 
 
-                    selectedOption.OptionText
-                        AS SelectedOptionText,
+        CASE
+
+            WHEN ques.QuestionType = 'MCQ'
+            THEN
+                ISNULL(
+                    sa.MarksAwarded,
+                    0
+                )
+
+            ELSE
+                sa.MarksAwarded
+
+        END AS DisplayMarksAwarded,
 
 
-                    ISNULL(
-                        selectedOption.IsCorrect,
-                        0
-                    ) AS SelectedOptionIsCorrect,
+        selectedOption.OptionText
+            AS SelectedOptionText,
 
 
-                    correctOption.OptionText
-                        AS CorrectOptionText
+        ISNULL(
+            selectedOption.IsCorrect,
+            0
+        ) AS SelectedOptionIsCorrect,
 
+
+        correctOption.OptionText
+            AS CorrectOptionText
 
                 FROM QuizQuestions qq
 

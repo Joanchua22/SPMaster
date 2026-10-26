@@ -51,8 +51,8 @@ namespace SPMaster.Lecturer
         // =========================================================
 
         protected void Page_Load(
-            object sender,
-            EventArgs e)
+    object sender,
+    EventArgs e)
         {
             if (
                 Session["UserId"] == null
@@ -75,6 +75,9 @@ namespace SPMaster.Lecturer
                 LoadPublishedQuizzes();
 
 
+                LoadSelectedQuizFromUrl();
+
+
                 GenerateJoinCode();
 
 
@@ -83,7 +86,50 @@ namespace SPMaster.Lecturer
         }
 
 
+        private void LoadSelectedQuizFromUrl()
+        {
+            int quizId;
 
+
+            if (
+                !int.TryParse(
+                    Request.QueryString["quizId"],
+                    out quizId
+                )
+            )
+            {
+                return;
+            }
+
+
+            if (quizId <= 0)
+            {
+                return;
+            }
+
+
+            ListItem quizItem =
+                ddlPublishedQuiz.Items.FindByValue(
+                    quizId.ToString()
+                );
+
+
+            if (quizItem == null)
+            {
+                return;
+            }
+
+
+            ddlPublishedQuiz.ClearSelection();
+
+
+            quizItem.Selected =
+                true;
+
+
+            hfOpenSessionModal.Value =
+                "1";
+        }
         //
         // LOAD PUBLISHED QUIZZES
         //

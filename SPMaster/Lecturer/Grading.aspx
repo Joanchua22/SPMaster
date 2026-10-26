@@ -5,7 +5,6 @@
     CodeBehind="Grading.aspx.cs"
     Inherits="SPMaster.Lecturer.Grading" %>
 
-
 <asp:Content
     ID="GradingHead"
     ContentPlaceHolderID="PortalHead"
@@ -17,15 +16,12 @@
 
 </asp:Content>
 
-
-
 <asp:Content
     ID="GradingContent"
     ContentPlaceHolderID="PortalContent"
     runat="server">
 
     <div class="grading-page">
-
 
         <%-- =====================================================
              GENERAL MESSAGE
@@ -44,17 +40,14 @@
 
         </asp:Panel>
 
-
-
         <%-- =====================================================
-             GRADING QUEUE VIEW
+             QUEUE + REVIEW VIEW
              ===================================================== --%>
 
         <asp:Panel
             ID="pnlQueueView"
             runat="server"
             Visible="true">
-
 
             <%-- =================================================
                  PAGE HEADER
@@ -65,16 +58,15 @@
                 <div>
 
                     <h1>
-                        Grading Queue
+                        Grading
                     </h1>
 
                     <p>
-                        Evaluate subjective responses, award marks,
-                        and provide constructive feedback.
+                        Grade pending submissions and review
+                        previously published results.
                     </p>
 
                 </div>
-
 
                 <div class="grading-filter">
 
@@ -90,10 +82,66 @@
 
             </section>
 
+            <%-- =================================================
+                 SEARCH
+                 ================================================= --%>
 
+            <div class="grading-filter"
+                 style="display:flex;gap:10px;margin-bottom:24px;align-items:center;">
+
+                <asp:TextBox
+                    ID="txtSearch"
+                    runat="server"
+                    CssClass="grading-filter-select"
+                    placeholder="Search student, quiz or session..."
+                    style="min-width:300px;">
+                </asp:TextBox>
+
+                <asp:Button
+                    ID="btnSearch"
+                    runat="server"
+                    Text="Search"
+                    CssClass="grade-submission-button"
+                    CausesValidation="false"
+                    OnClick="btnSearch_Click" />
+
+                <asp:Button
+                    ID="btnClearSearch"
+                    runat="server"
+                    Text="Clear"
+                    CssClass="grading-save-button"
+                    CausesValidation="false"
+                    OnClick="btnClearSearch_Click" />
+
+            </div>
 
             <%-- =================================================
-                 EMPTY STATE
+                 PENDING GRADING HEADER
+                 ================================================= --%>
+
+            <section class="grading-detail-header"
+                     style="margin-bottom:18px;">
+
+                <div class="grading-detail-heading">
+
+                    <div>
+
+                        <h1 style="font-size:22px;">
+                            Pending Grading
+                        </h1>
+
+                        <span class="grading-context">
+                            Subjective submissions waiting for review.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <%-- =================================================
+                 NO PENDING / NO SEARCH RESULT
                  ================================================= --%>
 
             <asp:Panel
@@ -109,20 +157,27 @@
                 </div>
 
                 <h2>
-                    You're all caught up!
+
+                    <asp:Label
+                        ID="lblNoPendingTitle"
+                        runat="server">
+                    </asp:Label>
+
                 </h2>
 
                 <p>
-                    There are currently no subjective submissions
-                    waiting for grading.
+
+                    <asp:Label
+                        ID="lblNoPendingDescription"
+                        runat="server">
+                    </asp:Label>
+
                 </p>
 
             </asp:Panel>
 
-
-
             <%-- =================================================
-                 GRADING QUEUE
+                 PENDING GRADING LIST
                  ================================================= --%>
 
             <asp:Panel
@@ -139,8 +194,7 @@
 
                         <article class="grading-queue-card">
 
-
-                            <%-- STUDENT --%>
+                            <%-- STUDENT INFORMATION --%>
 
                             <div class="grading-student">
 
@@ -150,7 +204,6 @@
 
                                 </div>
 
-
                                 <div class="grading-student-info">
 
                                     <h2>
@@ -159,12 +212,13 @@
 
                                     </h2>
 
-
                                     <p>
 
                                         Quiz:
                                         <strong>
+
                                             <%# Eval("QuizTitle") %>
+
                                         </strong>
 
                                         <asp:PlaceHolder
@@ -178,13 +232,14 @@
 
                                             Session:
                                             <strong>
+
                                                 <%# Eval("SessionTitle") %>
+
                                             </strong>
 
                                         </asp:PlaceHolder>
 
                                     </p>
-
 
                                     <div class="grading-queue-meta">
 
@@ -193,7 +248,6 @@
                                             <%# Eval("SubjectiveCountText") %>
 
                                         </span>
-
 
                                         <span>
 
@@ -207,8 +261,6 @@
                                 </div>
 
                             </div>
-
-
 
                             <%-- ACTION --%>
 
@@ -226,6 +278,176 @@
 
                             </div>
 
+                        </article>
+
+                    </ItemTemplate>
+
+                </asp:Repeater>
+
+            </asp:Panel>
+
+            <%-- =================================================
+                 PAST GRADING REVIEWS HEADER
+                 ================================================= --%>
+
+            <section class="grading-detail-header"
+                     style="margin-top:38px;margin-bottom:18px;">
+
+                <div class="grading-detail-heading">
+
+                    <div>
+
+                        <h1 style="font-size:22px;">
+                            Past Grading Reviews
+                        </h1>
+
+                        <span class="grading-context">
+                            Review results that you have already finalised.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <%-- =================================================
+                 NO REVIEW HISTORY / NO SEARCH RESULT
+                 ================================================= --%>
+
+            <asp:Panel
+                ID="pnlNoReviews"
+                runat="server"
+                Visible="false"
+                CssClass="grading-empty">
+
+                <div class="grading-empty-icon">
+
+                    <i class="bi bi-journal-check"></i>
+
+                </div>
+
+                <h2>
+
+                    <asp:Label
+                        ID="lblNoReviewsTitle"
+                        runat="server">
+                    </asp:Label>
+
+                </h2>
+
+                <p>
+
+                    <asp:Label
+                        ID="lblNoReviewsDescription"
+                        runat="server">
+                    </asp:Label>
+
+                </p>
+
+            </asp:Panel>
+
+            <%-- =================================================
+                 REVIEW HISTORY LIST
+                 ================================================= --%>
+
+            <asp:Panel
+                ID="pnlReviewList"
+                runat="server"
+                Visible="false"
+                CssClass="grading-queue">
+
+                <asp:Repeater
+                    ID="rptReviewHistory"
+                    runat="server">
+
+                    <ItemTemplate>
+
+                        <article class="grading-queue-card">
+
+                            <%-- STUDENT INFORMATION --%>
+
+                            <div class="grading-student">
+
+                                <div class="grading-avatar">
+
+                                    <%# Eval("StudentInitials") %>
+
+                                </div>
+
+                                <div class="grading-student-info">
+
+                                    <h2>
+
+                                        <%# Eval("StudentName") %>
+
+                                    </h2>
+
+                                    <p>
+
+                                        Quiz:
+                                        <strong>
+
+                                            <%# Eval("QuizTitle") %>
+
+                                        </strong>
+
+                                        <asp:PlaceHolder
+                                            ID="phReviewSession"
+                                            runat="server"
+                                            Visible='<%# Convert.ToBoolean(Eval("HasSession")) %>'>
+
+                                            <span class="grading-divider">
+                                                •
+                                            </span>
+
+                                            Session:
+                                            <strong>
+
+                                                <%# Eval("SessionTitle") %>
+
+                                            </strong>
+
+                                        </asp:PlaceHolder>
+
+                                    </p>
+
+                                    <div class="grading-queue-meta">
+
+                                        <span class="grading-subjective-count">
+
+                                            <%# Eval("FinalScoreText") %>
+
+                                        </span>
+
+                                        <span>
+
+                                            Graded
+                                            <%# Eval("GradedAtText") %>
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <%-- ACTION --%>
+
+                            <div class="grading-queue-action">
+
+                                <asp:HyperLink
+                                    ID="lnkReviewGrade"
+                                    runat="server"
+                                    CssClass="grade-submission-button"
+                                    NavigateUrl='<%# Eval("ReviewUrl") %>'>
+
+                                    Review Grade
+
+                                </asp:HyperLink>
+
+                            </div>
 
                         </article>
 
@@ -237,10 +459,8 @@
 
         </asp:Panel>
 
-
-
         <%-- =====================================================
-             INDIVIDUAL GRADING VIEW
+             INDIVIDUAL GRADING / REVIEW VIEW
              ===================================================== --%>
 
         <asp:Panel
@@ -248,13 +468,11 @@
             runat="server"
             Visible="false">
 
-
             <%-- =================================================
                  TOP BAR
                  ================================================= --%>
 
             <section class="grading-detail-header">
-
 
                 <div class="grading-detail-heading">
 
@@ -268,7 +486,6 @@
 
                     </asp:HyperLink>
 
-
                     <div>
 
                         <span class="grading-context">
@@ -280,10 +497,10 @@
 
                         </span>
 
-
                         <h1>
 
                             Grading:
+
                             <asp:Label
                                 ID="lblStudentName"
                                 runat="server">
@@ -294,7 +511,6 @@
                     </div>
 
                 </div>
-
 
                 <div class="attempt-badge">
 
@@ -307,10 +523,8 @@
 
             </section>
 
-
-
             <%-- =================================================
-                 DETAIL ERROR / SUCCESS
+                 DETAIL MESSAGE
                  ================================================= --%>
 
             <asp:Panel
@@ -325,8 +539,6 @@
                 </asp:Label>
 
             </asp:Panel>
-
-
 
             <%-- =================================================
                  OBJECTIVE SUMMARY
@@ -347,7 +559,6 @@
 
                 </div>
 
-
                 <div class="objective-score">
 
                     <asp:Label
@@ -359,8 +570,6 @@
                 </div>
 
             </section>
-
-
 
             <%-- =================================================
                  NO SUBJECTIVE QUESTIONS
@@ -389,8 +598,6 @@
 
             </asp:Panel>
 
-
-
             <%-- =================================================
                  SUBJECTIVE QUESTIONS
                  ================================================= --%>
@@ -403,7 +610,6 @@
 
                     <article class="subjective-grading-card">
 
-
                         <%-- HIDDEN VALUES --%>
 
                         <asp:HiddenField
@@ -411,19 +617,15 @@
                             runat="server"
                             Value='<%# Eval("AnswerId") %>' />
 
-
                         <asp:HiddenField
                             ID="hfQuizQuestionId"
                             runat="server"
                             Value='<%# Eval("QuizQuestionId") %>' />
 
-
                         <asp:HiddenField
                             ID="hfMaxMarks"
                             runat="server"
                             Value='<%# Eval("MaxMarks") %>' />
-
-
 
                         <%-- QUESTION HEADER --%>
 
@@ -435,7 +637,6 @@
 
                             </h2>
 
-
                             <span class="max-mark-badge">
 
                                 Max:
@@ -444,8 +645,6 @@
                             </span>
 
                         </div>
-
-
 
                         <%-- QUESTION PROMPT --%>
 
@@ -457,7 +656,6 @@
 
                             </span>
 
-
                             <p>
 
                                 <%# Eval("QuestionText") %>
@@ -465,8 +663,6 @@
                             </p>
 
                         </div>
-
-
 
                         <%-- STUDENT ANSWER --%>
 
@@ -478,7 +674,6 @@
 
                             </span>
 
-
                             <p>
 
                                 <%# Eval("StudentAnswerText") %>
@@ -486,8 +681,6 @@
                             </p>
 
                         </div>
-
-
 
                         <%-- MODEL ANSWER --%>
 
@@ -501,7 +694,6 @@
 
                             </span>
 
-
                             <p>
 
                                 <%# Eval("ModelAnswerText") %>
@@ -510,12 +702,9 @@
 
                         </div>
 
-
-
                         <%-- MARKS + FEEDBACK --%>
 
                         <div class="grading-input-grid">
-
 
                             <%-- MARKS --%>
 
@@ -524,12 +713,12 @@
                                 <label>
 
                                     Awarded Marks
+
                                     <span class="required-mark">
                                         *
                                     </span>
 
                                 </label>
-
 
                                 <div class="grading-mark-input-wrapper">
 
@@ -541,7 +730,6 @@
                                         MaxLength="8">
                                     </asp:TextBox>
 
-
                                     <span>
 
                                         /
@@ -550,7 +738,6 @@
                                     </span>
 
                                 </div>
-
 
                                 <asp:Label
                                     ID="lblMarkError"
@@ -561,8 +748,6 @@
 
                             </div>
 
-
-
                             <%-- FEEDBACK --%>
 
                             <div class="grading-field">
@@ -572,7 +757,6 @@
                                     Lecturer Feedback Note
 
                                 </label>
-
 
                                 <asp:TextBox
                                     ID="txtLecturerFeedback"
@@ -589,14 +773,11 @@
 
                         </div>
 
-
                     </article>
 
                 </ItemTemplate>
 
             </asp:Repeater>
-
-
 
             <%-- =================================================
                  BOTTOM SUMMARY
@@ -608,7 +789,6 @@
                 Visible="false"
                 CssClass="grading-footer-card">
 
-
                 <div class="provisional-score">
 
                     <div class="provisional-icon">
@@ -617,13 +797,11 @@
 
                     </div>
 
-
                     <div>
 
                         <span>
-                            Provisional Score
+                            Total Score
                         </span>
-
 
                         <strong>
 
@@ -639,19 +817,7 @@
 
                 </div>
 
-
-
                 <div class="grading-footer-actions">
-
-
-                    <asp:Button
-                        ID="btnSaveDraft"
-                        runat="server"
-                        Text="Save Draft"
-                        CssClass="grading-save-button"
-                        CausesValidation="false"
-                        OnClick="btnSaveDraft_Click" />
-
 
                     <asp:Button
                         ID="btnFinalize"
@@ -665,9 +831,7 @@
 
             </asp:Panel>
 
-
         </asp:Panel>
-
 
     </div>
 

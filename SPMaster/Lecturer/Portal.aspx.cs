@@ -766,30 +766,23 @@ namespace SPMaster.Lecturer
                     quizId
                 );
 
-
             if (
                 Convert.ToBoolean(
                     isPublished
                 )
             )
             {
-                // Session module remains handled
-                // by another group member.
-
                 return ResolveUrl(
-                    "~/Lecturer/Sessions.aspx"
+                    "~/Lecturer/Sessions.aspx?quizId="
+                    + id
                 );
             }
-
 
             return ResolveUrl(
                 "~/Lecturer/CreateQuiz.aspx?id="
                 + id
             );
         }
-
-
-
         // =========================================================
         // PREVIEW URL
         // =========================================================
