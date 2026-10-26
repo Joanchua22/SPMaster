@@ -8,9 +8,7 @@ using System.Web.SessionState;
 
 namespace SPMaster.Api
 {
-    public class SaveQuizAnswer :
-        IHttpHandler,
-        IRequiresSessionState
+    public class SaveQuizAnswer : IHttpHandler, IRequiresSessionState
     {
         // =========================================================
         // DATABASE CONNECTION
@@ -20,11 +18,7 @@ namespace SPMaster.Api
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -33,20 +27,12 @@ namespace SPMaster.Api
         // PROCESS REQUEST
         // =========================================================
 
-        public void ProcessRequest(
-            HttpContext context)
+        public void ProcessRequest(HttpContext context)
         {
             context.Response.Clear();
-
-            context.Response.ContentType =
-                "application/json";
-
-            context.Response.Cache.SetCacheability(
-                HttpCacheability.NoCache
-            );
-
+            context.Response.ContentType = "application/json";
+            context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
             context.Response.Cache.SetNoStore();
-
 
             try
             {
@@ -54,12 +40,7 @@ namespace SPMaster.Api
                 // POST ONLY
                 // =================================================
 
-                if (
-                    !context.Request.HttpMethod.Equals(
-                        "POST",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
+                if (!context.Request.HttpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase))
                 {
                     WriteJson(
                         context,
@@ -67,8 +48,7 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "POST request required."
+                            message = "POST request required."
                         }
                     );
 
@@ -80,10 +60,7 @@ namespace SPMaster.Api
                 // LOGIN SESSION
                 // =================================================
 
-                if (
-                    context.Session == null ||
-                    context.Session["UserId"] == null
-                )
+                if (context.Session == null || context.Session["UserId"] == null)
                 {
                     WriteJson(
                         context,
@@ -91,26 +68,16 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "You are not logged in."
+                            message = "You are not logged in."
                         }
                     );
 
                     return;
                 }
 
-
                 int studentUserId;
 
-
-                if (
-                    !int.TryParse(
-                        context.Session[
-                            "UserId"
-                        ].ToString(),
-                        out studentUserId
-                    )
-                )
+                if (!int.TryParse(context.Session["UserId"].ToString(), out studentUserId))
                 {
                     WriteJson(
                         context,
@@ -118,8 +85,7 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "Invalid user session."
+                            message = "Invalid user session."
                         }
                     );
 
@@ -133,15 +99,7 @@ namespace SPMaster.Api
 
                 int attemptId;
 
-
-                if (
-                    !int.TryParse(
-                        context.Request.Form[
-                            "attemptId"
-                        ],
-                        out attemptId
-                    )
-                )
+                if (!int.TryParse(context.Request.Form["attemptId"], out attemptId))
                 {
                     WriteJson(
                         context,
@@ -149,8 +107,7 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "A valid attemptId is required."
+                            message = "A valid attemptId is required."
                         }
                     );
 
@@ -164,15 +121,7 @@ namespace SPMaster.Api
 
                 int quizQuestionId;
 
-
-                if (
-                    !int.TryParse(
-                        context.Request.Form[
-                            "quizQuestionId"
-                        ],
-                        out quizQuestionId
-                    )
-                )
+                if (!int.TryParse(context.Request.Form["quizQuestionId"], out quizQuestionId))
                 {
                     WriteJson(
                         context,
@@ -180,8 +129,7 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "A valid quizQuestionId is required."
+                            message = "A valid quizQuestionId is required."
                         }
                     );
 
@@ -193,31 +141,14 @@ namespace SPMaster.Api
                 // SELECTED OPTION
                 // =================================================
 
-                int? selectedOptionId =
-                    null;
+                int? selectedOptionId = null;
+                string selectedOptionValue = context.Request.Form["selectedOptionId"];
 
-
-                string selectedOptionValue =
-                    context.Request.Form[
-                        "selectedOptionId"
-                    ];
-
-
-                if (
-                    !string.IsNullOrWhiteSpace(
-                        selectedOptionValue
-                    )
-                )
+                if (!string.IsNullOrWhiteSpace(selectedOptionValue))
                 {
                     int optionId;
 
-
-                    if (
-                        !int.TryParse(
-                            selectedOptionValue,
-                            out optionId
-                        )
-                    )
+                    if (!int.TryParse(selectedOptionValue, out optionId))
                     {
                         WriteJson(
                             context,
@@ -225,17 +156,14 @@ namespace SPMaster.Api
                             new
                             {
                                 success = false,
-                                message =
-                                    "Invalid selected option."
+                                message = "Invalid selected option."
                             }
                         );
 
                         return;
                     }
 
-
-                    selectedOptionId =
-                        optionId;
+                    selectedOptionId = optionId;
                 }
 
 
@@ -243,22 +171,14 @@ namespace SPMaster.Api
                 // SUBJECTIVE ANSWER
                 // =================================================
 
-                string answerText =
-                    context.Request.Form[
-                        "answerText"
-                    ];
-
+                string answerText = context.Request.Form["answerText"];
 
                 if (answerText == null)
                 {
-                    answerText =
-                        "";
+                    answerText = "";
                 }
 
-
-                if (
-                    answerText.Length > 5000
-                )
+                if (answerText.Length > 5000)
                 {
                     WriteJson(
                         context,
@@ -266,8 +186,7 @@ namespace SPMaster.Api
                         new
                         {
                             success = false,
-                            message =
-                                "Answer cannot exceed 5000 characters."
+                            message = "Answer cannot exceed 5000 characters."
                         }
                     );
 
@@ -299,11 +218,8 @@ namespace SPMaster.Api
                     new
                     {
                         success = false,
-                        message =
-                            "Unable to auto-save answer.",
-
-                        error =
-                            ex.Message
+                        message = "Unable to auto-save answer.",
+                        error = ex.Message
                     }
                 );
             }
@@ -314,20 +230,9 @@ namespace SPMaster.Api
         // SAVE ANSWER
         // =========================================================
 
-        private void SaveAnswer(
-            HttpContext context,
-            int studentUserId,
-            int attemptId,
-            int quizQuestionId,
-            int? selectedOptionId,
-            string answerText)
+        private void SaveAnswer(HttpContext context, int studentUserId, int attemptId, int quizQuestionId, int? selectedOptionId, string answerText)
         {
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
@@ -344,77 +249,29 @@ namespace SPMaster.Api
                     FROM QuizAttempts qa
 
                     INNER JOIN QuizQuestions qq
-                        ON qa.QuizId =
-                           qq.QuizId
+                        ON qa.QuizId = qq.QuizId
 
                     INNER JOIN Questions q
-                        ON qq.QuestionId =
-                           q.QuestionId
+                        ON qq.QuestionId = q.QuestionId
 
                     WHERE
-                        qa.AttemptId =
-                            @AttemptId
-
-                        AND
-
-                        qa.StudentUserId =
-                            @StudentUserId
-
-                        AND
-
-                        qa.AttemptStatus =
-                            'InProgress'
-
-                        AND
-
-                        qa.ExpiresAt >
-                            GETDATE()
-
-                        AND
-
-                        qq.QuizQuestionId =
-                            @QuizQuestionId;
+                        qa.AttemptId = @AttemptId
+                        AND qa.StudentUserId = @StudentUserId
+                        AND qa.AttemptStatus = 'InProgress'
+                        AND qa.ExpiresAt > GETDATE()
+                        AND qq.QuizQuestionId = @QuizQuestionId;
                 ";
 
-
                 int questionId;
-
                 string questionType;
 
-
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            validateSql,
-                            connection
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(validateSql, connection))
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        attemptId;
+                    command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                    command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = studentUserId;
+                    command.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = quizQuestionId;
 
-
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        studentUserId;
-
-
-                    command.Parameters.Add(
-                        "@QuizQuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizQuestionId;
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (!reader.Read())
                         {
@@ -424,39 +281,20 @@ namespace SPMaster.Api
                                 new
                                 {
                                     success = false,
-
                                     expired = true,
-
-                                    message =
-                                        "The quiz attempt is no longer active."
+                                    message = "The quiz attempt is no longer active."
                                 }
                             );
 
                             return;
                         }
 
-
-                        questionId =
-                            Convert.ToInt32(
-                                reader[
-                                    "QuestionId"
-                                ]
-                            );
-
-
-                        questionType =
-                            reader[
-                                "QuestionType"
-                            ].ToString();
+                        questionId = Convert.ToInt32(reader["QuestionId"]);
+                        questionType = reader["QuestionType"].ToString();
                     }
                 }
 
-
-                bool isMcq =
-                    questionType.Equals(
-                        "MCQ",
-                        StringComparison.OrdinalIgnoreCase
-                    );
+                bool isMcq = questionType.Equals("MCQ", StringComparison.OrdinalIgnoreCase);
 
 
                 // =================================================
@@ -465,13 +303,9 @@ namespace SPMaster.Api
 
                 if (isMcq)
                 {
-                    answerText =
-                        null;
+                    answerText = null;
 
-
-                    if (
-                        selectedOptionId.HasValue
-                    )
+                    if (selectedOptionId.HasValue)
                     {
                         const string optionSql = @"
                             SELECT COUNT(*)
@@ -479,48 +313,18 @@ namespace SPMaster.Api
                             FROM QuestionOptions
 
                             WHERE
-                                OptionId =
-                                    @OptionId
-
-                                AND
-
-                                QuestionId =
-                                    @QuestionId;
+                                OptionId = @OptionId
+                                AND QuestionId = @QuestionId;
                         ";
 
-
-                        using (
-                            SqlCommand optionCommand =
-                                new SqlCommand(
-                                    optionSql,
-                                    connection
-                                )
-                        )
+                        using (SqlCommand optionCommand = new SqlCommand(optionSql, connection))
                         {
-                            optionCommand.Parameters.Add(
-                                "@OptionId",
-                                SqlDbType.Int
-                            ).Value =
-                                selectedOptionId.Value;
+                            optionCommand.Parameters.Add("@OptionId", SqlDbType.Int).Value = selectedOptionId.Value;
+                            optionCommand.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
 
+                            int validOption = Convert.ToInt32(optionCommand.ExecuteScalar());
 
-                            optionCommand.Parameters.Add(
-                                "@QuestionId",
-                                SqlDbType.Int
-                            ).Value =
-                                questionId;
-
-
-                            int validOption =
-                                Convert.ToInt32(
-                                    optionCommand
-                                        .ExecuteScalar()
-                                );
-
-
-                            if (
-                                validOption == 0
-                            )
+                            if (validOption == 0)
                             {
                                 WriteJson(
                                     context,
@@ -528,9 +332,7 @@ namespace SPMaster.Api
                                     new
                                     {
                                         success = false,
-
-                                        message =
-                                            "The selected option is not valid for this question."
+                                        message = "The selected option is not valid for this question."
                                     }
                                 );
 
@@ -547,18 +349,11 @@ namespace SPMaster.Api
 
                 else
                 {
-                    selectedOptionId =
-                        null;
+                    selectedOptionId = null;
 
-
-                    answerText =
-                        string.IsNullOrWhiteSpace(
-                            answerText
-                        )
-
-                            ? null
-
-                            : answerText.Trim();
+                    answerText = string.IsNullOrWhiteSpace(answerText)
+                        ? null
+                        : answerText.Trim();
                 }
 
 
@@ -566,54 +361,23 @@ namespace SPMaster.Api
                 // EMPTY ANSWER = CLEAR ANSWER
                 // =================================================
 
-                if (
-                    !selectedOptionId.HasValue
-                    &&
-                    string.IsNullOrWhiteSpace(
-                        answerText
-                    )
-                )
+                if (!selectedOptionId.HasValue && string.IsNullOrWhiteSpace(answerText))
                 {
                     const string deleteSql = @"
                         DELETE FROM StudentAnswers
 
                         WHERE
-                            AttemptId =
-                                @AttemptId
-
-                            AND
-
-                            QuizQuestionId =
-                                @QuizQuestionId;
+                            AttemptId = @AttemptId
+                            AND QuizQuestionId = @QuizQuestionId;
                     ";
 
-
-                    using (
-                        SqlCommand deleteCommand =
-                            new SqlCommand(
-                                deleteSql,
-                                connection
-                            )
-                    )
+                    using (SqlCommand deleteCommand = new SqlCommand(deleteSql, connection))
                     {
-                        deleteCommand.Parameters.Add(
-                            "@AttemptId",
-                            SqlDbType.Int
-                        ).Value =
-                            attemptId;
+                        deleteCommand.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                        deleteCommand.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = quizQuestionId;
 
-
-                        deleteCommand.Parameters.Add(
-                            "@QuizQuestionId",
-                            SqlDbType.Int
-                        ).Value =
-                            quizQuestionId;
-
-
-                        deleteCommand
-                            .ExecuteNonQuery();
+                        deleteCommand.ExecuteNonQuery();
                     }
-
 
                     WriteJson(
                         context,
@@ -621,19 +385,11 @@ namespace SPMaster.Api
                         new
                         {
                             success = true,
-
                             cleared = true,
-
-                            message =
-                                "Answer cleared.",
-
-                            savedAt =
-                                DateTime.Now.ToString(
-                                    "HH:mm:ss"
-                                )
+                            message = "Answer cleared.",
+                            savedAt = DateTime.Now.ToString("HH:mm:ss")
                         }
                     );
-
 
                     return;
                 }
@@ -651,13 +407,8 @@ namespace SPMaster.Api
                         FROM StudentAnswers
 
                         WHERE
-                            AttemptId =
-                                @AttemptId
-
-                            AND
-
-                            QuizQuestionId =
-                                @QuizQuestionId
+                            AttemptId = @AttemptId
+                            AND QuizQuestionId = @QuizQuestionId
                     )
 
                     BEGIN
@@ -665,23 +416,13 @@ namespace SPMaster.Api
                         UPDATE StudentAnswers
 
                         SET
-                            SelectedOptionId =
-                                @SelectedOptionId,
-
-                            AnswerText =
-                                @AnswerText,
-
-                            MarksAwarded =
-                                NULL
+                            SelectedOptionId = @SelectedOptionId,
+                            AnswerText = @AnswerText,
+                            MarksAwarded = NULL
 
                         WHERE
-                            AttemptId =
-                                @AttemptId
-
-                            AND
-
-                            QuizQuestionId =
-                                @QuizQuestionId;
+                            AttemptId = @AttemptId
+                            AND QuizQuestionId = @QuizQuestionId;
 
                     END
 
@@ -710,57 +451,22 @@ namespace SPMaster.Api
                     END
                 ";
 
-
-                using (
-                    SqlCommand saveCommand =
-                        new SqlCommand(
-                            saveSql,
-                            connection
-                        )
-                )
+                using (SqlCommand saveCommand = new SqlCommand(saveSql, connection))
                 {
-                    saveCommand.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        attemptId;
+                    saveCommand.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                    saveCommand.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = quizQuestionId;
 
-
-                    saveCommand.Parameters.Add(
-                        "@QuizQuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizQuestionId;
-
-
-                    saveCommand.Parameters.Add(
-                        "@SelectedOptionId",
-                        SqlDbType.Int
-                    ).Value =
+                    saveCommand.Parameters.Add("@SelectedOptionId", SqlDbType.Int).Value =
                         selectedOptionId.HasValue
-
-                            ? (object)
-                                selectedOptionId.Value
-
+                            ? (object)selectedOptionId.Value
                             : DBNull.Value;
 
-
-                    saveCommand.Parameters.Add(
-                        "@AnswerText",
-                        SqlDbType.NVarChar,
-                        -1
-                    ).Value =
-                        string.IsNullOrWhiteSpace(
-                            answerText
-                        )
-
+                    saveCommand.Parameters.Add("@AnswerText", SqlDbType.NVarChar, -1).Value =
+                        string.IsNullOrWhiteSpace(answerText)
                             ? (object)DBNull.Value
-
                             : answerText;
 
-
-                    saveCommand
-                        .ExecuteNonQuery();
+                    saveCommand.ExecuteNonQuery();
                 }
 
 
@@ -774,16 +480,9 @@ namespace SPMaster.Api
                     new
                     {
                         success = true,
-
                         cleared = false,
-
-                        message =
-                            "Answer saved.",
-
-                        savedAt =
-                            DateTime.Now.ToString(
-                                "HH:mm:ss"
-                            )
+                        message = "Answer saved.",
+                        savedAt = DateTime.Now.ToString("HH:mm:ss")
                     }
                 );
             }
@@ -794,27 +493,13 @@ namespace SPMaster.Api
         // WRITE JSON
         // =========================================================
 
-        private void WriteJson(
-            HttpContext context,
-            int statusCode,
-            object data)
+        private void WriteJson(HttpContext context, int statusCode, object data)
         {
-            JavaScriptSerializer serializer =
-                new JavaScriptSerializer();
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-
-            context.Response.StatusCode =
-                statusCode;
-
-            context.Response.TrySkipIisCustomErrors =
-                true;
-
-
-            context.Response.Write(
-                serializer.Serialize(
-                    data
-                )
-            );
+            context.Response.StatusCode = statusCode;
+            context.Response.TrySkipIisCustomErrors = true;
+            context.Response.Write(serializer.Serialize(data));
         }
 
 

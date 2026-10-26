@@ -4,11 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.WebControls;
 
-
 namespace SPMaster.Student
 {
-    public partial class Quizzes :
-        System.Web.UI.Page
+    public partial class Quizzes : System.Web.UI.Page
     {
         // =========================================================
         // DATABASE CONNECTION
@@ -18,11 +16,7 @@ namespace SPMaster.Student
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -35,9 +29,7 @@ namespace SPMaster.Student
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -46,28 +38,18 @@ namespace SPMaster.Student
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
-
 
             if (!IsPostBack)
             {
                 BindSubjects();
-
                 BindExploreQuizzes();
-
                 BindAttempts();
             }
         }
@@ -83,58 +65,27 @@ namespace SPMaster.Student
                 SELECT
                     SubjectId,
                     SubjectName
-
                 FROM Subjects
-
                 WHERE
                     IsActive = 1
-
                 ORDER BY
                     SubjectName;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    connection.Open();
+                connection.Open();
 
-
-                    ddlStudentSubject.DataSource =
-                        command.ExecuteReader();
-
-
-                    ddlStudentSubject.DataTextField =
-                        "SubjectName";
-
-
-                    ddlStudentSubject.DataValueField =
-                        "SubjectId";
-
-
-                    ddlStudentSubject.DataBind();
-                }
+                ddlStudentSubject.DataSource = command.ExecuteReader();
+                ddlStudentSubject.DataTextField = "SubjectName";
+                ddlStudentSubject.DataValueField = "SubjectId";
+                ddlStudentSubject.DataBind();
             }
-
 
             ddlStudentSubject.Items.Insert(
                 0,
-                new ListItem(
-                    "All Subjects",
-                    ""
-                )
+                new ListItem("All Subjects", "")
             );
         }
 
@@ -143,9 +94,7 @@ namespace SPMaster.Student
         // SEARCH / FILTER
         // =========================================================
 
-        protected void FilterChanged(
-            object sender,
-            EventArgs e)
+        protected void FilterChanged(object sender, EventArgs e)
         {
             BindExploreQuizzes();
         }
@@ -157,7 +106,7 @@ namespace SPMaster.Student
 
         private void BindExploreQuizzes()
         {
-            string sql = @"
+            const string sql = @"
                 SELECT
                     q.QuizId,
                     q.Title,
@@ -171,6 +120,7 @@ namespace SPMaster.Student
                     f.FormName,
 
                     u.FullName AS CreatorName,
+                    u.ProfileImagePath AS CreatorProfileImage,
 
                     COUNT(
                         qq.QuizQuestionId
@@ -190,20 +140,14 @@ namespace SPMaster.Student
 
                     (
                         SELECT COUNT(*)
-
                         FROM QuizQuestions qq2
 
                         INNER JOIN Questions ques2
-                            ON qq2.QuestionId =
-                               ques2.QuestionId
+                            ON qq2.QuestionId = ques2.QuestionId
 
                         WHERE
-                            qq2.QuizId =
-                                q.QuizId
-
-                            AND
-                            ques2.QuestionType =
-                                'MCQ'
+                            qq2.QuizId = q.QuizId
+                            AND ques2.QuestionType = 'MCQ'
 
                     ) AS McqCount,
 
@@ -214,96 +158,51 @@ namespace SPMaster.Student
 
                     (
                         SELECT COUNT(*)
-
                         FROM QuizQuestions qq3
 
                         INNER JOIN Questions ques3
-                            ON qq3.QuestionId =
-                               ques3.QuestionId
+                            ON qq3.QuestionId = ques3.QuestionId
 
                         WHERE
-                            qq3.QuizId =
-                                q.QuizId
-
-                            AND
-                            ques3.QuestionType <>
-                                'MCQ'
+                            qq3.QuizId = q.QuizId
+                            AND ques3.QuestionType <> 'MCQ'
 
                     ) AS SubjectiveCount
 
 
                 FROM Quizzes q
 
-
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
-
+                    ON q.SubjectId = s.SubjectId
 
                 INNER JOIN Forms f
-                    ON q.FormId =
-                       f.FormId
-
+                    ON q.FormId = f.FormId
 
                 INNER JOIN Users u
-                    ON q.CreatedByUserId =
-                       u.UserId
-
+                    ON q.CreatedByUserId = u.UserId
 
                 LEFT JOIN QuizQuestions qq
-                    ON q.QuizId =
-                       qq.QuizId
+                    ON q.QuizId = qq.QuizId
 
 
                 WHERE
                     q.IsPublished = 1
-
-                    AND
-                    q.IsArchived = 0
-
+                    AND q.IsArchived = 0
 
                     AND
                     (
                         @SubjectId IS NULL
-
-                        OR
-
-                        q.SubjectId =
-                            @SubjectId
+                        OR q.SubjectId = @SubjectId
                     )
-
 
                     AND
                     (
                         @Search = ''
-
-                        OR
-
-                        q.Title LIKE
-                            @SearchPattern
-
-                        OR
-
-                        ISNULL(
-                            q.Description,
-                            ''
-                        ) LIKE
-                            @SearchPattern
-
-                        OR
-
-                        s.SubjectName LIKE
-                            @SearchPattern
-
-                        OR
-
-                        f.FormName LIKE
-                            @SearchPattern
-
-                        OR
-
-                        u.FullName LIKE
-                            @SearchPattern
+                        OR q.Title LIKE @SearchPattern
+                        OR ISNULL(q.Description, '') LIKE @SearchPattern
+                        OR s.SubjectName LIKE @SearchPattern
+                        OR f.FormName LIKE @SearchPattern
+                        OR u.FullName LIKE @SearchPattern
                     )
 
 
@@ -319,112 +218,53 @@ namespace SPMaster.Student
 
                     f.FormName,
 
-                    u.FullName
+                    u.FullName,
+                    u.ProfileImagePath
 
 
                 ORDER BY
                     q.CreatedAt DESC;
             ";
 
+            DataTable table = new DataTable();
+            string searchText = txtQuizSearch.Text.Trim();
 
-            DataTable table =
-                new DataTable();
-
-
-            string searchText =
-                txtQuizSearch.Text.Trim();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                // -------------------------------------------------
+                // SUBJECT
+                // -------------------------------------------------
+
+                if (string.IsNullOrEmpty(ddlStudentSubject.SelectedValue))
                 {
-                    // ---------------------------------------------
-                    // SUBJECT
-                    // ---------------------------------------------
-
-                    if (
-                        string.IsNullOrEmpty(
-                            ddlStudentSubject.SelectedValue
-                        )
-                    )
-                    {
-                        command.Parameters.Add(
-                            "@SubjectId",
-                            SqlDbType.Int
-                        ).Value =
-                            DBNull.Value;
-                    }
-                    else
-                    {
-                        command.Parameters.Add(
-                            "@SubjectId",
-                            SqlDbType.Int
-                        ).Value =
-                            Convert.ToInt32(
-                                ddlStudentSubject
-                                    .SelectedValue
-                            );
-                    }
+                    command.Parameters.Add("@SubjectId", SqlDbType.Int).Value = DBNull.Value;
+                }
+                else
+                {
+                    command.Parameters.Add("@SubjectId", SqlDbType.Int).Value =
+                        Convert.ToInt32(ddlStudentSubject.SelectedValue);
+                }
 
 
-                    // ---------------------------------------------
-                    // SEARCH
-                    // ---------------------------------------------
+                // -------------------------------------------------
+                // SEARCH
+                // -------------------------------------------------
 
-                    command.Parameters.Add(
-                        "@Search",
-                        SqlDbType.NVarChar,
-                        200
-                    ).Value =
-                        searchText;
+                command.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value = searchText;
+                command.Parameters.Add("@SearchPattern", SqlDbType.NVarChar, 204).Value =
+                    "%" + searchText + "%";
 
-
-                    command.Parameters.Add(
-                        "@SearchPattern",
-                        SqlDbType.NVarChar,
-                        204
-                    ).Value =
-                        "%"
-                        + searchText
-                        + "%";
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(table);
                 }
             }
 
-
-            rptExploreQuizzes.DataSource =
-                table;
-
-
+            rptExploreQuizzes.DataSource = table;
             rptExploreQuizzes.DataBind();
 
-
-            pnlNoQuizzes.Visible =
-                table.Rows.Count == 0;
+            pnlNoQuizzes.Visible = table.Rows.Count == 0;
         }
 
 
@@ -459,30 +299,26 @@ namespace SPMaster.Student
                             qa.AttemptId
                     ) AS AttemptNumber,
 
+
                     (
                         SELECT COUNT(*)
-
                         FROM QuizQuestions qq
-
                         WHERE
-                            qq.QuizId =
-                                qa.QuizId
+                            qq.QuizId = qa.QuizId
 
                     ) AS TotalQuestions,
 
+
                     (
                         SELECT COUNT(*)
-
                         FROM StudentAnswers sa
 
                         WHERE
-                            sa.AttemptId =
-                                qa.AttemptId
+                            sa.AttemptId = qa.AttemptId
 
                             AND
                             (
-                                sa.SelectedOptionId
-                                    IS NOT NULL
+                                sa.SelectedOptionId IS NOT NULL
 
                                 OR
 
@@ -498,6 +334,7 @@ namespace SPMaster.Student
 
                     ) AS AnsweredQuestions,
 
+
                     (
                         SELECT
                             ISNULL(
@@ -510,10 +347,10 @@ namespace SPMaster.Student
                         FROM StudentAnswers sa
 
                         WHERE
-                            sa.AttemptId =
-                                qa.AttemptId
+                            sa.AttemptId = qa.AttemptId
 
                     ) AS AwardedMarks,
+
 
                     (
                         SELECT
@@ -527,85 +364,46 @@ namespace SPMaster.Student
                         FROM QuizQuestions qq
 
                         WHERE
-                            qq.QuizId =
-                                qa.QuizId
+                            qq.QuizId = qa.QuizId
 
                     ) AS TotalMarks
+
 
                 FROM QuizAttempts qa
 
                 INNER JOIN Quizzes q
-                    ON qa.QuizId =
-                       q.QuizId
+                    ON qa.QuizId = q.QuizId
 
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
+                    ON q.SubjectId = s.SubjectId
 
                 WHERE
-                    qa.StudentUserId =
-                        @StudentUserId
+                    qa.StudentUserId = @StudentUserId
 
                 ORDER BY
                     qa.StartedAt DESC,
                     qa.AttemptId DESC;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
 
-
-            rptAttempts.DataSource =
-                table;
-
-
+            rptAttempts.DataSource = table;
             rptAttempts.DataBind();
 
+            pnlNoAttempts.Visible = table.Rows.Count == 0;
 
-            pnlNoAttempts.Visible =
-                table.Rows.Count == 0;
-
-
-            litAttemptCount.Text =
-                table.Rows.Count.ToString();
+            litAttemptCount.Text = table.Rows.Count.ToString();
         }
 
 
@@ -613,163 +411,121 @@ namespace SPMaster.Student
         // QUIZ CARD HELPERS
         // =========================================================
 
-        protected string GetSubjectCss(
-            object subjectName)
+        protected string GetSubjectCss(object subjectName)
         {
-            string subject =
-                Convert.ToString(
-                    subjectName
-                )
-                .Trim()
-                .ToLower();
-
+            string subject = Convert.ToString(subjectName).Trim().ToLower();
 
             switch (subject)
             {
                 case "mathematics":
-
                     return "subject-mathematics";
 
-
                 case "sejarah":
-
                     return "subject-sejarah";
 
-
                 case "english":
-
                     return "subject-english";
 
-
                 case "bahasa melayu":
-
                     return "subject-bahasa-melayu";
 
-
                 case "science":
-
                     return "subject-science";
 
-
                 default:
-
                     return "subject-mathematics";
             }
         }
 
 
-        protected string GetTeacherAvatarCss(
-            object subjectName)
+        // =========================================================
+        // LECTURER PROFILE IMAGE
+        // =========================================================
+
+        protected bool HasProfileImage(object profileImagePath)
         {
-            string subject =
-                Convert.ToString(
-                    subjectName
-                )
-                .Trim()
-                .ToLower();
+            return !string.IsNullOrWhiteSpace(
+                Convert.ToString(profileImagePath)
+            );
+        }
 
+        protected string GetProfileImageUrl(object profileImagePath)
+        {
+            string path = Convert.ToString(profileImagePath).Trim();
 
-            switch (subject)
+            if (string.IsNullOrWhiteSpace(path))
             {
-                case "sejarah":
-
-                    return "teacher-yellow";
-
-
-                case "english":
-                case "science":
-
-                    return "teacher-green";
-
-
-                default:
-
-                    return "teacher-purple";
+                return "";
             }
+
+            if (path.StartsWith("~"))
+            {
+                return ResolveUrl(path);
+            }
+
+            return ResolveUrl(
+                "~/" + path.TrimStart('/')
+            );
         }
 
 
-        protected string GetInitials(
-            object fullName)
+        // =========================================================
+        // LECTURER INITIALS
+        // =========================================================
+
+        protected string GetInitials(object fullName)
         {
-            string name =
-                Convert.ToString(
-                    fullName
-                ).Trim();
+            string name = Convert.ToString(fullName).Trim();
 
-
-            if (
-                string.IsNullOrWhiteSpace(
-                    name
-                )
-            )
+            if (string.IsNullOrWhiteSpace(name))
             {
                 return "?";
             }
 
+            string[] parts = name.Split(
+                new char[] { ' ' },
+                StringSplitOptions.RemoveEmptyEntries
+            );
 
-            string[] parts =
-                name.Split(
-                    new char[] { ' ' },
-                    StringSplitOptions
-                        .RemoveEmptyEntries
-                );
-
-
-            if (
-                parts.Length == 1
-            )
+            if (parts.Length == 1)
             {
                 return parts[0]
-                    .Substring(
-                        0,
-                        1
-                    )
+                    .Substring(0, 1)
                     .ToUpper();
             }
-
 
             return (
                 parts[0].Substring(0, 1)
                 +
-                parts[
-                    parts.Length - 1
-                ].Substring(0, 1)
+                parts[parts.Length - 1].Substring(0, 1)
             ).ToUpper();
         }
 
 
-        protected string GetQuizDescription(
-            object description)
+        // =========================================================
+        // QUIZ DESCRIPTION
+        // =========================================================
+
+        protected string GetQuizDescription(object description)
         {
-            string value =
-                Convert.ToString(
-                    description
-                ).Trim();
+            string value = Convert.ToString(description).Trim();
 
-
-            if (
-                string.IsNullOrWhiteSpace(
-                    value
-                )
-            )
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return "No description provided.";
             }
-
 
             return value;
         }
 
 
-        protected string FormatQuestionCount(
-            object value)
-        {
-            int count =
-                Convert.ToInt32(
-                    value
-                );
+        // =========================================================
+        // QUESTION COUNT
+        // =========================================================
 
+        protected string FormatQuestionCount(object value)
+        {
+            int count = Convert.ToInt32(value);
 
             return count
                 + (
@@ -780,34 +536,30 @@ namespace SPMaster.Student
         }
 
 
-        protected string FormatMarks(
-            object value)
+        // =========================================================
+        // MARKS
+        // =========================================================
+
+        protected string FormatMarks(object value)
         {
-            decimal marks =
-                Convert.ToDecimal(
-                    value
+            decimal marks = Convert.ToDecimal(value);
+
+            return marks.ToString("0.##")
+                + (
+                    marks == 1
+                        ? " Mark"
+                        : " Marks"
                 );
-
-
-            return marks.ToString(
-                "0.##"
-            )
-            + (
-                marks == 1
-                    ? " Mark"
-                    : " Marks"
-            );
         }
 
 
-        protected string FormatMinutes(
-            object value)
-        {
-            int minutes =
-                Convert.ToInt32(
-                    value
-                );
+        // =========================================================
+        // TIME LIMIT
+        // =========================================================
 
+        protected string FormatMinutes(object value)
+        {
+            int minutes = Convert.ToInt32(value);
 
             return minutes
                 + (
@@ -822,61 +574,42 @@ namespace SPMaster.Student
         // ATTEMPT HELPERS
         // =========================================================
 
-        private string NormalizeAttemptStatus(
-            object attemptStatus)
+        private string NormalizeAttemptStatus(object attemptStatus)
         {
-            return Convert.ToString(
-                attemptStatus
-            )
-            .Replace(
-                " ",
-                ""
-            )
-            .Trim()
-            .ToLower();
+            return Convert.ToString(attemptStatus)
+                .Replace(" ", "")
+                .Trim()
+                .ToLower();
         }
 
 
-        protected string GetAttemptSubtitle(
-            object attemptStatus,
-            object submittedAt)
+        // =========================================================
+        // ATTEMPT SUBTITLE
+        // =========================================================
+
+        protected string GetAttemptSubtitle(object attemptStatus, object submittedAt)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
                 return "In progress (Saved draft)";
             }
 
-
-            if (
-                submittedAt == DBNull.Value
-                ||
-                submittedAt == null
-            )
+            if (submittedAt == DBNull.Value || submittedAt == null)
             {
                 return "Submitted";
             }
 
+            DateTime date = Convert.ToDateTime(submittedAt);
 
-            DateTime date =
-                Convert.ToDateTime(
-                    submittedAt
-                );
-
-
-            return "Submitted "
-                + date.ToString(
-                    "dd MMM yyyy, hh:mm tt"
-                );
+            return "Submitted " + date.ToString("dd MMM yyyy, hh:mm tt");
         }
 
+
+        // =========================================================
+        // ATTEMPT SCORE
+        // =========================================================
 
         protected string GetAttemptScoreText(
             object attemptStatus,
@@ -885,234 +618,140 @@ namespace SPMaster.Student
             object answeredQuestions,
             object totalQuestions)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "pendinggrading"
-            )
+            if (status == "pendinggrading")
             {
                 return "Awaiting";
             }
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
-                int answered =
-                    Convert.ToInt32(
-                        answeredQuestions
-                    );
+                int answered = Convert.ToInt32(answeredQuestions);
+                int total = Convert.ToInt32(totalQuestions);
 
-
-                int total =
-                    Convert.ToInt32(
-                        totalQuestions
-                    );
-
-
-                return answered
-                    + " / "
-                    + total
-                    + " Qs";
+                return answered + " / " + total + " Qs";
             }
 
+            decimal awarded = Convert.ToDecimal(awardedMarks);
+            decimal totalScore = Convert.ToDecimal(totalMarks);
 
-            decimal awarded =
-                Convert.ToDecimal(
-                    awardedMarks
-                );
-
-
-            decimal totalScore =
-                Convert.ToDecimal(
-                    totalMarks
-                );
-
-
-            return awarded.ToString(
-                "0.##"
-            )
-            + " / "
-            + totalScore.ToString(
-                "0.##"
-            );
+            return awarded.ToString("0.##")
+                + " / "
+                + totalScore.ToString("0.##");
         }
 
+
+        // =========================================================
+        // ATTEMPT STATUS TEXT
+        // =========================================================
 
         protected string GetAttemptStatusText(
             object attemptStatus,
             object awardedMarks,
             object totalMarks)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "pendinggrading"
-            )
+            if (status == "pendinggrading")
             {
                 return "Pending Grading";
             }
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
                 return "In Progress";
             }
 
+            decimal awarded = Convert.ToDecimal(awardedMarks);
+            decimal total = Convert.ToDecimal(totalMarks);
+            decimal percentage = 0;
 
-            decimal awarded =
-                Convert.ToDecimal(
-                    awardedMarks
-                );
-
-
-            decimal total =
-                Convert.ToDecimal(
-                    totalMarks
-                );
-
-
-            decimal percentage =
-                0;
-
-
-            if (
-                total > 0
-            )
+            if (total > 0)
             {
-                percentage =
-                    awarded
-                    / total
-                    * 100;
+                percentage = awarded / total * 100;
             }
 
-
             return "Graded ("
-                + percentage.ToString(
-                    "0"
-                )
+                + percentage.ToString("0")
                 + "%)";
         }
 
 
-        protected string GetAttemptStatusCss(
-            object attemptStatus)
+        // =========================================================
+        // ATTEMPT STATUS CSS
+        // =========================================================
+
+        protected string GetAttemptStatusCss(object attemptStatus)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "pendinggrading"
-            )
+            if (status == "pendinggrading")
             {
-                return
-                    "attempt-status status-pending";
+                return "attempt-status status-pending";
             }
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
-                return
-                    "attempt-status status-progress";
+                return "attempt-status status-progress";
             }
 
-
-            return
-                "attempt-status status-graded";
+            return "attempt-status status-graded";
         }
 
 
-        protected string GetAttemptScoreCss(
-            object attemptStatus)
+        // =========================================================
+        // ATTEMPT SCORE CSS
+        // =========================================================
+
+        protected string GetAttemptScoreCss(object attemptStatus)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
-                return
-                    "attempt-score attempt-progress-score";
+                return "attempt-score attempt-progress-score";
             }
-
 
             return "attempt-score";
         }
 
-        protected string GetQuizFormat(
-            object mcqCount,
-            object subjectiveCount)
+
+        // =========================================================
+        // QUIZ FORMAT
+        // =========================================================
+
+        protected string GetQuizFormat(object mcqCount, object subjectiveCount)
         {
-            int mcq =
-                Convert.ToInt32(
-                    mcqCount
-                );
+            int mcq = Convert.ToInt32(mcqCount);
+            int subjective = Convert.ToInt32(subjectiveCount);
 
-
-            int subjective =
-                Convert.ToInt32(
-                    subjectiveCount
-                );
-
-
-            if (
-                mcq > 0
-                &&
-                subjective > 0
-            )
+            if (mcq > 0 && subjective > 0)
             {
                 return "Obj + Subj";
             }
 
-
-            if (
-                mcq > 0
-            )
+            if (mcq > 0)
             {
                 return "Objective";
             }
 
-
-            if (
-                subjective > 0
-            )
+            if (subjective > 0)
             {
                 return "Subjective";
             }
-
 
             return "No Questions";
         }
 
 
-        protected string GetAttemptActionText(
-            object attemptStatus)
-        {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+        // =========================================================
+        // ATTEMPT ACTION TEXT
+        // =========================================================
 
+        protected string GetAttemptActionText(object attemptStatus)
+        {
+            string status = NormalizeAttemptStatus(attemptStatus);
 
             return status == "inprogress"
                 ? "Continue"
@@ -1120,61 +759,43 @@ namespace SPMaster.Student
         }
 
 
-        protected string GetAttemptActionCss(
-            object attemptStatus)
+        // =========================================================
+        // ATTEMPT ACTION CSS
+        // =========================================================
+
+        protected string GetAttemptActionCss(object attemptStatus)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
 
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
-                return
-                    "attempt-action-button "
-                    + "attempt-action-primary";
+                return "attempt-action-button attempt-action-primary";
             }
 
-
-            return
-                "attempt-action-button "
-                + "attempt-action-light";
+            return "attempt-action-button attempt-action-light";
         }
 
+
+        // =========================================================
+        // ATTEMPT ACTION URL
+        // =========================================================
 
         protected string GetAttemptActionUrl(
             object attemptId,
             object attemptStatus)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
+            string status = NormalizeAttemptStatus(attemptStatus);
+            int id = Convert.ToInt32(attemptId);
 
-
-            int id =
-                Convert.ToInt32(
-                    attemptId
-                );
-
-
-            if (
-                status == "inprogress"
-            )
+            if (status == "inprogress")
             {
                 return ResolveUrl(
-                    "~/Student/StartQuiz.aspx?attemptId="
-                    + id
+                    "~/Student/StartQuiz.aspx?attemptId=" + id
                 );
             }
 
-
             return ResolveUrl(
-                "~/Student/QuizResult.aspx?attemptId="
-                + id
+                "~/Student/QuizResult.aspx?attemptId=" + id
             );
         }
 
@@ -1183,62 +804,44 @@ namespace SPMaster.Student
         // ATTEMPT SUBJECT ICON
         // =========================================================
 
-        protected string GetAttemptIcon(
-            object subjectName)
+        protected string GetAttemptIcon(object subjectName)
         {
-            string subject =
-                Convert.ToString(
-                    subjectName
-                )
+            string subject = Convert.ToString(subjectName)
                 .Trim()
                 .ToLower();
-
 
             switch (subject)
             {
                 case "mathematics":
-
                     return "bi bi-calculator";
 
-
                 case "sejarah":
-
                     return "bi bi-bank";
 
-
                 case "science":
-
                     return "bi bi-flask";
 
-
                 case "english":
-
-                    return
-                        "bi bi-alphabet-uppercase";
-
+                    return "bi bi-alphabet-uppercase";
 
                 case "bahasa melayu":
-
                     return "bi bi-book";
 
-
                 default:
-
                     return "bi bi-journal-text";
             }
         }
 
 
-        protected string GetAttemptIconCss(
-            object subjectName)
+        // =========================================================
+        // ATTEMPT SUBJECT ICON CSS
+        // =========================================================
+
+        protected string GetAttemptIconCss(object subjectName)
         {
-            string subject =
-                Convert.ToString(
-                    subjectName
-                )
+            string subject = Convert.ToString(subjectName)
                 .Trim()
                 .ToLower();
-
 
             switch (subject)
             {
@@ -1262,81 +865,51 @@ namespace SPMaster.Student
             }
         }
 
-        protected bool CanDeleteAttempt(
-            object attemptStatus)
+
+        // =========================================================
+        // CAN DELETE ATTEMPT
+        // =========================================================
+
+        protected bool CanDeleteAttempt(object attemptStatus)
         {
-            string status =
-                NormalizeAttemptStatus(
-                    attemptStatus
-                );
-
-
-            return status ==
-                "inprogress";
+            return NormalizeAttemptStatus(attemptStatus) == "inprogress";
         }
 
-        private void DeleteAttempt(
-            int attemptId)
+
+        // =========================================================
+        // DELETE ATTEMPT
+        // =========================================================
+
+        private void DeleteAttempt(int attemptId)
         {
             const string verifySql = @"
-        SELECT COUNT(*)
-
-        FROM QuizAttempts
-
-        WHERE
-            AttemptId =
-                @AttemptId
-
-            AND
-            StudentUserId =
-                @StudentUserId
-
-            AND
-            AttemptStatus =
-                'InProgress';
-    ";
-
+                SELECT COUNT(*)
+                FROM QuizAttempts
+                WHERE
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress';
+            ";
 
             const string deleteAnswersSql = @"
-        DELETE FROM StudentAnswers
-
-        WHERE
-            AttemptId =
-                @AttemptId;
-    ";
-
+                DELETE FROM StudentAnswers
+                WHERE
+                    AttemptId = @AttemptId;
+            ";
 
             const string deleteAttemptSql = @"
-        DELETE FROM QuizAttempts
+                DELETE FROM QuizAttempts
+                WHERE
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress';
+            ";
 
-        WHERE
-            AttemptId =
-                @AttemptId
-
-            AND
-            StudentUserId =
-                @StudentUserId
-
-            AND
-            AttemptStatus =
-                'InProgress';
-    ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-
-                using (
-                    SqlTransaction transaction =
-                        connection.BeginTransaction()
-                )
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
                     try
                     {
@@ -1344,42 +917,22 @@ namespace SPMaster.Student
                         // VERIFY OWNERSHIP + STATUS
                         // =============================================
 
-                        using (
-                            SqlCommand verifyCommand =
-                                new SqlCommand(
-                                    verifySql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand verifyCommand = new SqlCommand(
+                            verifySql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            verifyCommand.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                attemptId;
+                            verifyCommand.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                            verifyCommand.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
+                            int count = Convert.ToInt32(
+                                verifyCommand.ExecuteScalar()
+                            );
 
-                            verifyCommand.Parameters.Add(
-                                "@StudentUserId",
-                                SqlDbType.Int
-                            ).Value =
-                                CurrentUserId;
-
-
-                            int count =
-                                Convert.ToInt32(
-                                    verifyCommand
-                                        .ExecuteScalar()
-                                );
-
-
-                            if (
-                                count == 0
-                            )
+                            if (count == 0)
                             {
                                 transaction.Rollback();
-
                                 return;
                             }
                         }
@@ -1389,22 +942,13 @@ namespace SPMaster.Student
                         // DELETE SAVED ANSWERS FIRST
                         // =============================================
 
-                        using (
-                            SqlCommand answerCommand =
-                                new SqlCommand(
-                                    deleteAnswersSql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand answerCommand = new SqlCommand(
+                            deleteAnswersSql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            answerCommand.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                attemptId;
-
-
+                            answerCommand.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
                             answerCommand.ExecuteNonQuery();
                         }
 
@@ -1413,66 +957,44 @@ namespace SPMaster.Student
                         // DELETE ATTEMPT
                         // =============================================
 
-                        using (
-                            SqlCommand attemptCommand =
-                                new SqlCommand(
-                                    deleteAttemptSql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand attemptCommand = new SqlCommand(
+                            deleteAttemptSql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            attemptCommand.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                attemptId;
-
-
-                            attemptCommand.Parameters.Add(
-                                "@StudentUserId",
-                                SqlDbType.Int
-                            ).Value =
-                                CurrentUserId;
-
+                            attemptCommand.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                            attemptCommand.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
                             attemptCommand.ExecuteNonQuery();
                         }
-
 
                         transaction.Commit();
                     }
                     catch
                     {
                         transaction.Rollback();
-
                         throw;
                     }
                 }
             }
         }
 
+
+        // =========================================================
+        // ATTEMPT COMMAND
+        // =========================================================
+
         protected void rptAttempts_ItemCommand(
             object source,
             RepeaterCommandEventArgs e)
         {
-            if (
-                e.CommandName ==
-                "DeleteAttempt"
-            )
+            if (e.CommandName == "DeleteAttempt")
             {
-                int attemptId =
-                    Convert.ToInt32(
-                        e.CommandArgument
-                    );
+                int attemptId = Convert.ToInt32(e.CommandArgument);
 
+                DeleteAttempt(attemptId);
 
-                DeleteAttempt(
-                    attemptId
-                );
-
-
-                // Return to My Attempts tab
                 Response.Redirect(
                     "~/Student/Quizzes.aspx?tab=attempts"
                 );

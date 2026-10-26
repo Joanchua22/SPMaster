@@ -4,11 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web;
 
-
 namespace SPMaster.Student
 {
-    public partial class StartQuiz :
-        System.Web.UI.Page
+    public partial class StartQuiz : System.Web.UI.Page
     {
         // =========================================================
         // CONNECTION
@@ -18,11 +16,7 @@ namespace SPMaster.Student
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -35,9 +29,7 @@ namespace SPMaster.Student
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -52,15 +44,12 @@ namespace SPMaster.Student
             {
                 return ViewState["QuizId"] == null
                     ? 0
-                    : Convert.ToInt32(
-                        ViewState["QuizId"]
-                    );
+                    : Convert.ToInt32(ViewState["QuizId"]);
             }
 
             set
             {
-                ViewState["QuizId"] =
-                    value;
+                ViewState["QuizId"] = value;
             }
         }
 
@@ -75,18 +64,13 @@ namespace SPMaster.Student
             {
                 return ViewState["AttemptId"] == null
                     ? 0
-                    : Convert.ToInt32(
-                        ViewState["AttemptId"]
-                    );
+                    : Convert.ToInt32(ViewState["AttemptId"]);
             }
 
             set
             {
-                ViewState["AttemptId"] =
-                    value;
-
-                hfAttemptId.Value =
-                    value.ToString();
+                ViewState["AttemptId"] = value;
+                hfAttemptId.Value = value.ToString();
             }
         }
 
@@ -99,25 +83,14 @@ namespace SPMaster.Student
         {
             get
             {
-                return ViewState[
-                    "CurrentQuestionIndex"
-                ] == null
-
+                return ViewState["CurrentQuestionIndex"] == null
                     ? 0
-
-                    : Convert.ToInt32(
-                        ViewState[
-                            "CurrentQuestionIndex"
-                        ]
-                    );
+                    : Convert.ToInt32(ViewState["CurrentQuestionIndex"]);
             }
 
             set
             {
-                ViewState[
-                    "CurrentQuestionIndex"
-                ] =
-                    value;
+                ViewState["CurrentQuestionIndex"] = value;
             }
         }
 
@@ -130,32 +103,17 @@ namespace SPMaster.Student
         {
             get
             {
-                return ViewState[
-                    "CurrentQuizQuestionId"
-                ] == null
-
+                return ViewState["CurrentQuizQuestionId"] == null
                     ? 0
-
-                    : Convert.ToInt32(
-                        ViewState[
-                            "CurrentQuizQuestionId"
-                        ]
-                    );
+                    : Convert.ToInt32(ViewState["CurrentQuizQuestionId"]);
             }
 
             set
             {
-                ViewState[
-                    "CurrentQuizQuestionId"
-                ] =
-                    value;
-
-
-                hfQuizQuestionId.Value =
-                    value.ToString();
+                ViewState["CurrentQuizQuestionId"] = value;
+                hfQuizQuestionId.Value = value.ToString();
             }
         }
-
 
 
         // =========================================================
@@ -166,84 +124,60 @@ namespace SPMaster.Student
         {
             get
             {
-                return ViewState[
-                    "CurrentQuestionType"
-                ] == null
-
+                return ViewState["CurrentQuestionType"] == null
                     ? ""
-
-                    : ViewState[
-                        "CurrentQuestionType"
-                    ].ToString();
+                    : ViewState["CurrentQuestionType"].ToString();
             }
 
             set
             {
-                ViewState[
-                    "CurrentQuestionType"
-                ] =
-                    value;
+                ViewState["CurrentQuestionType"] = value;
             }
         }
+
+
+        // =========================================================
+        // ATTEMPT EXPIRED
+        // =========================================================
 
         private bool AttemptExpired
         {
             get
             {
                 return ViewState["AttemptExpired"] != null
-                    &&
-                    Convert.ToBoolean(
-                        ViewState["AttemptExpired"]
-                    );
+                    && Convert.ToBoolean(ViewState["AttemptExpired"]);
             }
 
             set
             {
-                ViewState["AttemptExpired"] =
-                    value;
+                ViewState["AttemptExpired"] = value;
             }
         }
 
 
         // Used while binding MCQ options
-        private int? SelectedOptionId
-        {
-            get;
-            set;
-        }
+        private int? SelectedOptionId { get; set; }
 
 
         // =========================================================
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
-
 
             if (!IsPostBack)
             {
                 if (!InitializeAttempt())
                 {
-                    Response.Redirect(
-                        "~/Student/Quizzes.aspx?tab=attempts"
-                    );
-
+                    Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
                     return;
                 }
-
 
                 // =============================================
                 // EXPIRED ATTEMPT
@@ -251,33 +185,19 @@ namespace SPMaster.Student
 
                 if (AttemptExpired)
                 {
-                    pnlQuizInterface.Visible =
-                        false;
-
-
-                    pnlExpiredAttempt.Visible =
-                        true;
-
-
+                    pnlQuizInterface.Visible = false;
+                    pnlExpiredAttempt.Visible = true;
                     return;
                 }
-
 
                 // =============================================
                 // VALID ATTEMPT
                 // =============================================
 
-                pnlQuizInterface.Visible =
-                    true;
+                pnlQuizInterface.Visible = true;
+                pnlExpiredAttempt.Visible = false;
 
-
-                pnlExpiredAttempt.Visible =
-                    false;
-
-
-                CurrentQuestionIndex =
-                    0;
-
+                CurrentQuestionIndex = 0;
 
                 BindQuizScreen();
             }
@@ -292,78 +212,44 @@ namespace SPMaster.Student
         {
             int attemptId;
 
-
             // -----------------------------------------------------
             // CONTINUE EXISTING ATTEMPT
             // -----------------------------------------------------
 
-            if (
-                int.TryParse(
-                    Request.QueryString[
-                        "attemptId"
-                    ],
-                    out attemptId
-                )
-            )
+            if (int.TryParse(Request.QueryString["attemptId"], out attemptId))
             {
-                return LoadExistingAttempt(
-                    attemptId
-                );
+                return LoadExistingAttempt(attemptId);
             }
 
-
             int quizId;
-
 
             // -----------------------------------------------------
             // START QUIZ
             // -----------------------------------------------------
 
-            if (
-                !int.TryParse(
-                    Request.QueryString[
-                        "quizId"
-                    ],
-                    out quizId
-                )
-            )
+            if (!int.TryParse(Request.QueryString["quizId"], out quizId))
             {
                 return false;
             }
 
-
-            QuizId =
-                quizId;
-
+            QuizId = quizId;
 
             if (!QuizCanBeStarted())
             {
                 return false;
             }
 
-
             // Check whether student already has
             // an unfinished attempt
+            int existingAttemptId = GetExistingAttempt();
 
-            int existingAttemptId =
-                GetExistingAttempt();
-
-
-            if (
-                existingAttemptId > 0
-            )
+            if (existingAttemptId > 0)
             {
-                AttemptId =
-                    existingAttemptId;
-
-
+                AttemptId = existingAttemptId;
                 return true;
             }
 
-
-            AttemptId =
-                CreateAttempt();
-
+            AttemptId = CreateAttempt();
 
             return AttemptId > 0;
         }
@@ -373,8 +259,7 @@ namespace SPMaster.Student
         // LOAD EXISTING ATTEMPT
         // =========================================================
 
-        private bool LoadExistingAttempt(
-            int attemptId)
+        private bool LoadExistingAttempt(int attemptId)
         {
             const string sql = @"
                 SELECT
@@ -382,126 +267,51 @@ namespace SPMaster.Student
                     QuizId,
                     ExpiresAt,
                     AttemptStatus
-
                 FROM QuizAttempts
-
                 WHERE
-                    AttemptId =
-                        @AttemptId
-
-                    AND
-                    StudentUserId =
-                        @StudentUserId;
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        attemptId;
-
-
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    if (!reader.Read())
                     {
-                        if (!reader.Read())
-                        {
-                            return false;
-                        }
+                        return false;
+                    }
 
+                    string status = reader["AttemptStatus"].ToString();
 
-                        string status =
-                            reader[
-                                "AttemptStatus"
-                            ].ToString();
+                    if (!status.Equals("InProgress", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
 
+                    AttemptId = attemptId;
+                    QuizId = Convert.ToInt32(reader["QuizId"]);
 
-                        if (
-                            !status.Equals(
-                                "InProgress",
-                                StringComparison
-                                    .OrdinalIgnoreCase
-                            )
-                        )
-                        {
-                            return false;
-                        }
+                    DateTime expiresAt = Convert.ToDateTime(reader["ExpiresAt"]);
 
-
-                        AttemptId =
-                            attemptId;
-
-
-                        QuizId =
-                            Convert.ToInt32(
-                                reader[
-                                    "QuizId"
-                                ]
-                            );
-
-
-                        DateTime expiresAt =
-                            Convert.ToDateTime(
-                                reader[
-                                    "ExpiresAt"
-                                ]
-                            );
-
-
-                        if (
-                            expiresAt <=
-                            DateTime.Now
-                        )
-                        {
-                            AttemptId =
-                                attemptId;
-
-
-                            QuizId =
-                                Convert.ToInt32(
-                                    reader["QuizId"]
-                                );
-
-
-                            AttemptExpired =
-                                true;
-
-
-                            return true;
-                        }
-
-                        AttemptExpired = false;
+                    if (expiresAt <= DateTime.Now)
+                    {
+                        AttemptId = attemptId;
+                        QuizId = Convert.ToInt32(reader["QuizId"]);
+                        AttemptExpired = true;
 
                         return true;
                     }
+
+                    AttemptExpired = false;
+
+                    return true;
                 }
             }
         }
@@ -515,61 +325,27 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 SELECT COUNT(*)
-
                 FROM Quizzes q
-
                 WHERE
-                    q.QuizId =
-                        @QuizId
-
-                    AND
-                    q.IsPublished = 1
-
-                    AND
-                    q.IsArchived = 0
-
+                    q.QuizId = @QuizId
+                    AND q.IsPublished = 1
+                    AND q.IsArchived = 0
                     AND EXISTS
                     (
                         SELECT 1
-
                         FROM QuizQuestions qq
-
-                        WHERE
-                            qq.QuizId =
-                                q.QuizId
+                        WHERE qq.QuizId = q.QuizId
                     );
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
 
+                connection.Open();
 
-                    connection.Open();
-
-
-                    return Convert.ToInt32(
-                        command.ExecuteScalar()
-                    ) > 0;
-                }
+                return Convert.ToInt32(command.ExecuteScalar()) > 0;
             }
         }
 
@@ -583,75 +359,28 @@ namespace SPMaster.Student
             const string sql = @"
                 SELECT TOP 1
                     AttemptId
-
                 FROM QuizAttempts
-
                 WHERE
-                    QuizId =
-                        @QuizId
-
-                    AND
-                    StudentUserId =
-                        @StudentUserId
-
-                    AND
-                    AttemptStatus =
-                        'InProgress'
-
-                    AND
-                    ExpiresAt >
-                        GETDATE()
-
-                ORDER BY
-                    StartedAt DESC;
+                    QuizId = @QuizId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress'
+                    AND ExpiresAt > GETDATE()
+                ORDER BY StartedAt DESC;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
+                connection.Open();
 
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
+                object result = command.ExecuteScalar();
 
-
-                    connection.Open();
-
-
-                    object result =
-                        command.ExecuteScalar();
-
-
-                    return result == null
-                        || result == DBNull.Value
-
-                        ? 0
-
-                        : Convert.ToInt32(
-                            result
-                        );
-                }
+                return result == null || result == DBNull.Value
+                    ? 0
+                    : Convert.ToInt32(result);
             }
         }
 
@@ -665,17 +394,10 @@ namespace SPMaster.Student
             const string sql = @"
                 DECLARE @TimeLimit INT;
 
-
                 SELECT
-                    @TimeLimit =
-                        TimeLimitMinutes
-
+                    @TimeLimit = TimeLimitMinutes
                 FROM Quizzes
-
-                WHERE
-                    QuizId =
-                        @QuizId;
-
+                WHERE QuizId = @QuizId;
 
                 INSERT INTO QuizAttempts
                 (
@@ -686,65 +408,28 @@ namespace SPMaster.Student
                     SubmittedAt,
                     AttemptStatus
                 )
-
                 VALUES
                 (
                     @QuizId,
                     @StudentUserId,
                     GETDATE(),
-                    DATEADD(
-                        MINUTE,
-                        @TimeLimit,
-                        GETDATE()
-                    ),
+                    DATEADD(MINUTE, @TimeLimit, GETDATE()),
                     NULL,
                     'InProgress'
                 );
 
-
-                SELECT CAST(
-                    SCOPE_IDENTITY()
-                    AS INT
-                );
+                SELECT CAST(SCOPE_IDENTITY() AS INT);
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
+                connection.Open();
 
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    return Convert.ToInt32(
-                        command.ExecuteScalar()
-                    );
-                }
+                return Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
@@ -756,13 +441,9 @@ namespace SPMaster.Student
         private void BindQuizScreen()
         {
             BindQuizHeader();
-
             BindQuestionNavigation();
-
             BindCurrentQuestion();
-
             BindTimer();
-
             UpdateNavigationButtons();
         }
 
@@ -776,51 +457,20 @@ namespace SPMaster.Student
             const string sql = @"
                 SELECT
                     Title
-
                 FROM Quizzes
-
-                WHERE
-                    QuizId =
-                        @QuizId;
+                WHERE QuizId = @QuizId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
 
+                connection.Open();
 
-                    connection.Open();
+                object title = command.ExecuteScalar();
 
-
-                    object title =
-                        command.ExecuteScalar();
-
-
-                    litQuizTitle.Text =
-                        Server.HtmlEncode(
-                            Convert.ToString(
-                                title
-                            )
-                        );
-                }
+                litQuizTitle.Text = Server.HtmlEncode(Convert.ToString(title));
             }
         }
 
@@ -837,66 +487,31 @@ namespace SPMaster.Student
                     qq.QuestionId,
                     qq.QuestionOrder,
                     qq.MaxMarks,
-
                     q.QuestionText,
                     q.QuestionType,
+                    q.HintText,
                     q.MediaPath
-
                 FROM QuizQuestions qq
-
                 INNER JOIN Questions q
-                    ON qq.QuestionId =
-                       q.QuestionId
-
+                    ON qq.QuestionId = q.QuestionId
                 WHERE
-                    qq.QuizId =
-                        @QuizId
-
+                    qq.QuizId = @QuizId
                 ORDER BY
                     qq.QuestionOrder;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
-
 
             return table;
         }
@@ -910,128 +525,57 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 SELECT
-                    ROW_NUMBER()
-                    OVER
+                    ROW_NUMBER() OVER
                     (
-                        ORDER BY
-                            qq.QuestionOrder
-                    ) - 1
-                        AS QuestionIndex,
+                        ORDER BY qq.QuestionOrder
+                    ) - 1 AS QuestionIndex,
 
-                    ROW_NUMBER()
-                    OVER
+                    ROW_NUMBER() OVER
                     (
-                        ORDER BY
-                            qq.QuestionOrder
-                    )
-                        AS QuestionNumber,
+                        ORDER BY qq.QuestionOrder
+                    ) AS QuestionNumber,
 
                     CASE
                         WHEN EXISTS
                         (
                             SELECT 1
-
                             FROM StudentAnswers sa
-
                             WHERE
-                                sa.AttemptId =
-                                    @AttemptId
-
-                                AND
-                                sa.QuizQuestionId =
-                                    qq.QuizQuestionId
-
+                                sa.AttemptId = @AttemptId
+                                AND sa.QuizQuestionId = qq.QuizQuestionId
                                 AND
                                 (
-                                    sa.SelectedOptionId
-                                        IS NOT NULL
-
+                                    sa.SelectedOptionId IS NOT NULL
                                     OR
-
-                                    LTRIM(
-                                        RTRIM(
-                                            ISNULL(
-                                                sa.AnswerText,
-                                                ''
-                                            )
-                                        )
-                                    ) <> ''
+                                    LTRIM(RTRIM(ISNULL(sa.AnswerText, ''))) <> ''
                                 )
                         )
-
-                        THEN CAST(
-                            1 AS BIT
-                        )
-
-                        ELSE CAST(
-                            0 AS BIT
-                        )
-
+                        THEN CAST(1 AS BIT)
+                        ELSE CAST(0 AS BIT)
                     END AS IsAnswered
 
                 FROM QuizQuestions qq
-
                 WHERE
-                    qq.QuizId =
-                        @QuizId
-
+                    qq.QuizId = @QuizId
                 ORDER BY
                     qq.QuestionOrder;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
-
-
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
 
-
-            rptQuestionNavigation.DataSource =
-                table;
-
-
+            rptQuestionNavigation.DataSource = table;
             rptQuestionNavigation.DataBind();
         }
 
@@ -1042,75 +586,35 @@ namespace SPMaster.Student
 
         private void BindCurrentQuestion()
         {
-            DataTable questions =
-                GetQuizQuestions();
+            DataTable questions = GetQuizQuestions();
 
-
-            if (
-                questions.Rows.Count == 0
-            )
+            if (questions.Rows.Count == 0)
             {
-                Response.Redirect(
-                    "~/Student/Quizzes.aspx"
-                );
-
+                Response.Redirect("~/Student/Quizzes.aspx");
                 return;
             }
 
-
-            if (
-                CurrentQuestionIndex < 0
-            )
+            if (CurrentQuestionIndex < 0)
             {
-                CurrentQuestionIndex =
-                    0;
+                CurrentQuestionIndex = 0;
             }
 
-
-            if (
-                CurrentQuestionIndex >=
-                questions.Rows.Count
-            )
+            if (CurrentQuestionIndex >= questions.Rows.Count)
             {
-                CurrentQuestionIndex =
-                    questions.Rows.Count - 1;
+                CurrentQuestionIndex = questions.Rows.Count - 1;
             }
 
+            DataRow row = questions.Rows[CurrentQuestionIndex];
 
-            DataRow row =
-                questions.Rows[
-                    CurrentQuestionIndex
-                ];
+            int questionId = Convert.ToInt32(row["QuestionId"]);
 
+            CurrentQuizQuestionId = Convert.ToInt32(row["QuizQuestionId"]);
+            CurrentQuestionType = row["QuestionType"].ToString();
 
-            int questionId =
-                Convert.ToInt32(
-                    row[
-                        "QuestionId"
-                    ]
-                );
-
-
-            CurrentQuizQuestionId =
-                Convert.ToInt32(
-                    row[
-                        "QuizQuestionId"
-                    ]
-                );
-
-
-            CurrentQuestionType =
-                row[
-                    "QuestionType"
-                ].ToString();
-
-
-            bool isMcq =
-                CurrentQuestionType.Equals(
-                    "MCQ",
-                    StringComparison
-                        .OrdinalIgnoreCase
-                );
+            bool isMcq = CurrentQuestionType.Equals(
+                "MCQ",
+                StringComparison.OrdinalIgnoreCase
+            );
 
 
             // -----------------------------------------------------
@@ -1119,10 +623,7 @@ namespace SPMaster.Student
 
             litCurrentQuestion.Text =
                 "Question "
-                + (
-                    CurrentQuestionIndex
-                    + 1
-                )
+                + (CurrentQuestionIndex + 1)
                 + " of "
                 + questions.Rows.Count;
 
@@ -1133,9 +634,7 @@ namespace SPMaster.Student
 
             litQuestionType.Text =
                 isMcq
-
                     ? "Single Choice • Section A"
-
                     : "Subjective • Section B";
 
 
@@ -1143,24 +642,12 @@ namespace SPMaster.Student
             // MARKS
             // -----------------------------------------------------
 
-            decimal marks =
-                Convert.ToDecimal(
-                    row[
-                        "MaxMarks"
-                    ]
-                );
-
+            decimal marks = Convert.ToDecimal(row["MaxMarks"]);
 
             litQuestionMarks.Text =
                 "+"
-                + marks.ToString(
-                    "0.##"
-                )
-                + (
-                    marks == 1
-                        ? " Mark"
-                        : " Marks"
-                );
+                + marks.ToString("0.##")
+                + (marks == 1 ? " Mark" : " Marks");
 
 
             // -----------------------------------------------------
@@ -1170,23 +657,28 @@ namespace SPMaster.Student
             litQuestionText.Text =
                 Server.HtmlEncode(
                     "Question "
-                    + (
-                        CurrentQuestionIndex
-                        + 1
-                    )
+                    + (CurrentQuestionIndex + 1)
                     + ": "
-                    + row[
-                        "QuestionText"
-                    ].ToString()
+                    + row["QuestionText"].ToString()
                 );
-
 
             litQuestionInstruction.Text =
                 isMcq
-
                     ? "Select one correct answer from the options below."
-
                     : "Write your answer clearly and include any relevant working or explanation.";
+
+
+            // -----------------------------------------------------
+            // STUDENT HINT
+            // -----------------------------------------------------
+
+            string hintText =
+                row["HintText"] == DBNull.Value
+                    ? ""
+                    : row["HintText"].ToString();
+
+            pnlQuestionHint.Visible = !string.IsNullOrWhiteSpace(hintText);
+            litQuestionHint.Text = Server.HtmlEncode(hintText);
 
 
             // -----------------------------------------------------
@@ -1194,36 +686,18 @@ namespace SPMaster.Student
             // -----------------------------------------------------
 
             string mediaPath =
-                row[
-                    "MediaPath"
-                ] == DBNull.Value
-
+                row["MediaPath"] == DBNull.Value
                     ? ""
+                    : row["MediaPath"].ToString();
 
-                    : row[
-                        "MediaPath"
-                    ].ToString();
-
-
-            if (
-                !string.IsNullOrWhiteSpace(
-                    mediaPath
-                )
-            )
+            if (!string.IsNullOrWhiteSpace(mediaPath))
             {
-                imgQuestion.ImageUrl =
-                    GetMediaUrl(
-                        mediaPath
-                    );
-
-
-                pnlQuestionImage.Visible =
-                    true;
+                imgQuestion.ImageUrl = GetMediaUrl(mediaPath);
+                pnlQuestionImage.Visible = true;
             }
             else
             {
-                pnlQuestionImage.Visible =
-                    false;
+                pnlQuestionImage.Visible = false;
             }
 
 
@@ -1233,7 +707,6 @@ namespace SPMaster.Student
 
             object selectedOption;
             string answerText;
-
 
             LoadSavedAnswer(
                 out selectedOption,
@@ -1247,28 +720,15 @@ namespace SPMaster.Student
 
             if (isMcq)
             {
-                phObjective.Visible =
-                    true;
-
-
-                phSubjective.Visible =
-                    false;
-
+                phObjective.Visible = true;
+                phSubjective.Visible = false;
 
                 SelectedOptionId =
-                    selectedOption == null
-                    || selectedOption == DBNull.Value
-
+                    selectedOption == null || selectedOption == DBNull.Value
                         ? (int?)null
+                        : Convert.ToInt32(selectedOption);
 
-                        : Convert.ToInt32(
-                            selectedOption
-                        );
-
-
-                BindOptions(
-                    questionId
-                );
+                BindOptions(questionId);
             }
 
 
@@ -1278,16 +738,10 @@ namespace SPMaster.Student
 
             else
             {
-                phObjective.Visible =
-                    false;
+                phObjective.Visible = false;
+                phSubjective.Visible = true;
 
-
-                phSubjective.Visible =
-                    true;
-
-
-                txtSubjectiveAnswer.Text =
-                    answerText;
+                txtSubjectiveAnswer.Text = answerText;
             }
         }
 
@@ -1296,8 +750,7 @@ namespace SPMaster.Student
         // LOAD OPTIONS
         // =========================================================
 
-        private void BindOptions(
-            int questionId)
+        private void BindOptions(int questionId)
         {
             const string sql = @"
                 SELECT
@@ -1309,68 +762,30 @@ namespace SPMaster.Student
                         WHEN 2 THEN 'B'
                         WHEN 3 THEN 'C'
                         WHEN 4 THEN 'D'
-                        ELSE CAST(
-                            DisplayOrder
-                            AS VARCHAR(10)
-                        )
+                        ELSE CAST(DisplayOrder AS VARCHAR(10))
                     END AS OptionLetter
 
                 FROM QuestionOptions
-
                 WHERE
-                    QuestionId =
-                        @QuestionId
-
+                    QuestionId = @QuestionId
                 ORDER BY
                     DisplayOrder;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        questionId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
 
-
-            rptOptions.DataSource =
-                table;
-
-
+            rptOptions.DataSource = table;
             rptOptions.DataBind();
         }
 
@@ -1379,95 +794,42 @@ namespace SPMaster.Student
         // EXISTING ANSWER
         // =========================================================
 
-        private void LoadSavedAnswer(
-            out object selectedOptionId,
-            out string answerText)
+        private void LoadSavedAnswer(out object selectedOptionId, out string answerText)
         {
-            selectedOptionId =
-                null;
-
-
-            answerText =
-                "";
-
+            selectedOptionId = null;
+            answerText = "";
 
             const string sql = @"
                 SELECT
                     SelectedOptionId,
                     AnswerText
-
                 FROM StudentAnswers
-
                 WHERE
-                    AttemptId =
-                        @AttemptId
-
-                    AND
-                    QuizQuestionId =
-                        @QuizQuestionId;
+                    AttemptId = @AttemptId
+                    AND QuizQuestionId = @QuizQuestionId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = CurrentQuizQuestionId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
-
-
-                    command.Parameters.Add(
-                        "@QuizQuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentQuizQuestionId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    if (!reader.Read())
                     {
-                        if (!reader.Read())
-                        {
-                            return;
-                        }
-
-
-                        selectedOptionId =
-                            reader[
-                                "SelectedOptionId"
-                            ];
-
-
-                        answerText =
-                            reader[
-                                "AnswerText"
-                            ] == DBNull.Value
-
-                                ? ""
-
-                                : reader[
-                                    "AnswerText"
-                                ].ToString();
+                        return;
                     }
+
+                    selectedOptionId = reader["SelectedOptionId"];
+
+                    answerText =
+                        reader["AnswerText"] == DBNull.Value
+                            ? ""
+                            : reader["AnswerText"].ToString();
                 }
             }
         }
@@ -1479,28 +841,18 @@ namespace SPMaster.Student
 
         private void SaveCurrentAnswer()
         {
-            if (
-                CurrentQuizQuestionId <= 0
-            )
+            if (CurrentQuizQuestionId <= 0)
             {
                 return;
             }
 
+            bool isMcq = CurrentQuestionType.Equals(
+                "MCQ",
+                StringComparison.OrdinalIgnoreCase
+            );
 
-            bool isMcq =
-                CurrentQuestionType.Equals(
-                    "MCQ",
-                    StringComparison
-                        .OrdinalIgnoreCase
-                );
-
-
-            int? selectedOptionId =
-                null;
-
-
-            string answerText =
-                null;
+            int? selectedOptionId = null;
+            string answerText = null;
 
 
             // -----------------------------------------------------
@@ -1511,18 +863,9 @@ namespace SPMaster.Student
             {
                 int optionId;
 
-
-                if (
-                    int.TryParse(
-                        Request.Form[
-                            "objectiveAnswer"
-                        ],
-                        out optionId
-                    )
-                )
+                if (int.TryParse(Request.Form["objectiveAnswer"], out optionId))
                 {
-                    selectedOptionId =
-                        optionId;
+                    selectedOptionId = optionId;
                 }
             }
 
@@ -1533,10 +876,7 @@ namespace SPMaster.Student
 
             else
             {
-                answerText =
-                    txtSubjectiveAnswer
-                        .Text
-                        .Trim();
+                answerText = txtSubjectiveAnswer.Text.Trim();
             }
 
 
@@ -1544,16 +884,9 @@ namespace SPMaster.Student
             // NO ANSWER
             // -----------------------------------------------------
 
-            if (
-                selectedOptionId == null
-                &&
-                string.IsNullOrWhiteSpace(
-                    answerText
-                )
-            )
+            if (selectedOptionId == null && string.IsNullOrWhiteSpace(answerText))
             {
                 DeleteCurrentAnswer();
-
                 return;
             }
 
@@ -1562,46 +895,23 @@ namespace SPMaster.Student
                 IF EXISTS
                 (
                     SELECT 1
-
                     FROM StudentAnswers
-
                     WHERE
-                        AttemptId =
-                            @AttemptId
-
-                        AND
-                        QuizQuestionId =
-                            @QuizQuestionId
+                        AttemptId = @AttemptId
+                        AND QuizQuestionId = @QuizQuestionId
                 )
-
                 BEGIN
-
                     UPDATE StudentAnswers
-
                     SET
-                        SelectedOptionId =
-                            @SelectedOptionId,
-
-                        AnswerText =
-                            @AnswerText,
-
-                        MarksAwarded =
-                            NULL
-
+                        SelectedOptionId = @SelectedOptionId,
+                        AnswerText = @AnswerText,
+                        MarksAwarded = NULL
                     WHERE
-                        AttemptId =
-                            @AttemptId
-
-                        AND
-                        QuizQuestionId =
-                            @QuizQuestionId;
-
+                        AttemptId = @AttemptId
+                        AND QuizQuestionId = @QuizQuestionId;
                 END
-
                 ELSE
-
                 BEGIN
-
                     INSERT INTO StudentAnswers
                     (
                         AttemptId,
@@ -1610,7 +920,6 @@ namespace SPMaster.Student
                         AnswerText,
                         MarksAwarded
                     )
-
                     VALUES
                     (
                         @AttemptId,
@@ -1619,71 +928,27 @@ namespace SPMaster.Student
                         @AnswerText,
                         NULL
                     );
-
                 END
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = CurrentQuizQuestionId;
 
+                command.Parameters.Add("@SelectedOptionId", SqlDbType.Int).Value =
+                    selectedOptionId.HasValue
+                        ? (object)selectedOptionId.Value
+                        : DBNull.Value;
 
-                    command.Parameters.Add(
-                        "@QuizQuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentQuizQuestionId;
+                command.Parameters.Add("@AnswerText", SqlDbType.NVarChar, -1).Value =
+                    string.IsNullOrWhiteSpace(answerText)
+                        ? (object)DBNull.Value
+                        : answerText;
 
-
-                    command.Parameters.Add(
-                        "@SelectedOptionId",
-                        SqlDbType.Int
-                    ).Value =
-                        selectedOptionId.HasValue
-
-                            ? (object)
-                                selectedOptionId.Value
-
-                            : DBNull.Value;
-
-
-                    command.Parameters.Add(
-                        "@AnswerText",
-                        SqlDbType.NVarChar,
-                        -1
-                    ).Value =
-                        string.IsNullOrWhiteSpace(
-                            answerText
-                        )
-
-                            ? (object)DBNull.Value
-
-                            : answerText;
-
-
-                    connection.Open();
-
-
-                    command.ExecuteNonQuery();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
@@ -1696,51 +961,19 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 DELETE FROM StudentAnswers
-
                 WHERE
-                    AttemptId =
-                        @AttemptId
-
-                    AND
-                    QuizQuestionId =
-                        @QuizQuestionId;
+                    AttemptId = @AttemptId
+                    AND QuizQuestionId = @QuizQuestionId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@QuizQuestionId", SqlDbType.Int).Value = CurrentQuizQuestionId;
 
-
-                    command.Parameters.Add(
-                        "@QuizQuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentQuizQuestionId;
-
-
-                    connection.Open();
-
-
-                    command.ExecuteNonQuery();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
@@ -1749,20 +982,14 @@ namespace SPMaster.Student
         // PREVIOUS
         // =========================================================
 
-        protected void btnPreviousQuestion_Click(
-            object sender,
-            EventArgs e)
+        protected void btnPreviousQuestion_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
 
-
-            if (
-                CurrentQuestionIndex > 0
-            )
+            if (CurrentQuestionIndex > 0)
             {
                 CurrentQuestionIndex--;
             }
-
 
             BindQuizScreen();
         }
@@ -1772,25 +999,16 @@ namespace SPMaster.Student
         // NEXT
         // =========================================================
 
-        protected void btnNextQuestion_Click(
-            object sender,
-            EventArgs e)
+        protected void btnNextQuestion_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
 
+            int totalQuestions = GetQuestionCount();
 
-            int totalQuestions =
-                GetQuestionCount();
-
-
-            if (
-                CurrentQuestionIndex <
-                totalQuestions - 1
-            )
+            if (CurrentQuestionIndex < totalQuestions - 1)
             {
                 CurrentQuestionIndex++;
             }
-
 
             BindQuizScreen();
         }
@@ -1800,39 +1018,21 @@ namespace SPMaster.Student
         // QUESTION NUMBER
         // =========================================================
 
-        protected void btnGoQuestionServer_Click(
-            object sender,
-            EventArgs e)
+        protected void btnGoQuestionServer_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
 
-
             int targetIndex;
 
-
-            if (
-                int.TryParse(
-                    hfGoQuestionIndex.Value,
-                    out targetIndex
-                )
-            )
+            if (int.TryParse(hfGoQuestionIndex.Value, out targetIndex))
             {
-                int totalQuestions =
-                    GetQuestionCount();
+                int totalQuestions = GetQuestionCount();
 
-
-                if (
-                    targetIndex >= 0
-                    &&
-                    targetIndex <
-                    totalQuestions
-                )
+                if (targetIndex >= 0 && targetIndex < totalQuestions)
                 {
-                    CurrentQuestionIndex =
-                        targetIndex;
+                    CurrentQuestionIndex = targetIndex;
                 }
             }
-
 
             BindQuizScreen();
         }
@@ -1842,13 +1042,9 @@ namespace SPMaster.Student
         // CLEAR
         // =========================================================
 
-        protected void btnClearAnswer_Click(
-            object sender,
-            EventArgs e)
+        protected void btnClearAnswer_Click(object sender, EventArgs e)
         {
             DeleteCurrentAnswer();
-
-
             BindQuizScreen();
         }
 
@@ -1857,16 +1053,10 @@ namespace SPMaster.Student
         // EXIT
         // =========================================================
 
-        protected void btnExitQuiz_Click(
-            object sender,
-            EventArgs e)
+        protected void btnExitQuiz_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
-
-
-            Response.Redirect(
-                "~/Student/Quizzes.aspx?tab=attempts"
-            );
+            Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
         }
 
 
@@ -1874,19 +1064,12 @@ namespace SPMaster.Student
         // MANUAL SUBMIT
         // =========================================================
 
-        protected void btnConfirmSubmit_Click(
-            object sender,
-            EventArgs e)
+        protected void btnConfirmSubmit_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
-
-
             FinalizeAttempt();
 
-
-            Response.Redirect(
-                "~/Student/Quizzes.aspx?tab=attempts"
-            );
+            Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
         }
 
 
@@ -1894,26 +1077,18 @@ namespace SPMaster.Student
         // TIME UP
         // =========================================================
 
-        protected void btnTimeUp_Click(
-            object sender,
-            EventArgs e)
+        protected void btnTimeUp_Click(object sender, EventArgs e)
         {
             SaveCurrentAnswer();
-
 
             // Automatically grade MCQ and
             // change attempt status to
             // Graded / PendingGrading
             FinalizeAttempt();
 
-            pnlQuizInterface.Visible =
-                false;
-
-            pnlExpiredAttempt.Visible =
-                false;
-
-            pnlTimeUpSubmitted.Visible =
-                true;
+            pnlQuizInterface.Visible = false;
+            pnlExpiredAttempt.Visible = false;
+            pnlTimeUpSubmitted.Visible = true;
         }
 
 
@@ -1921,13 +1096,9 @@ namespace SPMaster.Student
         // TIME UP - CONTINUE
         // =========================================================
 
-        protected void btnTimeUpContinue_Click(
-            object sender,
-            EventArgs e)
+        protected void btnTimeUpContinue_Click(object sender, EventArgs e)
         {
-            Response.Redirect(
-                "~/Student/Quizzes.aspx?tab=attempts"
-            );
+            Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
         }
 
 
@@ -1939,85 +1110,33 @@ namespace SPMaster.Student
         {
             AutoGradeMcq();
 
-
-            bool hasSubjective =
-                QuizHasSubjectiveQuestions();
-
+            bool hasSubjective = QuizHasSubjectiveQuestions();
 
             string finalStatus =
                 hasSubjective
-
                     ? "PendingGrading"
-
                     : "Graded";
-
 
             const string sql = @"
                 UPDATE QuizAttempts
-
                 SET
-                    SubmittedAt =
-                        GETDATE(),
-
-                    AttemptStatus =
-                        @AttemptStatus
-
+                    SubmittedAt = GETDATE(),
+                    AttemptStatus = @AttemptStatus
                 WHERE
-                    AttemptId =
-                        @AttemptId
-
-                    AND
-                    StudentUserId =
-                        @StudentUserId
-
-                    AND
-                    AttemptStatus =
-                        'InProgress';
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress';
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@AttemptStatus",
-                        SqlDbType.NVarChar,
-                        50
-                    ).Value =
-                        finalStatus;
+                command.Parameters.Add("@AttemptStatus", SqlDbType.NVarChar, 50).Value = finalStatus;
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
-
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
-
-
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    command.ExecuteNonQuery();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
@@ -2030,7 +1149,6 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 UPDATE sa
-
                 SET
                     sa.MarksAwarded =
                         CASE
@@ -2042,54 +1160,26 @@ namespace SPMaster.Student
                 FROM StudentAnswers sa
 
                 INNER JOIN QuizQuestions qq
-                    ON sa.QuizQuestionId =
-                       qq.QuizQuestionId
+                    ON sa.QuizQuestionId = qq.QuizQuestionId
 
                 INNER JOIN Questions q
-                    ON qq.QuestionId =
-                       q.QuestionId
+                    ON qq.QuestionId = q.QuestionId
 
                 LEFT JOIN QuestionOptions qo
-                    ON sa.SelectedOptionId =
-                       qo.OptionId
+                    ON sa.SelectedOptionId = qo.OptionId
 
                 WHERE
-                    sa.AttemptId =
-                        @AttemptId
-
-                    AND
-                    q.QuestionType =
-                        'MCQ';
+                    sa.AttemptId = @AttemptId
+                    AND q.QuestionType = 'MCQ';
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
 
-
-                    connection.Open();
-
-
-                    command.ExecuteNonQuery();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
@@ -2102,52 +1192,24 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 SELECT COUNT(*)
-
                 FROM QuizQuestions qq
 
                 INNER JOIN Questions q
-                    ON qq.QuestionId =
-                       q.QuestionId
+                    ON qq.QuestionId = q.QuestionId
 
                 WHERE
-                    qq.QuizId =
-                        @QuizId
-
-                    AND
-                    q.QuestionType <>
-                        'MCQ';
+                    qq.QuizId = @QuizId
+                    AND q.QuestionType <> 'MCQ';
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
 
+                connection.Open();
 
-                    connection.Open();
-
-
-                    return Convert.ToInt32(
-                        command.ExecuteScalar()
-                    ) > 0;
-                }
+                return Convert.ToInt32(command.ExecuteScalar()) > 0;
             }
         }
 
@@ -2161,83 +1223,34 @@ namespace SPMaster.Student
             const string sql = @"
                 SELECT
                     ExpiresAt
-
                 FROM QuizAttempts
-
                 WHERE
-                    AttemptId =
-                        @AttemptId
-
-                    AND
-                    StudentUserId =
-                        @StudentUserId;
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
+                connection.Open();
 
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
+                DateTime expiresAt = Convert.ToDateTime(command.ExecuteScalar());
 
-
-                    connection.Open();
-
-
-                    DateTime expiresAt =
-                        Convert.ToDateTime(
-                            command.ExecuteScalar()
-                        );
-
-
-                    int remainingSeconds =
-                        Convert.ToInt32(
-                            Math.Ceiling(
-                                (
-                                    expiresAt
-                                    -
-                                    DateTime.Now
-                                )
-                                .TotalSeconds
-                            )
-                        );
-
-
-                    if (
-                        remainingSeconds < 0
+                int remainingSeconds = Convert.ToInt32(
+                    Math.Ceiling(
+                        (expiresAt - DateTime.Now).TotalSeconds
                     )
-                    {
-                        remainingSeconds =
-                            0;
-                    }
+                );
 
-
-                    hfRemainingSeconds.Value =
-                        remainingSeconds
-                            .ToString();
+                if (remainingSeconds < 0)
+                {
+                    remainingSeconds = 0;
                 }
+
+                hfRemainingSeconds.Value = remainingSeconds.ToString();
             }
         }
 
@@ -2250,44 +1263,19 @@ namespace SPMaster.Student
         {
             const string sql = @"
                 SELECT COUNT(*)
-
                 FROM QuizQuestions
-
                 WHERE
-                    QuizId =
-                        @QuizId;
+                    QuizId = @QuizId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
 
+                connection.Open();
 
-                    connection.Open();
-
-
-                    return Convert.ToInt32(
-                        command.ExecuteScalar()
-                    );
-                }
+                return Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
@@ -2298,32 +1286,18 @@ namespace SPMaster.Student
 
         private void UpdateNavigationButtons()
         {
-            int total =
-                GetQuestionCount();
+            int total = GetQuestionCount();
 
+            btnPreviousQuestion.Enabled = CurrentQuestionIndex > 0;
+            btnNextQuestion.Enabled = CurrentQuestionIndex < total - 1;
 
-            btnPreviousQuestion.Enabled =
-                CurrentQuestionIndex > 0;
-
-
-            btnNextQuestion.Enabled =
-                CurrentQuestionIndex
-                <
-                total - 1;
-
-
-            if (
-                CurrentQuestionIndex ==
-                total - 1
-            )
+            if (CurrentQuestionIndex == total - 1)
             {
-                btnNextQuestion.Text =
-                    "Last Question";
+                btnNextQuestion.Text = "Last Question";
             }
             else
             {
-                btnNextQuestion.Text =
-                    "Next";
+                btnNextQuestion.Text = "Next";
             }
         }
 
@@ -2332,26 +1306,16 @@ namespace SPMaster.Student
         // OPTION CHECKED
         // =========================================================
 
-        protected string GetOptionChecked(
-            object optionId)
+        protected string GetOptionChecked(object optionId)
         {
-            if (
-                !SelectedOptionId.HasValue
-            )
+            if (!SelectedOptionId.HasValue)
             {
                 return "";
             }
 
-
-            return SelectedOptionId.Value
-                ==
-                Convert.ToInt32(
-                    optionId
-                )
-
-                    ? "checked=\"checked\""
-
-                    : "";
+            return SelectedOptionId.Value == Convert.ToInt32(optionId)
+                ? "checked=\"checked\""
+                : "";
         }
 
 
@@ -2359,40 +1323,21 @@ namespace SPMaster.Student
         // QUESTION NAV CSS
         // =========================================================
 
-        protected string GetQuestionNavigationCss(
-            object questionIndex,
-            object isAnswered)
+        protected string GetQuestionNavigationCss(object questionIndex, object isAnswered)
         {
-            int index =
-                Convert.ToInt32(
-                    questionIndex
-                );
+            int index = Convert.ToInt32(questionIndex);
+            bool answered = Convert.ToBoolean(isAnswered);
 
+            string css = "question-number";
 
-            bool answered =
-                Convert.ToBoolean(
-                    isAnswered
-                );
-
-
-            string css =
-                "question-number";
-
-
-            if (
-                index ==
-                CurrentQuestionIndex
-            )
+            if (index == CurrentQuestionIndex)
             {
-                css +=
-                    " active";
+                css += " active";
             }
             else if (answered)
             {
-                css +=
-                    " answered";
+                css += " answered";
             }
-
 
             return css;
         }
@@ -2402,60 +1347,44 @@ namespace SPMaster.Student
         // MEDIA URL
         // =========================================================
 
-        protected string GetMediaUrl(
-            string mediaPath)
+        protected string GetMediaUrl(string mediaPath)
         {
-            if (
-                string.IsNullOrWhiteSpace(
-                    mediaPath
-                )
-            )
+            if (string.IsNullOrWhiteSpace(mediaPath))
             {
                 return "";
             }
 
-
-            if (
-                mediaPath.StartsWith(
-                    "~"
-                )
-            )
+            if (mediaPath.StartsWith("~"))
             {
-                return ResolveUrl(
-                    mediaPath
-                );
+                return ResolveUrl(mediaPath);
             }
-
 
             return ResolveUrl(
                 "~/"
-                +
-                mediaPath.TrimStart(
-                    '/'
-                )
-            );
-        }
-
-        protected void btnLeaveExpiredAttempt_Click(
-            object sender,
-            EventArgs e)
-        {
-            Response.Redirect(
-                "~/Student/Quizzes.aspx?tab=attempts"
+                + mediaPath.TrimStart('/')
             );
         }
 
 
-        protected void btnRedoExpiredAttempt_Click(
-            object sender,
-            EventArgs e)
-        {
-            int quizId =
-                QuizId;
+        // =========================================================
+        // EXPIRED ATTEMPT - BACK
+        // =========================================================
 
+        protected void btnLeaveExpiredAttempt_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
+        }
+
+
+        // =========================================================
+        // EXPIRED ATTEMPT - REDO
+        // =========================================================
+
+        protected void btnRedoExpiredAttempt_Click(object sender, EventArgs e)
+        {
+            int quizId = QuizId;
 
             DeleteExpiredAttempt();
-
 
             Response.Redirect(
                 "~/Student/StartQuiz.aspx?quizId="
@@ -2463,75 +1392,43 @@ namespace SPMaster.Student
             );
         }
 
+
+        // =========================================================
+        // DELETE EXPIRED ATTEMPT
+        // =========================================================
+
         private void DeleteExpiredAttempt()
         {
             const string verifySql = @"
-        SELECT COUNT(*)
-
-        FROM QuizAttempts
-
-        WHERE
-            AttemptId =
-                @AttemptId
-
-            AND
-            StudentUserId =
-                @StudentUserId
-
-            AND
-            AttemptStatus =
-                'InProgress'
-
-            AND
-            ExpiresAt <=
-                GETDATE();
-    ";
-
+                SELECT COUNT(*)
+                FROM QuizAttempts
+                WHERE
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress'
+                    AND ExpiresAt <= GETDATE();
+            ";
 
             const string deleteAnswersSql = @"
-        DELETE FROM StudentAnswers
-
-        WHERE
-            AttemptId =
-                @AttemptId;
-    ";
-
+                DELETE FROM StudentAnswers
+                WHERE
+                    AttemptId = @AttemptId;
+            ";
 
             const string deleteAttemptSql = @"
-        DELETE FROM QuizAttempts
+                DELETE FROM QuizAttempts
+                WHERE
+                    AttemptId = @AttemptId
+                    AND StudentUserId = @StudentUserId
+                    AND AttemptStatus = 'InProgress'
+                    AND ExpiresAt <= GETDATE();
+            ";
 
-        WHERE
-            AttemptId =
-                @AttemptId
-
-            AND
-            StudentUserId =
-                @StudentUserId
-
-            AND
-            AttemptStatus =
-                'InProgress'
-
-            AND
-            ExpiresAt <=
-                GETDATE();
-    ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-
-                using (
-                    SqlTransaction transaction =
-                        connection.BeginTransaction()
-                )
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
                     try
                     {
@@ -2539,41 +1436,20 @@ namespace SPMaster.Student
                         // VERIFY
                         // =============================================
 
-                        using (
-                            SqlCommand command =
-                                new SqlCommand(
-                                    verifySql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand command = new SqlCommand(
+                            verifySql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            command.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                AttemptId;
+                            command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                            command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
+                            int count = Convert.ToInt32(command.ExecuteScalar());
 
-                            command.Parameters.Add(
-                                "@StudentUserId",
-                                SqlDbType.Int
-                            ).Value =
-                                CurrentUserId;
-
-
-                            int count =
-                                Convert.ToInt32(
-                                    command.ExecuteScalar()
-                                );
-
-
-                            if (
-                                count == 0
-                            )
+                            if (count == 0)
                             {
                                 transaction.Rollback();
-
                                 return;
                             }
                         }
@@ -2583,22 +1459,13 @@ namespace SPMaster.Student
                         // DELETE SAVED ANSWERS
                         // =============================================
 
-                        using (
-                            SqlCommand command =
-                                new SqlCommand(
-                                    deleteAnswersSql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand command = new SqlCommand(
+                            deleteAnswersSql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            command.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                AttemptId;
-
-
+                            command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
                             command.ExecuteNonQuery();
                         }
 
@@ -2607,44 +1474,27 @@ namespace SPMaster.Student
                         // DELETE OLD ATTEMPT
                         // =============================================
 
-                        using (
-                            SqlCommand command =
-                                new SqlCommand(
-                                    deleteAttemptSql,
-                                    connection,
-                                    transaction
-                                )
-                        )
+                        using (SqlCommand command = new SqlCommand(
+                            deleteAttemptSql,
+                            connection,
+                            transaction
+                        ))
                         {
-                            command.Parameters.Add(
-                                "@AttemptId",
-                                SqlDbType.Int
-                            ).Value =
-                                AttemptId;
-
-
-                            command.Parameters.Add(
-                                "@StudentUserId",
-                                SqlDbType.Int
-                            ).Value =
-                                CurrentUserId;
-
+                            command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                            command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
 
                             command.ExecuteNonQuery();
                         }
-
 
                         transaction.Commit();
                     }
                     catch
                     {
                         transaction.Rollback();
-
                         throw;
                     }
                 }
             }
         }
-
     }
 }

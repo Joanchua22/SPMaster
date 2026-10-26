@@ -329,7 +329,7 @@ body {
 
 .result-submitted-answer {
     padding: 14px;
-    border-radius: 25px;
+    border-radius: 16px;
     background: #f3ecff;
 }
 
@@ -344,7 +344,7 @@ body {
 
 .result-submitted-answer-content {
     padding: 14px 16px;
-    border-radius: 20px;
+    border-radius: 16px;
     background: #ffffff;
     color: #514866;
     font-family: Consolas, "Courier New", monospace;
@@ -354,17 +354,62 @@ body {
 
 
 /* =========================================================
+   MODEL ANSWER / SCORING GUIDE
+   ========================================================= */
+
+.result-model-answer-box {
+    margin-top: 14px;
+    padding: 15px 17px;
+    border-radius: 16px;
+    background: #f1eaff;
+    color: #292052;
+}
+
+
+.result-model-answer-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 8px;
+    color: #6930cf;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+    .result-model-answer-title i {
+        font-size: 14px;
+    }
+
+
+.result-model-answer-content {
+    color: #292052;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.result-inline-explanation {
+    background: #f3ecff;
+    color: #61596e;
+}
+
+    .result-inline-explanation .result-inline-heading {
+        color: #292052;
+    }
+
+
+
+/* =========================================================
    LECTURER FEEDBACK
    ========================================================= */
 
 .result-feedback-box {
-    margin-top: 13px;
-    padding: 14px 16px;
-    border-radius: 22px;
-    background: #f3ecff;
-    color: #514866;
-    font-size: 9px;
-    line-height: 1.55;
+    margin-top: 14px;
+    padding: 15px 17px;
+    border-radius: 16px;
+    background: #fff8d8;
+    color: #292052;
 }
 
 
@@ -372,14 +417,118 @@ body {
     display: flex;
     align-items: center;
     gap: 7px;
-    margin-bottom: 7px;
-    color: #7c28ef;
-    font-weight: 600;
+    margin-bottom: 8px;
+    color: #8a6700;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 
-.result-feedback-box p {
-    margin: 0;
+    .result-feedback-title i {
+        font-size: 14px;
+    }
+
+
+.result-feedback-content {
+    color: #292052;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* =========================================================
+   SUBJECTIVE MODEL ANSWER / FEEDBACK
+   ========================================================= */
+
+.result-inline-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    padding: 12px 15px;
+    border-radius: 16px;
+    font-size: 9px;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   MODEL ANSWER
+   Same visual style as MCQ explanation
+   ========================================================= */
+
+.result-inline-model {
+    background: #f3ecff;
+    color: #61596e;
+}
+
+
+/* =========================================================
+   LECTURER FEEDBACK
+   ========================================================= */
+
+.result-inline-feedback {
+    background: #fff4cc;
+    color: #8a6700;
+}
+
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+.result-inline-heading {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+.result-inline-model .result-inline-heading {
+    color: #292052;
+}
+
+
+.result-inline-feedback .result-inline-heading {
+    color: #8a6700;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.result-inline-heading i {
+    flex-shrink: 0;
+    font-size: 11px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   COLON
+   ========================================================= */
+
+.result-inline-colon {
+    flex-shrink: 0;
+    margin: 0 2px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.result-inline-text {
+    min-width: 0;
+    color: inherit;
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1.55;
 }
 
 
@@ -521,7 +670,7 @@ body {
 
 
     .result-submitted-answer {
-        border-radius: 18px;
+        border-radius: 16px;
     }
 
 
