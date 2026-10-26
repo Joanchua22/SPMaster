@@ -1792,27 +1792,27 @@ namespace SPMaster.Student
             int sessionId)
         {
             const string sql = @"
-                SELECT TOP 1
-                    AttemptId
+        SELECT TOP 1
+            AttemptId
 
-                FROM QuizAttempts
+        FROM QuizAttempts
 
-                WHERE
-                    SessionId =
-                        @SessionId
+        WHERE
+            SessionId =
+                @SessionId
 
-                    AND StudentUserId =
-                        @StudentUserId
+            AND StudentUserId =
+                @StudentUserId
 
-                    AND SubmittedAt
-                        IS NULL
+            AND SubmittedAt
+                IS NULL
 
-                    AND AttemptStatus =
-                        'InProgress'
+            AND AttemptStatus =
+                'InProgress'
 
-                ORDER BY
-                    StartedAt DESC;
-            ";
+        ORDER BY
+            StartedAt DESC;
+    ";
 
 
             using (
@@ -1865,30 +1865,28 @@ namespace SPMaster.Student
                 );
             }
         }
-
-
         // =========================================================
         // CHECK IF STUDENT ALREADY SUBMITTED
         // =========================================================
 
         private bool HasSubmittedSession(
-            int sessionId)
+    int sessionId)
         {
             const string sql = @"
-                SELECT COUNT(*)
+        SELECT COUNT(*)
 
-                FROM QuizAttempts
+        FROM QuizAttempts
 
-                WHERE
-                    SessionId =
-                        @SessionId
+        WHERE
+            SessionId =
+                @SessionId
 
-                    AND StudentUserId =
-                        @StudentUserId
+            AND StudentUserId =
+                @StudentUserId
 
-                    AND SubmittedAt
-                        IS NOT NULL;
-            ";
+            AND SubmittedAt
+                IS NOT NULL;
+    ";
 
 
             using (
@@ -1929,7 +1927,6 @@ namespace SPMaster.Student
                     > 0;
             }
         }
-
 
         // =========================================================
         // CHECK SESSION STILL OPEN

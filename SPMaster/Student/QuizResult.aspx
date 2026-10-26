@@ -200,7 +200,7 @@
                                 <%#: GetSubjectiveAnswer(Eval("AnswerText")) %>
                             </div>
 
-                        </div>
+    </div>
 
 
                         <%-- MODEL ANSWER / SCORING GUIDE --%>
@@ -239,7 +239,6 @@
             </ItemTemplate>
 
         </asp:Repeater>
-
 
         <%-- =====================================================
              ACTION BUTTONS

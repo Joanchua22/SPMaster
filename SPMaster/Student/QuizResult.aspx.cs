@@ -404,14 +404,16 @@ namespace SPMaster.Student
                     sa.AnswerText,
                     sa.LecturerFeedback,
 
+        ques.QuestionId,
+        ques.QuestionText,
+        ques.QuestionType,
+        ques.Explanation,
+        ques.ModelAnswer,
 
-                    /* -----------------------------------------
-                       DISPLAY MARKS
+        sa.SelectedOptionId,
+        sa.AnswerText,
+        sa.LecturerFeedback,
 
-                       Unanswered MCQ = 0 marks.
-
-                       Pending subjective = NULL.
-                       ----------------------------------------- */
 
                     CASE
                         WHEN ques.QuestionType = 'MCQ'
@@ -423,6 +425,7 @@ namespace SPMaster.Student
                         ELSE sa.MarksAwarded
                     END AS DisplayMarksAwarded,
 
+        END AS DisplayMarksAwarded,
 
                     /* -----------------------------------------
                        STUDENT SELECTED OPTION
@@ -431,6 +434,8 @@ namespace SPMaster.Student
                     selectedOption.OptionText
                         AS SelectedOptionText,
 
+        selectedOption.OptionText
+            AS SelectedOptionText,
 
                     /* -----------------------------------------
                        WHETHER SELECTED OPTION IS CORRECT
@@ -441,6 +446,10 @@ namespace SPMaster.Student
                         0
                     ) AS SelectedOptionIsCorrect,
 
+        ISNULL(
+            selectedOption.IsCorrect,
+            0
+        ) AS SelectedOptionIsCorrect,
 
                     /* -----------------------------------------
                        CORRECT MCQ OPTION

@@ -251,7 +251,7 @@
 
                             </a>
 
-                            <a href="<%= ResolveUrl("~/Student/Feedback.aspx") %>">
+                            <a href="<%= ResolveUrl("~/Feedback.aspx") %>">
                                 Feedback
 
                             </a>

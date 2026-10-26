@@ -69,6 +69,33 @@ namespace SPMaster
         protected global::System.Web.UI.WebControls.Label lblSubmitError;
 
         /// <summary>
+        /// txtQuizSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtQuizSearch;
+
+        /// <summary>
+        /// btnSearchQuiz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSearchQuiz;
+
+        /// <summary>
+        /// btnClearQuizSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnClearQuizSearch;
+
+        /// <summary>
         /// ddlRelatedQuiz control.
         /// </summary>
         /// <remarks>
@@ -76,6 +103,15 @@ namespace SPMaster
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRelatedQuiz;
+
+        /// <summary>
+        /// rfvRelatedQuiz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvRelatedQuiz;
 
         /// <summary>
         /// txtFeedbackMessage control.

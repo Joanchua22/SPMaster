@@ -668,96 +668,52 @@ namespace SPMaster.Student
 
         // =========================================================
         // PENDING LECTURER REVIEW
-        //
-        // Any non-MCQ question is treated as subjective,
-        // matching the existing Question Bank logic.
-        //
-        // This counts quiz attempts rather than individual
-        // questions, so one quiz with three pending subjective
-        // questions is shown as one pending attempt.
         // =========================================================
 
         private void LoadPendingReviews(
-            int subjectId,
-            DateTime? fromDate)
+     int subjectId,
+     DateTime? fromDate)
         {
             const string sql = @"
-                SELECT
-                    COUNT(
-                        DISTINCT
-                        QA.AttemptId
-                    )
+        SELECT
+            COUNT(*)
 
-                FROM QuizAttempts QA
+        FROM QuizAttempts QA
 
-                INNER JOIN Quizzes QZ
-                    ON QA.QuizId =
-                       QZ.QuizId
+        INNER JOIN Quizzes QZ
+            ON QA.QuizId =
+               QZ.QuizId
 
-                INNER JOIN QuizQuestions QQ
-                    ON QA.QuizId =
-                       QQ.QuizId
+        WHERE
+            QA.StudentUserId =
+                @StudentUserId
 
-                INNER JOIN Questions QN
-                    ON QQ.QuestionId =
-                       QN.QuestionId
+            AND QA.AttemptStatus =
+                'PendingGrading'
 
-                LEFT JOIN StudentAnswers SA
-                    ON QA.AttemptId =
-                       SA.AttemptId
+            AND QA.SubmittedAt
+                IS NOT NULL
 
-                    AND
-                    QQ.QuizQuestionId =
-                        SA.QuizQuestionId
+            AND
+            (
+                @SubjectId = 0
 
-                WHERE
-                    QA.StudentUserId =
-                        @StudentUserId
+                OR
 
-                    AND
-                    QA.SubmittedAt
-                        IS NOT NULL
+                QZ.SubjectId =
+                    @SubjectId
+            )
 
-                    AND
-                    UPPER(
-                        LTRIM(
-                            RTRIM(
-                                QN.QuestionType
-                            )
-                        )
-                    ) <> 'MCQ'
+            AND
+            (
+                @FromDate IS NULL
 
-                    AND
-                    (
-                        SA.MarksAwarded
-                            IS NULL
+                OR
 
-                        OR
-
-                        SA.GradedAt
-                            IS NULL
-                    )
-
-                    AND
-                    (
-                        @SubjectId = 0
-
-                        OR
-
-                        QZ.SubjectId =
-                            @SubjectId
-                    )
-
-                    AND
-                    (
-                        @FromDate IS NULL
-
-                        OR
-
-                        QA.SubmittedAt >=
-                            @FromDate
-                    );
-            ";
+                QA.SubmittedAt >=
+                    @FromDate
+            );
+    ";
 
 
             using (
@@ -791,13 +747,9 @@ namespace SPMaster.Student
 
 
                 lblPendingReview.Text =
-                    pendingReview
-                        .ToString();
+                    pendingReview.ToString();
             }
         }
-
-
-
         // =========================================================
         // SCORE PROGRESS TREND
         //

@@ -82,26 +82,35 @@ namespace SPMaster
             }
         }
 
-
         // =========================================================
-        // LOAD QUIZZES INTO POPUP DROPDOWN
+        // LOAD / SEARCH QUIZZES INTO POPUP DROPDOWN
         // =========================================================
-
-        private void LoadQuizDropdown()
+        private void LoadQuizDropdown(
+            string search = "")
         {
             const string sql = @"
-                SELECT
-                    QuizId,
-                    Title
+        SELECT
+            QuizId,
+            Title
 
-                FROM Quizzes
+        FROM Quizzes
 
-                WHERE
-                    IsPublished = 1
-                    AND IsArchived = 0
+        WHERE
+            IsPublished = 1
+            AND IsArchived = 0
 
-                ORDER BY Title;
-            ";
+            AND
+            (
+                @Search = ''
+                OR Title LIKE '%' + @Search + '%'
+            )
+
+        ORDER BY Title;
+    ";
+
+
+            DataTable table =
+                new DataTable();
 
 
             using (
@@ -118,32 +127,92 @@ namespace SPMaster
                     )
             )
             {
-                connection.Open();
+                command.Parameters.Add(
+                    "@Search",
+                    SqlDbType.NVarChar,
+                    200
+                ).Value =
+                    search.Trim();
 
 
-                ddlRelatedQuiz.DataSource =
-                    command.ExecuteReader();
-
-                ddlRelatedQuiz.DataTextField =
-                    "Title";
-
-                ddlRelatedQuiz.DataValueField =
-                    "QuizId";
-
-                ddlRelatedQuiz.DataBind();
+                using (
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(
+                            command
+                        )
+                )
+                {
+                    adapter.Fill(
+                        table
+                    );
+                }
             }
+
+
+            ddlRelatedQuiz.DataSource =
+                table;
+
+            ddlRelatedQuiz.DataTextField =
+                "Title";
+
+            ddlRelatedQuiz.DataValueField =
+                "QuizId";
+
+            ddlRelatedQuiz.DataBind();
 
 
             ddlRelatedQuiz.Items.Insert(
                 0,
                 new ListItem(
                     "General Feedback / No Related Quiz",
+                    "GENERAL"
+                )
+            );
+
+            ddlRelatedQuiz.Items.Insert(
+                0,
+                new ListItem(
+                    "Select feedback type / related quiz",
                     ""
                 )
             );
         }
+        // =========================================================
+        // SEARCH QUIZ
+        // =========================================================
+
+        protected void btnSearchQuiz_Click(
+            object sender,
+            EventArgs e)
+        {
+            hfOpenFeedbackModal.Value =
+                "1";
 
 
+            LoadQuizDropdown(
+                txtQuizSearch.Text.Trim()
+            );
+        }
+
+
+        // =========================================================
+        // CLEAR QUIZ SEARCH
+        // =========================================================
+
+        protected void btnClearQuizSearch_Click(
+            object sender,
+            EventArgs e)
+        {
+            hfOpenFeedbackModal.Value =
+                "1";
+
+
+            txtQuizSearch.Text =
+                "";
+
+
+            LoadQuizDropdown();
+        }
         // =========================================================
         // LOAD CURRENT USER'S FEEDBACK
         // =========================================================
@@ -273,16 +342,13 @@ namespace SPMaster
 
                 return;
             }
-
-
             object quizId =
                 DBNull.Value;
 
 
             if (
-                !string.IsNullOrWhiteSpace(
-                    ddlRelatedQuiz.SelectedValue
-                )
+                ddlRelatedQuiz.SelectedValue
+                != "GENERAL"
             )
             {
                 quizId =
@@ -290,8 +356,6 @@ namespace SPMaster
                         ddlRelatedQuiz.SelectedValue
                     );
             }
-
-
             const string sql = @"
                 INSERT INTO Feedback
                 (
