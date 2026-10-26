@@ -5,11 +5,9 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Web.UI.WebControls;
 
-
 namespace SPMaster.Lecturer
 {
-    public partial class CreateQuestion :
-        System.Web.UI.Page
+    public partial class CreateQuestion : System.Web.UI.Page
     {
         // =========================================================
         // DATABASE CONNECTION
@@ -19,11 +17,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -36,9 +30,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -53,17 +45,10 @@ namespace SPMaster.Lecturer
             {
                 int questionId;
 
-
-                if (
-                    int.TryParse(
-                        Request.QueryString["id"],
-                        out questionId
-                    )
-                )
+                if (int.TryParse(Request.QueryString["id"], out questionId))
                 {
                     return questionId;
                 }
-
 
                 return null;
             }
@@ -74,33 +59,20 @@ namespace SPMaster.Lecturer
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             // -----------------------------------------------------
-            // Login required
+            // LOGIN REQUIRED
             // -----------------------------------------------------
 
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-
-            pnlQuestionSuccess.Visible =
-                false;
-
-
-            pnlQuestionError.Visible =
-                false;
-
+            pnlQuestionSuccess.Visible = false;
+            pnlQuestionError.Visible = false;
 
             if (!IsPostBack)
             {
@@ -111,36 +83,19 @@ namespace SPMaster.Lecturer
                 // EDIT MODE
                 // =================================================
 
-                if (
-                    EditingQuestionId.HasValue
-                )
+                if (EditingQuestionId.HasValue)
                 {
-                    bool loaded =
-                        LoadQuestion(
-                            EditingQuestionId.Value
-                        );
-
+                    bool loaded = LoadQuestion(EditingQuestionId.Value);
 
                     if (!loaded)
                     {
-                        Response.Redirect(
-                            "~/Lecturer/QuestionBank.aspx"
-                        );
-
+                        Response.Redirect("~/Lecturer/QuestionBank.aspx");
                         return;
                     }
 
-
-                    litPageTitle.Text =
-                        "Edit Question";
-
-
-                    litPageSubtitle.Text =
-                        "Update the selected question in your institutional bank";
-
-
-                    btnSaveQuestion.Text =
-                        "Update Question";
+                    litPageTitle.Text = "Edit Question";
+                    litPageSubtitle.Text = "Update the selected question in your institutional bank";
+                    btnSaveQuestion.Text = "Update Question";
                 }
 
 
@@ -150,16 +105,9 @@ namespace SPMaster.Lecturer
 
                 else
                 {
-                    litPageTitle.Text =
-                        "Create New Question";
-
-
-                    litPageSubtitle.Text =
-                        "Add an SPM standardized question to your institutional bank";
-
-
-                    btnSaveQuestion.Text =
-                        "Save to Bank";
+                    litPageTitle.Text = "Create New Question";
+                    litPageSubtitle.Text = "Add an SPM standardized question to your institutional bank";
+                    btnSaveQuestion.Text = "Save to Bank";
                 }
 
 
@@ -167,33 +115,16 @@ namespace SPMaster.Lecturer
                 // SUCCESS MESSAGE
                 // =================================================
 
-                if (
-                    Request.QueryString[
-                        "saved"
-                    ] == "1"
-                )
+                if (Request.QueryString["saved"] == "1")
                 {
-                    lblQuestionSuccess.Text =
-                        "Question saved successfully.";
-
-
-                    pnlQuestionSuccess.Visible =
-                        true;
+                    lblQuestionSuccess.Text = "Question saved successfully.";
+                    pnlQuestionSuccess.Visible = true;
                 }
 
-
-                if (
-                    Request.QueryString[
-                        "updated"
-                    ] == "1"
-                )
+                if (Request.QueryString["updated"] == "1")
                 {
-                    lblQuestionSuccess.Text =
-                        "Question updated successfully.";
-
-
-                    pnlQuestionSuccess.Visible =
-                        true;
+                    lblQuestionSuccess.Text = "Question updated successfully.";
+                    pnlQuestionSuccess.Visible = true;
                 }
             }
         }
@@ -209,58 +140,27 @@ namespace SPMaster.Lecturer
                 SELECT
                     SubjectId,
                     SubjectName
-
                 FROM Subjects
-
                 WHERE
                     IsActive = 1
-
                 ORDER BY
                     SubjectName;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    connection.Open();
+                connection.Open();
 
-
-                    ddlSubject.DataSource =
-                        command.ExecuteReader();
-
-
-                    ddlSubject.DataTextField =
-                        "SubjectName";
-
-
-                    ddlSubject.DataValueField =
-                        "SubjectId";
-
-
-                    ddlSubject.DataBind();
-                }
+                ddlSubject.DataSource = command.ExecuteReader();
+                ddlSubject.DataTextField = "SubjectName";
+                ddlSubject.DataValueField = "SubjectId";
+                ddlSubject.DataBind();
             }
-
 
             ddlSubject.Items.Insert(
                 0,
-                new ListItem(
-                    "Select Subject",
-                    ""
-                )
+                new ListItem("Select Subject", "")
             );
         }
 
@@ -269,8 +169,7 @@ namespace SPMaster.Lecturer
         // LOAD EXISTING QUESTION
         // =========================================================
 
-        private bool LoadQuestion(
-            int questionId)
+        private bool LoadQuestion(int questionId)
         {
             const string sql = @"
                 SELECT
@@ -283,182 +182,78 @@ namespace SPMaster.Lecturer
                     Explanation,
                     ModelAnswer,
                     MediaPath
-
                 FROM Questions
-
                 WHERE
-                    QuestionId =
-                        @QuestionId
-
-                    AND
-                    CreatedByUserId =
-                        @UserId
-
-                    AND
-                    IsArchived = 0;
+                    QuestionId = @QuestionId
+                    AND CreatedByUserId = @UserId
+                    AND IsArchived = 0;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = CurrentUserId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        questionId;
-
-
-                    command.Parameters.Add(
-                        "@UserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    if (!reader.Read())
                     {
-                        if (!reader.Read())
-                        {
-                            return false;
-                        }
+                        return false;
+                    }
 
+                    ddlSubject.SelectedValue = reader["SubjectId"].ToString();
+                    txtQuestion.Text = reader["QuestionText"].ToString();
+                    ddlQuestionType.SelectedValue = reader["QuestionType"].ToString();
+                    ddlDifficulty.SelectedValue = reader["Difficulty"].ToString();
 
-                        ddlSubject.SelectedValue =
-                            reader[
-                                "SubjectId"
-                            ].ToString();
+                    txtHint.Text =
+                        reader["HintText"] == DBNull.Value
+                            ? ""
+                            : reader["HintText"].ToString();
 
+                    txtExplanation.Text =
+                        reader["Explanation"] == DBNull.Value
+                            ? ""
+                            : reader["Explanation"].ToString();
 
-                        txtQuestion.Text =
-                            reader[
-                                "QuestionText"
-                            ].ToString();
+                    txtModelAnswer.Text =
+                        reader["ModelAnswer"] == DBNull.Value
+                            ? ""
+                            : reader["ModelAnswer"].ToString();
 
+                    string mediaPath =
+                        reader["MediaPath"] == DBNull.Value
+                            ? ""
+                            : reader["MediaPath"].ToString();
 
-                        ddlQuestionType.SelectedValue =
-                            reader[
-                                "QuestionType"
-                            ].ToString();
+                    hfExistingMediaPath.Value = mediaPath;
+                    hfRemoveExistingImage.Value = "false";
 
-
-                        ddlDifficulty.SelectedValue =
-                            reader[
-                                "Difficulty"
-                            ].ToString();
-
-
-                        txtHint.Text =
-                            reader[
-                                "HintText"
-                            ] == DBNull.Value
-                                ? ""
-                                : reader[
-                                    "HintText"
-                                ].ToString();
-
-
-                        txtExplanation.Text =
-                            reader[
-                                "Explanation"
-                            ] == DBNull.Value
-                                ? ""
-                                : reader[
-                                    "Explanation"
-                                ].ToString();
-
-
-                        txtModelAnswer.Text =
-                            reader[
-                                "ModelAnswer"
-                            ] == DBNull.Value
-                                ? ""
-                                : reader[
-                                    "ModelAnswer"
-                                ].ToString();
-
-
-                        string mediaPath =
-                            reader[
-                                "MediaPath"
-                            ] == DBNull.Value
-                                ? ""
-                                : reader[
-                                    "MediaPath"
-                                ].ToString();
-
-
-                        hfExistingMediaPath.Value =
-                            mediaPath;
-
-
-                        hfRemoveExistingImage.Value =
-                            "false";
-
-
-                        if (
-                            !string.IsNullOrWhiteSpace(
-                                mediaPath
-                            )
-                        )
-                        {
-                            hfExistingMediaUrl.Value =
-                                ResolveUrl(
-                                    mediaPath
-                                );
-
-
-                            selectedFileName.Text =
-                                Path.GetFileName(
-                                    mediaPath
-                                );
-                        }
-                        else
-                        {
-                            hfExistingMediaUrl.Value =
-                                "";
-
-
-                            selectedFileName.Text =
-                                "";
-                        }
+                    if (!string.IsNullOrWhiteSpace(mediaPath))
+                    {
+                        hfExistingMediaUrl.Value = ResolveUrl(mediaPath);
+                        selectedFileName.Text = Path.GetFileName(mediaPath);
+                    }
+                    else
+                    {
+                        hfExistingMediaUrl.Value = "";
+                        selectedFileName.Text = "";
                     }
                 }
             }
 
 
             // -----------------------------------------------------
-            // Load MCQ options
+            // LOAD MCQ OPTIONS
             // -----------------------------------------------------
 
-            if (
-                ddlQuestionType.SelectedValue
-                == "MCQ"
-            )
+            if (ddlQuestionType.SelectedValue == "MCQ")
             {
-                LoadQuestionOptions(
-                    questionId
-                );
+                LoadQuestionOptions(questionId);
             }
-
 
             return true;
         }
@@ -468,129 +263,56 @@ namespace SPMaster.Lecturer
         // LOAD EXISTING MCQ OPTIONS
         // =========================================================
 
-        private void LoadQuestionOptions(
-            int questionId)
+        private void LoadQuestionOptions(int questionId)
         {
             const string sql = @"
                 SELECT
                     OptionText,
                     IsCorrect,
                     DisplayOrder
-
                 FROM QuestionOptions
-
                 WHERE
-                    QuestionId =
-                        @QuestionId
-
+                    QuestionId = @QuestionId
                 ORDER BY
                     DisplayOrder;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        questionId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        int order = Convert.ToInt32(reader["DisplayOrder"]);
+                        string optionText = reader["OptionText"].ToString();
+                        bool isCorrect = Convert.ToBoolean(reader["IsCorrect"]);
+
+                        switch (order)
                         {
-                            int order =
-                                Convert.ToInt32(
-                                    reader[
-                                        "DisplayOrder"
-                                    ]
-                                );
+                            case 1:
+                                txtOptionA.Text = optionText;
+                                correctA.Checked = isCorrect;
+                                break;
 
+                            case 2:
+                                txtOptionB.Text = optionText;
+                                correctB.Checked = isCorrect;
+                                break;
 
-                            string optionText =
-                                reader[
-                                    "OptionText"
-                                ].ToString();
+                            case 3:
+                                txtOptionC.Text = optionText;
+                                correctC.Checked = isCorrect;
+                                break;
 
-
-                            bool isCorrect =
-                                Convert.ToBoolean(
-                                    reader[
-                                        "IsCorrect"
-                                    ]
-                                );
-
-
-                            switch (order)
-                            {
-                                case 1:
-
-                                    txtOptionA.Text =
-                                        optionText;
-
-
-                                    correctA.Checked =
-                                        isCorrect;
-
-                                    break;
-
-
-                                case 2:
-
-                                    txtOptionB.Text =
-                                        optionText;
-
-
-                                    correctB.Checked =
-                                        isCorrect;
-
-                                    break;
-
-
-                                case 3:
-
-                                    txtOptionC.Text =
-                                        optionText;
-
-
-                                    correctC.Checked =
-                                        isCorrect;
-
-                                    break;
-
-
-                                case 4:
-
-                                    txtOptionD.Text =
-                                        optionText;
-
-
-                                    correctD.Checked =
-                                        isCorrect;
-
-                                    break;
-                            }
+                            case 4:
+                                txtOptionD.Text = optionText;
+                                correctD.Checked = isCorrect;
+                                break;
                         }
                     }
                 }
@@ -602,34 +324,21 @@ namespace SPMaster.Lecturer
         // SAVE BUTTON
         // =========================================================
 
-        protected void btnSaveQuestion_Click(
-            object sender,
-            EventArgs e)
+        protected void btnSaveQuestion_Click(object sender, EventArgs e)
         {
-            pnlQuestionSuccess.Visible =
-                false;
+            pnlQuestionSuccess.Visible = false;
+            pnlQuestionError.Visible = false;
 
-
-            pnlQuestionError.Visible =
-                false;
-
-
-            Page.Validate(
-                "QuestionValidation"
-            );
-
+            Page.Validate("QuestionValidation");
 
             if (!Page.IsValid)
             {
                 return;
             }
 
-
             try
             {
-                string mediaPath =
-                    PrepareMediaPath();
-
+                string mediaPath = PrepareMediaPath();
 
                 // Media validation can become invalid
                 // while PrepareMediaPath executes.
@@ -638,23 +347,16 @@ namespace SPMaster.Lecturer
                     return;
                 }
 
-
                 int questionId;
 
-
-                if (
-                    EditingQuestionId.HasValue
-                )
+                if (EditingQuestionId.HasValue)
                 {
-                    questionId =
-                        EditingQuestionId.Value;
-
+                    questionId = EditingQuestionId.Value;
 
                     UpdateQuestion(
                         questionId,
                         mediaPath
                     );
-
 
                     Response.Redirect(
                         "~/Lecturer/CreateQuestion.aspx?id="
@@ -665,12 +367,7 @@ namespace SPMaster.Lecturer
                     return;
                 }
 
-
-                questionId =
-                    InsertQuestion(
-                        mediaPath
-                    );
-
+                questionId = InsertQuestion(mediaPath);
 
                 Response.Redirect(
                     "~/Lecturer/CreateQuestion.aspx?id="
@@ -692,26 +389,15 @@ namespace SPMaster.Lecturer
         // SERVER VALIDATION - MCQ OPTION
         // =========================================================
 
-        protected void ValidateMcqOption(
-            object source,
-            ServerValidateEventArgs args)
+        protected void ValidateMcqOption(object source, ServerValidateEventArgs args)
         {
-            if (
-                ddlQuestionType.SelectedValue
-                != "MCQ"
-            )
+            if (ddlQuestionType.SelectedValue != "MCQ")
             {
-                args.IsValid =
-                    true;
-
+                args.IsValid = true;
                 return;
             }
 
-
-            args.IsValid =
-                !string.IsNullOrWhiteSpace(
-                    args.Value
-                );
+            args.IsValid = !string.IsNullOrWhiteSpace(args.Value);
         }
 
 
@@ -719,30 +405,19 @@ namespace SPMaster.Lecturer
         // SERVER VALIDATION - CORRECT OPTION
         // =========================================================
 
-        protected void ValidateCorrectOption(
-            object source,
-            ServerValidateEventArgs args)
+        protected void ValidateCorrectOption(object source, ServerValidateEventArgs args)
         {
-            if (
-                ddlQuestionType.SelectedValue
-                != "MCQ"
-            )
+            if (ddlQuestionType.SelectedValue != "MCQ")
             {
-                args.IsValid =
-                    true;
-
+                args.IsValid = true;
                 return;
             }
 
-
             args.IsValid =
                 correctA.Checked
-                ||
-                correctB.Checked
-                ||
-                correctC.Checked
-                ||
-                correctD.Checked;
+                || correctB.Checked
+                || correctC.Checked
+                || correctD.Checked;
         }
 
 
@@ -750,26 +425,15 @@ namespace SPMaster.Lecturer
         // SERVER VALIDATION - MODEL ANSWER
         // =========================================================
 
-        protected void ValidateModelAnswer(
-            object source,
-            ServerValidateEventArgs args)
+        protected void ValidateModelAnswer(object source, ServerValidateEventArgs args)
         {
-            if (
-                ddlQuestionType.SelectedValue
-                != "Subjective"
-            )
+            if (ddlQuestionType.SelectedValue != "Subjective")
             {
-                args.IsValid =
-                    true;
-
+                args.IsValid = true;
                 return;
             }
 
-
-            args.IsValid =
-                !string.IsNullOrWhiteSpace(
-                    args.Value
-                );
+            args.IsValid = !string.IsNullOrWhiteSpace(args.Value);
         }
 
 
@@ -777,72 +441,37 @@ namespace SPMaster.Lecturer
         // SERVER VALIDATION - IMAGE
         // =========================================================
 
-        protected void ValidateImage(
-            object source,
-            ServerValidateEventArgs args)
+        protected void ValidateImage(object source, ServerValidateEventArgs args)
         {
-            args.IsValid =
-                true;
+            args.IsValid = true;
+            valImage.ErrorMessage = "";
 
-
-            valImage.ErrorMessage =
-                "";
-
-
-            if (
-                !questionImage.HasFile
-            )
+            if (!questionImage.HasFile)
             {
                 return;
             }
 
-
-            string extension =
-                Path.GetExtension(
-                    questionImage.FileName
-                )
-                .ToLowerInvariant();
-
+            string extension = Path.GetExtension(questionImage.FileName).ToLowerInvariant();
 
             bool validExtension =
                 extension == ".png"
-                ||
-                extension == ".jpg"
-                ||
-                extension == ".jpeg"
-                ||
-                extension == ".webp";
-
+                || extension == ".jpg"
+                || extension == ".jpeg"
+                || extension == ".webp";
 
             if (!validExtension)
             {
-                args.IsValid =
-                    false;
-
-
-                valImage.ErrorMessage =
-                    "Only PNG, JPG, JPEG or WebP images are allowed.";
-
+                args.IsValid = false;
+                valImage.ErrorMessage = "Only PNG, JPG, JPEG or WebP images are allowed.";
                 return;
             }
 
+            const int maxFileSize = 5 * 1024 * 1024;
 
-            const int maxFileSize =
-                5 * 1024 * 1024;
-
-
-            if (
-                questionImage.PostedFile
-                    .ContentLength
-                > maxFileSize
-            )
+            if (questionImage.PostedFile.ContentLength > maxFileSize)
             {
-                args.IsValid =
-                    false;
-
-
-                valImage.ErrorMessage =
-                    "Image size must not exceed 5MB.";
+                args.IsValid = false;
+                valImage.ErrorMessage = "Image size must not exceed 5MB.";
             }
         }
 
@@ -854,96 +483,54 @@ namespace SPMaster.Lecturer
         private string PrepareMediaPath()
         {
             // -----------------------------------------------------
-            // New image uploaded
+            // NEW IMAGE UPLOADED
             // -----------------------------------------------------
 
             if (questionImage.HasFile)
             {
-                string extension =
-                    Path.GetExtension(
-                        questionImage.FileName
-                    )
-                    .ToLowerInvariant();
+                string extension = Path.GetExtension(questionImage.FileName).ToLowerInvariant();
+                string fileName = Guid.NewGuid().ToString("N") + extension;
+                string relativeFolder = "~/Images/Questions/";
+                string physicalFolder = Server.MapPath(relativeFolder);
 
-
-                string fileName =
-                    Guid.NewGuid()
-                        .ToString("N")
-                    + extension;
-
-
-                string relativeFolder =
-                    "~/Images/Questions/";
-
-
-                string physicalFolder =
-                    Server.MapPath(
-                        relativeFolder
-                    );
-
-
-                if (
-                    !Directory.Exists(
-                        physicalFolder
-                    )
-                )
+                if (!Directory.Exists(physicalFolder))
                 {
-                    Directory.CreateDirectory(
-                        physicalFolder
-                    );
+                    Directory.CreateDirectory(physicalFolder);
                 }
 
-
-                string physicalPath =
-                    Path.Combine(
-                        physicalFolder,
-                        fileName
-                    );
-
-
-                questionImage.SaveAs(
-                    physicalPath
+                string physicalPath = Path.Combine(
+                    physicalFolder,
+                    fileName
                 );
 
+                questionImage.SaveAs(physicalPath);
 
                 // Delete old image when replacing
                 DeleteExistingImage();
 
-
-                return relativeFolder
-                    + fileName;
+                return relativeFolder + fileName;
             }
 
 
             // -----------------------------------------------------
-            // Existing image explicitly removed
+            // EXISTING IMAGE EXPLICITLY REMOVED
             // -----------------------------------------------------
 
-            if (
-                hfRemoveExistingImage.Value
-                == "true"
-            )
+            if (hfRemoveExistingImage.Value == "true")
             {
                 DeleteExistingImage();
-
-
                 return null;
             }
 
 
             // -----------------------------------------------------
-            // Keep old image
+            // KEEP OLD IMAGE
             // -----------------------------------------------------
 
-            if (
-                !string.IsNullOrWhiteSpace(
-                    hfExistingMediaPath.Value
-                )
-            )
+            if (!string.IsNullOrWhiteSpace(hfExistingMediaPath.Value))
             {
                 return hfExistingMediaPath.Value;
             }
-
 
             return null;
         }
@@ -955,37 +542,20 @@ namespace SPMaster.Lecturer
 
         private void DeleteExistingImage()
         {
-            string existingPath =
-                hfExistingMediaPath.Value;
+            string existingPath = hfExistingMediaPath.Value;
 
-
-            if (
-                string.IsNullOrWhiteSpace(
-                    existingPath
-                )
-            )
+            if (string.IsNullOrWhiteSpace(existingPath))
             {
                 return;
             }
 
-
             try
             {
-                string physicalPath =
-                    Server.MapPath(
-                        existingPath
-                    );
+                string physicalPath = Server.MapPath(existingPath);
 
-
-                if (
-                    File.Exists(
-                        physicalPath
-                    )
-                )
+                if (File.Exists(physicalPath))
                 {
-                    File.Delete(
-                        physicalPath
-                    );
+                    File.Delete(physicalPath);
                 }
             }
             catch
@@ -1000,22 +570,13 @@ namespace SPMaster.Lecturer
         // INSERT NEW QUESTION
         // =========================================================
 
-        private int InsertQuestion(
-            string mediaPath)
+        private int InsertQuestion(string mediaPath)
         {
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-
-                SqlTransaction transaction =
-                    connection.BeginTransaction();
-
+                SqlTransaction transaction = connection.BeginTransaction();
 
                 try
                 {
@@ -1034,7 +595,6 @@ namespace SPMaster.Lecturer
                             IsArchived,
                             CreatedAt
                         )
-
                         VALUES
                         (
                             @SubjectId,
@@ -1050,39 +610,27 @@ namespace SPMaster.Lecturer
                             GETDATE()
                         );
 
-
                         SELECT CAST(
                             SCOPE_IDENTITY()
                             AS INT
                         );
                     ";
 
-
                     int questionId;
 
-
-                    using (
-                        SqlCommand command =
-                            CreateQuestionCommand(
-                                sql,
-                                connection,
-                                transaction,
-                                mediaPath
-                            )
-                    )
+                    using (SqlCommand command = CreateQuestionCommand(
+                        sql,
+                        connection,
+                        transaction,
+                        mediaPath
+                    ))
                     {
-                        questionId =
-                            Convert.ToInt32(
-                                command.ExecuteScalar()
-                            );
+                        questionId = Convert.ToInt32(
+                            command.ExecuteScalar()
+                        );
                     }
 
-
-                    if (
-                        ddlQuestionType
-                            .SelectedValue
-                        == "MCQ"
-                    )
+                    if (ddlQuestionType.SelectedValue == "MCQ")
                     {
                         InsertQuestionOptions(
                             connection,
@@ -1091,16 +639,13 @@ namespace SPMaster.Lecturer
                         );
                     }
 
-
                     transaction.Commit();
-
 
                     return questionId;
                 }
                 catch
                 {
                     transaction.Rollback();
-
                     throw;
                 }
             }
@@ -1111,87 +656,43 @@ namespace SPMaster.Lecturer
         // UPDATE EXISTING QUESTION
         // =========================================================
 
-        private void UpdateQuestion(
-            int questionId,
-            string mediaPath)
+        private void UpdateQuestion(int questionId, string mediaPath)
         {
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-
-                SqlTransaction transaction =
-                    connection.BeginTransaction();
-
+                SqlTransaction transaction = connection.BeginTransaction();
 
                 try
                 {
                     const string sql = @"
                         UPDATE Questions
-
                         SET
-                            SubjectId =
-                                @SubjectId,
-
-                            QuestionText =
-                                @QuestionText,
-
-                            QuestionType =
-                                @QuestionType,
-
-                            Difficulty =
-                                @Difficulty,
-
-                            HintText =
-                                @HintText,
-
-                            Explanation =
-                                @Explanation,
-
-                            ModelAnswer =
-                                @ModelAnswer,
-
-                            MediaPath =
-                                @MediaPath
-
+                            SubjectId = @SubjectId,
+                            QuestionText = @QuestionText,
+                            QuestionType = @QuestionType,
+                            Difficulty = @Difficulty,
+                            HintText = @HintText,
+                            Explanation = @Explanation,
+                            ModelAnswer = @ModelAnswer,
+                            MediaPath = @MediaPath
                         WHERE
-                            QuestionId =
-                                @QuestionId
-
-                            AND
-                            CreatedByUserId =
-                                @CreatedByUserId
-
-                            AND
-                            IsArchived = 0;
+                            QuestionId = @QuestionId
+                            AND CreatedByUserId = @CreatedByUserId
+                            AND IsArchived = 0;
                     ";
 
-
-                    using (
-                        SqlCommand command =
-                            CreateQuestionCommand(
-                                sql,
-                                connection,
-                                transaction,
-                                mediaPath
-                            )
-                    )
+                    using (SqlCommand command = CreateQuestionCommand(
+                        sql,
+                        connection,
+                        transaction,
+                        mediaPath
+                    ))
                     {
-                        command.Parameters.Add(
-                            "@QuestionId",
-                            SqlDbType.Int
-                        ).Value =
-                            questionId;
+                        command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
 
-
-                        int rows =
-                            command.ExecuteNonQuery();
-
+                        int rows = command.ExecuteNonQuery();
 
                         if (rows == 0)
                         {
@@ -1201,7 +702,6 @@ namespace SPMaster.Lecturer
                         }
                     }
 
-
                     // Remove old MCQ options first
                     DeleteQuestionOptions(
                         connection,
@@ -1209,13 +709,8 @@ namespace SPMaster.Lecturer
                         questionId
                     );
 
-
                     // Reinsert only for MCQ
-                    if (
-                        ddlQuestionType
-                            .SelectedValue
-                        == "MCQ"
-                    )
+                    if (ddlQuestionType.SelectedValue == "MCQ")
                     {
                         InsertQuestionOptions(
                             connection,
@@ -1224,13 +719,11 @@ namespace SPMaster.Lecturer
                         );
                     }
 
-
                     transaction.Commit();
                 }
                 catch
                 {
                     transaction.Rollback();
-
                     throw;
                 }
             }
@@ -1247,115 +740,33 @@ namespace SPMaster.Lecturer
             SqlTransaction transaction,
             string mediaPath)
         {
-            SqlCommand command =
-                new SqlCommand(
-                    sql,
-                    connection,
-                    transaction
-                );
+            SqlCommand command = new SqlCommand(
+                sql,
+                connection,
+                transaction
+            );
 
+            command.Parameters.Add("@SubjectId", SqlDbType.Int).Value = Convert.ToInt32(ddlSubject.SelectedValue);
+            command.Parameters.Add("@CreatedByUserId", SqlDbType.Int).Value = CurrentUserId;
+            command.Parameters.Add("@QuestionText", SqlDbType.NVarChar).Value = txtQuestion.Text.Trim();
+            command.Parameters.Add("@QuestionType", SqlDbType.NVarChar, 30).Value = ddlQuestionType.SelectedValue;
+            command.Parameters.Add("@Difficulty", SqlDbType.NVarChar, 30).Value = ddlDifficulty.SelectedValue;
+            command.Parameters.Add("@HintText", SqlDbType.NVarChar).Value = string.IsNullOrWhiteSpace(txtHint.Text)
+                ? (object)DBNull.Value
+                : txtHint.Text.Trim();
 
-            command.Parameters.Add(
-                "@SubjectId",
-                SqlDbType.Int
-            ).Value =
-                Convert.ToInt32(
-                    ddlSubject
-                        .SelectedValue
-                );
-
-
-            command.Parameters.Add(
-                "@CreatedByUserId",
-                SqlDbType.Int
-            ).Value =
-                CurrentUserId;
-
-
-            command.Parameters.Add(
-                "@QuestionText",
-                SqlDbType.NVarChar
-            ).Value =
-                txtQuestion
-                    .Text
-                    .Trim();
-
-
-            command.Parameters.Add(
-                "@QuestionType",
-                SqlDbType.NVarChar,
-                30
-            ).Value =
-                ddlQuestionType
-                    .SelectedValue;
-
-
-            command.Parameters.Add(
-                "@Difficulty",
-                SqlDbType.NVarChar,
-                30
-            ).Value =
-                ddlDifficulty
-                    .SelectedValue;
-
-
-            command.Parameters.Add(
-                "@HintText",
-                SqlDbType.NVarChar
-            ).Value =
-                string.IsNullOrWhiteSpace(
-                    txtHint.Text
-                )
-                    ? (object)DBNull.Value
-                    : txtHint
-                        .Text
-                        .Trim();
-
-
-            command.Parameters.Add(
-                "@Explanation",
-                SqlDbType.NVarChar
-            ).Value =
-                string.IsNullOrWhiteSpace(
-                    txtExplanation.Text
-                )
-                    ? (object)DBNull.Value
-                    : txtExplanation
-                        .Text
-                        .Trim();
-
+            command.Parameters.Add("@Explanation", SqlDbType.NVarChar).Value = string.IsNullOrWhiteSpace(txtExplanation.Text)
+                ? (object)DBNull.Value
+                : txtExplanation.Text.Trim();
 
             // Model Answer belongs only to Subjective
-            command.Parameters.Add(
-                "@ModelAnswer",
-                SqlDbType.NVarChar
-            ).Value =
-                ddlQuestionType
-                    .SelectedValue
-                == "Subjective"
+            command.Parameters.Add("@ModelAnswer", SqlDbType.NVarChar).Value = ddlQuestionType.SelectedValue == "Subjective" && !string.IsNullOrWhiteSpace(txtModelAnswer.Text)
+                ? (object)txtModelAnswer.Text.Trim()
+                : DBNull.Value;
 
-                &&
-                !string.IsNullOrWhiteSpace(
-                    txtModelAnswer.Text
-                )
-                    ? (object)
-                        txtModelAnswer
-                            .Text
-                            .Trim()
-                    : DBNull.Value;
-
-
-            command.Parameters.Add(
-                "@MediaPath",
-                SqlDbType.NVarChar,
-                500
-            ).Value =
-                string.IsNullOrWhiteSpace(
-                    mediaPath
-                )
-                    ? (object)DBNull.Value
-                    : mediaPath;
-
+            command.Parameters.Add("@MediaPath", SqlDbType.NVarChar, 500).Value = string.IsNullOrWhiteSpace(mediaPath)
+                ? (object)DBNull.Value
+                : mediaPath;
 
             return command;
         }
@@ -1372,28 +783,17 @@ namespace SPMaster.Lecturer
         {
             const string sql = @"
                 DELETE FROM QuestionOptions
-
                 WHERE
-                    QuestionId =
-                        @QuestionId;
+                    QuestionId = @QuestionId;
             ";
 
-
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection,
-                        transaction
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(
+                sql,
+                connection,
+                transaction
+            ))
             {
-                command.Parameters.Add(
-                    "@QuestionId",
-                    SqlDbType.Int
-                ).Value =
-                    questionId;
-
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
 
                 command.ExecuteNonQuery();
             }
@@ -1409,9 +809,7 @@ namespace SPMaster.Lecturer
             SqlTransaction transaction,
             int questionId)
         {
-            string correctOption =
-                GetCorrectOption();
-
+            string correctOption = GetCorrectOption();
 
             InsertQuestionOption(
                 connection,
@@ -1422,7 +820,6 @@ namespace SPMaster.Lecturer
                 1
             );
 
-
             InsertQuestionOption(
                 connection,
                 transaction,
@@ -1432,7 +829,6 @@ namespace SPMaster.Lecturer
                 2
             );
 
-
             InsertQuestionOption(
                 connection,
                 transaction,
@@ -1441,7 +837,6 @@ namespace SPMaster.Lecturer
                 correctOption == "C",
                 3
             );
-
 
             InsertQuestionOption(
                 connection,
@@ -1474,7 +869,6 @@ namespace SPMaster.Lecturer
                     IsCorrect,
                     DisplayOrder
                 )
-
                 VALUES
                 (
                     @QuestionId,
@@ -1484,43 +878,16 @@ namespace SPMaster.Lecturer
                 );
             ";
 
-
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection,
-                        transaction
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(
+                sql,
+                connection,
+                transaction
+            ))
             {
-                command.Parameters.Add(
-                    "@QuestionId",
-                    SqlDbType.Int
-                ).Value =
-                    questionId;
-
-
-                command.Parameters.Add(
-                    "@OptionText",
-                    SqlDbType.NVarChar
-                ).Value =
-                    optionText;
-
-
-                command.Parameters.Add(
-                    "@IsCorrect",
-                    SqlDbType.Bit
-                ).Value =
-                    isCorrect;
-
-
-                command.Parameters.Add(
-                    "@DisplayOrder",
-                    SqlDbType.Int
-                ).Value =
-                    displayOrder;
-
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+                command.Parameters.Add("@OptionText", SqlDbType.NVarChar).Value = optionText;
+                command.Parameters.Add("@IsCorrect", SqlDbType.Bit).Value = isCorrect;
+                command.Parameters.Add("@DisplayOrder", SqlDbType.Int).Value = displayOrder;
 
                 command.ExecuteNonQuery();
             }
@@ -1538,24 +905,20 @@ namespace SPMaster.Lecturer
                 return "A";
             }
 
-
             if (correctB.Checked)
             {
                 return "B";
             }
-
 
             if (correctC.Checked)
             {
                 return "C";
             }
 
-
             if (correctD.Checked)
             {
                 return "D";
             }
-
 
             return "";
         }
@@ -1565,15 +928,10 @@ namespace SPMaster.Lecturer
         // GENERAL SERVER ERROR
         // =========================================================
 
-        private void ShowError(
-            string message)
+        private void ShowError(string message)
         {
-            lblQuestionError.Text =
-                message;
-
-
-            pnlQuestionError.Visible =
-                true;
+            lblQuestionError.Text = message;
+            pnlQuestionError.Visible = true;
         }
     }
 }

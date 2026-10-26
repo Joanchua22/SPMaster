@@ -204,6 +204,15 @@ namespace SPMaster.Student
         protected global::System.Web.UI.WebControls.PlaceHolder phSubjective;
 
         /// <summary>
+        /// pnlQuestionHint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlQuestionHint;
+
+        /// <summary>
         /// txtSubjectiveAnswer control.
         /// </summary>
         /// <remarks>
@@ -238,6 +247,15 @@ namespace SPMaster.Student
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNextQuestion;
+
+        /// <summary>
+        /// litQuestionHint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litQuestionHint;
 
         /// <summary>
         /// pnlExpiredAttempt control.

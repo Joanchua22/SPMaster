@@ -8,9 +8,7 @@ using System.Web.SessionState;
 
 namespace SPMaster.Api
 {
-    public class QuizAttemptStatus :
-        IHttpHandler,
-        IRequiresSessionState
+    public class QuizAttemptStatus : IHttpHandler, IRequiresSessionState
     {
         // =========================================================
         // DATABASE CONNECTION
@@ -20,11 +18,7 @@ namespace SPMaster.Api
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -33,20 +27,12 @@ namespace SPMaster.Api
         // PROCESS REQUEST
         // =========================================================
 
-        public void ProcessRequest(
-            HttpContext context)
+        public void ProcessRequest(HttpContext context)
         {
             context.Response.Clear();
-
-            context.Response.ContentType =
-                "application/json";
-
-            context.Response.Cache.SetCacheability(
-                HttpCacheability.NoCache
-            );
-
+            context.Response.ContentType = "application/json";
+            context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
             context.Response.Cache.SetNoStore();
-
 
             try
             {
@@ -54,44 +40,30 @@ namespace SPMaster.Api
                 // SESSION CHECK
                 // =================================================
 
-                if (
-                    context.Session == null ||
-                    context.Session["UserId"] == null
-                )
+                if (context.Session == null || context.Session["UserId"] == null)
                 {
                     WriteJson(
                         context,
                         new
                         {
                             success = false,
-                            message =
-                                "You are not logged in."
+                            message = "You are not logged in."
                         }
                     );
 
                     return;
                 }
 
-
                 int studentUserId;
 
-
-                if (
-                    !int.TryParse(
-                        context.Session[
-                            "UserId"
-                        ].ToString(),
-                        out studentUserId
-                    )
-                )
+                if (!int.TryParse(context.Session["UserId"].ToString(), out studentUserId))
                 {
                     WriteJson(
                         context,
                         new
                         {
                             success = false,
-                            message =
-                                "Invalid UserId in session."
+                            message = "Invalid UserId in session."
                         }
                     );
 
@@ -105,23 +77,14 @@ namespace SPMaster.Api
 
                 int attemptId;
 
-
-                if (
-                    !int.TryParse(
-                        context.Request.QueryString[
-                            "attemptId"
-                        ],
-                        out attemptId
-                    )
-                )
+                if (!int.TryParse(context.Request.QueryString["attemptId"], out attemptId))
                 {
                     WriteJson(
                         context,
                         new
                         {
                             success = false,
-                            message =
-                                "A valid attemptId is required."
+                            message = "A valid attemptId is required."
                         }
                     );
 
@@ -133,11 +96,7 @@ namespace SPMaster.Api
                 // LOAD ATTEMPT
                 // =================================================
 
-                LoadAttempt(
-                    context,
-                    attemptId,
-                    studentUserId
-                );
+                LoadAttempt(context, attemptId, studentUserId);
             }
             catch (Exception ex)
             {
@@ -151,15 +110,9 @@ namespace SPMaster.Api
                     new
                     {
                         success = false,
-
-                        message =
-                            "API error occurred.",
-
-                        error =
-                            ex.Message,
-
-                        exceptionType =
-                            ex.GetType().Name
+                        message = "API error occurred.",
+                        error = ex.Message,
+                        exceptionType = ex.GetType().Name
                     }
                 );
             }
@@ -170,10 +123,7 @@ namespace SPMaster.Api
         // LOAD QUIZ ATTEMPT
         // =========================================================
 
-        private void LoadAttempt(
-            HttpContext context,
-            int attemptId,
-            int studentUserId)
+        private void LoadAttempt(HttpContext context, int attemptId, int studentUserId)
         {
             const string sql = @"
                 SELECT
@@ -189,49 +139,18 @@ namespace SPMaster.Api
 
                 WHERE
                     AttemptId = @AttemptId
-
-                    AND
-
-                    StudentUserId =
-                        @StudentUserId;
+                    AND StudentUserId = @StudentUserId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                command.Parameters.Add(
-                    "@AttemptId",
-                    SqlDbType.Int
-                ).Value =
-                    attemptId;
-
-
-                command.Parameters.Add(
-                    "@StudentUserId",
-                    SqlDbType.Int
-                ).Value =
-                    studentUserId;
-
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = attemptId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = studentUserId;
 
                 connection.Open();
 
-
-                using (
-                    SqlDataReader reader =
-                        command.ExecuteReader()
-                )
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     // =============================================
                     // NOT FOUND / NOT OWNED BY THIS STUDENT
@@ -244,15 +163,9 @@ namespace SPMaster.Api
                             new
                             {
                                 success = false,
-
-                                message =
-                                    "Attempt was not found for the logged-in student.",
-
-                                attemptId =
-                                    attemptId,
-
-                                studentUserId =
-                                    studentUserId
+                                message = "Attempt was not found for the logged-in student.",
+                                attemptId = attemptId,
+                                studentUserId = studentUserId
                             }
                         );
 
@@ -264,41 +177,20 @@ namespace SPMaster.Api
                     // BASIC VALUES
                     // =============================================
 
-                    int quizId =
-                        Convert.ToInt32(
-                            reader["QuizId"]
-                        );
-
-
-                    string attemptStatus =
-                        Convert.ToString(
-                            reader["AttemptStatus"]
-                        );
-
-
-                    DateTime startedAt =
-                        Convert.ToDateTime(
-                            reader["StartedAt"]
-                        );
+                    int quizId = Convert.ToInt32(reader["QuizId"]);
+                    string attemptStatus = Convert.ToString(reader["AttemptStatus"]);
+                    DateTime startedAt = Convert.ToDateTime(reader["StartedAt"]);
 
 
                     // =============================================
                     // EXPIRES AT
                     // =============================================
 
-                    DateTime? expiresAt =
-                        null;
+                    DateTime? expiresAt = null;
 
-
-                    if (
-                        reader["ExpiresAt"] !=
-                        DBNull.Value
-                    )
+                    if (reader["ExpiresAt"] != DBNull.Value)
                     {
-                        expiresAt =
-                            Convert.ToDateTime(
-                                reader["ExpiresAt"]
-                            );
+                        expiresAt = Convert.ToDateTime(reader["ExpiresAt"]);
                     }
 
 
@@ -306,19 +198,11 @@ namespace SPMaster.Api
                     // SUBMITTED AT
                     // =============================================
 
-                    DateTime? submittedAt =
-                        null;
+                    DateTime? submittedAt = null;
 
-
-                    if (
-                        reader["SubmittedAt"] !=
-                        DBNull.Value
-                    )
+                    if (reader["SubmittedAt"] != DBNull.Value)
                     {
-                        submittedAt =
-                            Convert.ToDateTime(
-                                reader["SubmittedAt"]
-                            );
+                        submittedAt = Convert.ToDateTime(reader["SubmittedAt"]);
                     }
 
 
@@ -326,40 +210,24 @@ namespace SPMaster.Api
                     // SERVER TIME
                     // =============================================
 
-                    DateTime serverTime =
-                        DateTime.Now;
+                    DateTime serverTime = DateTime.Now;
 
 
                     // =============================================
                     // REMAINING TIME
                     // =============================================
 
-                    int remainingSeconds =
-                        0;
+                    int remainingSeconds = 0;
+                    bool expired = false;
 
-
-                    bool expired =
-                        false;
-
-
-                    if (
-                        expiresAt.HasValue &&
-                        !submittedAt.HasValue
-                    )
+                    if (expiresAt.HasValue && !submittedAt.HasValue)
                     {
-                        remainingSeconds =
-                            (int)Math.Max(
-                                0,
-                                (
-                                    expiresAt.Value -
-                                    serverTime
-                                ).TotalSeconds
-                            );
+                        remainingSeconds = (int)Math.Max(
+                            0,
+                            (expiresAt.Value - serverTime).TotalSeconds
+                        );
 
-
-                        expired =
-                            serverTime >=
-                            expiresAt.Value;
+                        expired = serverTime >= expiresAt.Value;
                     }
 
 
@@ -372,50 +240,23 @@ namespace SPMaster.Api
                         new
                         {
                             success = true,
+                            attemptId = attemptId,
+                            quizId = quizId,
+                            studentUserId = studentUserId,
+                            status = attemptStatus,
+                            startedAt = startedAt.ToString("yyyy-MM-dd HH:mm:ss"),
 
-                            attemptId =
-                                attemptId,
+                            expiresAt = expiresAt.HasValue
+                                ? expiresAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                                : null,
 
-                            quizId =
-                                quizId,
+                            submittedAt = submittedAt.HasValue
+                                ? submittedAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                                : null,
 
-                            studentUserId =
-                                studentUserId,
-
-                            status =
-                                attemptStatus,
-
-                            startedAt =
-                                startedAt.ToString(
-                                    "yyyy-MM-dd HH:mm:ss"
-                                ),
-
-                            expiresAt =
-                                expiresAt.HasValue
-                                    ? expiresAt.Value
-                                        .ToString(
-                                            "yyyy-MM-dd HH:mm:ss"
-                                        )
-                                    : null,
-
-                            submittedAt =
-                                submittedAt.HasValue
-                                    ? submittedAt.Value
-                                        .ToString(
-                                            "yyyy-MM-dd HH:mm:ss"
-                                        )
-                                    : null,
-
-                            serverTime =
-                                serverTime.ToString(
-                                    "yyyy-MM-dd HH:mm:ss"
-                                ),
-
-                            remainingSeconds =
-                                remainingSeconds,
-
-                            expired =
-                                expired
+                            serverTime = serverTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                            remainingSeconds = remainingSeconds,
+                            expired = expired
                         }
                     );
                 }
@@ -427,18 +268,12 @@ namespace SPMaster.Api
         // WRITE JSON
         // =========================================================
 
-        private void WriteJson(
-            HttpContext context,
-            object data)
+        private void WriteJson(HttpContext context, object data)
         {
-            JavaScriptSerializer serializer =
-                new JavaScriptSerializer();
-
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
 
             context.Response.Write(
-                serializer.Serialize(
-                    data
-                )
+                serializer.Serialize(data)
             );
         }
 

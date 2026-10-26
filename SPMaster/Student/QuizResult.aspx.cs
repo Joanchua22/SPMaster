@@ -3,11 +3,9 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-
 namespace SPMaster.Student
 {
-    public partial class QuizResult :
-        System.Web.UI.Page
+    public partial class QuizResult : System.Web.UI.Page
     {
         // =========================================================
         // CONNECTION
@@ -17,11 +15,7 @@ namespace SPMaster.Student
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -34,90 +28,49 @@ namespace SPMaster.Student
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
 
         // =========================================================
-        // ATTEMPT ID
+        // ATTEMPT / QUIZ
         // =========================================================
 
-        private int AttemptId
-        {
-            get;
-            set;
-        }
+        private int AttemptId { get; set; }
 
-
-        // =========================================================
-        // QUIZ ID
-        // =========================================================
-
-        private int QuizId
-        {
-            get;
-            set;
-        }
+        private int QuizId { get; set; }
 
 
         // =========================================================
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
-
 
             int attemptId;
 
-
-            if (
-                !int.TryParse(
-                    Request.QueryString[
-                        "attemptId"
-                    ],
-                    out attemptId
-                )
-            )
+            if (!int.TryParse(Request.QueryString["attemptId"], out attemptId))
             {
-                Response.Redirect(
-                    "~/Student/Quizzes.aspx?tab=attempts"
-                );
-
+                Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
                 return;
             }
 
-
-            AttemptId =
-                attemptId;
-
+            AttemptId = attemptId;
 
             if (!IsPostBack)
             {
                 if (!LoadResultSummary())
                 {
-                    Response.Redirect(
-                        "~/Student/Quizzes.aspx?tab=attempts"
-                    );
-
+                    Response.Redirect("~/Student/Quizzes.aspx?tab=attempts");
                     return;
                 }
-
 
                 BindQuestionBreakdown();
             }
@@ -161,20 +114,16 @@ namespace SPMaster.Student
                     ISNULL(
                         SUM(
                             CASE
-
                                 WHEN ques.QuestionType = 'MCQ'
-                                THEN
-                                    ISNULL(
-                                        sa.MarksAwarded,
-                                        0
-                                    )
+                                THEN ISNULL(
+                                    sa.MarksAwarded,
+                                    0
+                                )
 
-                                ELSE
-                                    ISNULL(
-                                        sa.MarksAwarded,
-                                        0
-                                    )
-
+                                ELSE ISNULL(
+                                    sa.MarksAwarded,
+                                    0
+                                )
                             END
                         ),
                         0
@@ -193,18 +142,13 @@ namespace SPMaster.Student
                     ISNULL(
                         SUM(
                             CASE
-
                                 WHEN ques.QuestionType = 'MCQ'
-                                THEN
-                                    qq.MaxMarks
+                                THEN qq.MaxMarks
 
                                 WHEN sa.MarksAwarded IS NOT NULL
-                                THEN
-                                    qq.MaxMarks
+                                THEN qq.MaxMarks
 
-                                ELSE
-                                    0
-
+                                ELSE 0
                             END
                         ),
                         0
@@ -217,60 +161,34 @@ namespace SPMaster.Student
 
                     SUM(
                         CASE
-
-                            WHEN
-                                ques.QuestionType <> 'MCQ'
-
-                                AND
-                                sa.MarksAwarded IS NULL
-
+                            WHEN ques.QuestionType <> 'MCQ'
+                                 AND sa.MarksAwarded IS NULL
                             THEN 1
-
                             ELSE 0
-
                         END
                     ) AS PendingSubjectiveCount
 
-
                 FROM QuizAttempts qa
 
-
                 INNER JOIN Quizzes q
-                    ON qa.QuizId =
-                       q.QuizId
-
+                    ON qa.QuizId = q.QuizId
 
                 INNER JOIN Users u
-                    ON q.CreatedByUserId =
-                       u.UserId
-
+                    ON q.CreatedByUserId = u.UserId
 
                 INNER JOIN QuizQuestions qq
-                    ON q.QuizId =
-                       qq.QuizId
-
+                    ON q.QuizId = qq.QuizId
 
                 INNER JOIN Questions ques
-                    ON qq.QuestionId =
-                       ques.QuestionId
-
+                    ON qq.QuestionId = ques.QuestionId
 
                 LEFT JOIN StudentAnswers sa
-                    ON sa.AttemptId =
-                       qa.AttemptId
-
-                    AND sa.QuizQuestionId =
-                       qq.QuizQuestionId
-
+                    ON sa.AttemptId = qa.AttemptId
+                    AND sa.QuizQuestionId = qq.QuizQuestionId
 
                 WHERE
-                    qa.AttemptId =
-                        @AttemptId
-
-                    AND
-                    qa.StudentUserId =
-                        @StudentUserId
-
+                    qa.AttemptId = @AttemptId
+                    AND qa.StudentUserId = @StudentUserId
 
                 GROUP BY
                     qa.AttemptId,
@@ -278,366 +196,194 @@ namespace SPMaster.Student
                     qa.StartedAt,
                     qa.SubmittedAt,
                     qa.AttemptStatus,
-
                     q.Title,
-
                     u.FullName;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = CurrentUserId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
-
-
-                    command.Parameters.Add(
-                        "@StudentUserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    if (!reader.Read())
                     {
-                        if (!reader.Read())
-                        {
-                            return false;
-                        }
-
-
-                        // =========================================
-                        // ATTEMPT STATUS
-                        // =========================================
-
-                        string status =
-                            reader[
-                                "AttemptStatus"
-                            ].ToString();
-
-
-                        // Student should not view a result
-                        // for an active quiz.
-
-                        if (
-                            status.Equals(
-                                "InProgress",
-                                StringComparison
-                                    .OrdinalIgnoreCase
-                            )
-                        )
-                        {
-                            int activeAttemptId =
-                                Convert.ToInt32(
-                                    reader[
-                                        "AttemptId"
-                                    ]
-                                );
-
-
-                            Response.Redirect(
-                                "~/Student/StartQuiz.aspx?attemptId="
-                                + activeAttemptId
-                            );
-
-
-                            return false;
-                        }
-
-
-                        // =========================================
-                        // VALUES
-                        // =========================================
-
-                        QuizId =
-                            Convert.ToInt32(
-                                reader[
-                                    "QuizId"
-                                ]
-                            );
-
-
-                        string title =
-                            reader[
-                                "Title"
-                            ].ToString();
-
-
-                        DateTime startedAt =
-                            Convert.ToDateTime(
-                                reader[
-                                    "StartedAt"
-                                ]
-                            );
-
-
-                        DateTime? submittedAt =
-                            reader[
-                                "SubmittedAt"
-                            ] == DBNull.Value
-
-                                ? (DateTime?)null
-
-                                : Convert.ToDateTime(
-                                    reader[
-                                        "SubmittedAt"
-                                    ]
-                                );
-
-
-                        decimal totalMarks =
-                            Convert.ToDecimal(
-                                reader[
-                                    "TotalMarks"
-                                ]
-                            );
-
-
-                        decimal awardedMarks =
-                            Convert.ToDecimal(
-                                reader[
-                                    "AwardedMarks"
-                                ]
-                            );
-
-
-                        decimal gradedPossibleMarks =
-                            Convert.ToDecimal(
-                                reader[
-                                    "GradedPossibleMarks"
-                                ]
-                            );
-
-
-                        int pendingSubjectiveCount =
-                            Convert.ToInt32(
-                                reader[
-                                    "PendingSubjectiveCount"
-                                ]
-                            );
-
-
-                        // =========================================
-                        // TITLE
-                        // =========================================
-
-                        litQuizTitle.Text =
-                            Server.HtmlEncode(
-                                title
-                            );
-
-
-                        // =========================================
-                        // COMPLETION DATE
-                        // =========================================
-
-                        if (
-                            submittedAt.HasValue
-                        )
-                        {
-                            litCompletedDate.Text =
-                                submittedAt.Value.ToString(
-                                    "dd MMMM yyyy"
-                                );
-                        }
-                        else
-                        {
-                            litCompletedDate.Text =
-                                "-";
-                        }
-
-
-                        // =========================================
-                        // TIME SPENT
-                        // =========================================
-
-                        DateTime finishTime =
-                            submittedAt.HasValue
-
-                                ? submittedAt.Value
-
-                                : DateTime.Now;
-
-
-                        TimeSpan duration =
-                            finishTime -
-                            startedAt;
-
-
-                        if (
-                            duration.TotalSeconds < 0
-                        )
-                        {
-                            duration =
-                                TimeSpan.Zero;
-                        }
-
-
-                        litTimeSpent.Text =
-                            FormatDuration(
-                                duration
-                            );
-
-
-                        // =========================================
-                        // PENDING GRADING
-                        // =========================================
-
-                        bool pending =
-                            status.Equals(
-                                "PendingGrading",
-                                StringComparison
-                                    .OrdinalIgnoreCase
-                            );
-
-
-                        if (pending)
-                        {
-                            pnlPendingBadge.Visible =
-                                true;
-
-
-                            pnlPendingScore.Visible =
-                                true;
-
-
-                            pnlGradedBadge.Visible =
-                                false;
-
-
-                            pnlGradedScore.Visible =
-                                false;
-
-
-                            // -------------------------------------
-                            // CURRENT GRADED SCORE
-                            // -------------------------------------
-
-                            litCurrentScore.Text =
-                                awardedMarks.ToString(
-                                    "0.##"
-                                )
-                                + " / "
-                                + gradedPossibleMarks.ToString(
-                                    "0.##"
-                                )
-                                + "*";
-
-
-                            // -------------------------------------
-                            // PENDING COUNT
-                            // -------------------------------------
-
-                            litPendingCount.Text =
-                                pendingSubjectiveCount
-                                + (
-                                    pendingSubjectiveCount == 1
-
-                                        ? " subjective question under review"
-
-                                        : " subjective questions under review"
-                                );
-                        }
-
-
-                        // =========================================
-                        // FULLY GRADED
-                        // =========================================
-
-                        else
-                        {
-                            pnlPendingBadge.Visible =
-                                false;
-
-
-                            pnlPendingScore.Visible =
-                                false;
-
-
-                            pnlGradedBadge.Visible =
-                                true;
-
-
-                            pnlGradedScore.Visible =
-                                true;
-
-
-                            litFinalScore.Text =
-                                awardedMarks.ToString(
-                                    "0.##"
-                                )
-                                + " / "
-                                + totalMarks.ToString(
-                                    "0.##"
-                                );
-
-
-                            decimal percentage =
-                                0;
-
-
-                            if (
-                                totalMarks > 0
-                            )
-                            {
-                                percentage =
-                                    awardedMarks
-                                    / totalMarks
-                                    * 100;
-                            }
-
-
-                            litFinalPercentage.Text =
-                                "Graded ("
-                                + percentage.ToString(
-                                    "0"
-                                )
-                                + "%)";
-                        }
-
-
-                        // =========================================
-                        // TRY AGAIN
-                        // =========================================
-
-                        lnkTryAgain.NavigateUrl =
-                            ResolveUrl(
-                                "~/Student/StartQuiz.aspx?quizId="
-                                + QuizId
-                            );
-
-
-                        return true;
+                        return false;
                     }
+
+                    // =============================================
+                    // ATTEMPT STATUS
+                    // =============================================
+
+                    string status = reader["AttemptStatus"].ToString();
+
+                    // Student should not view a result
+                    // for an active quiz.
+                    if (status.Equals("InProgress", StringComparison.OrdinalIgnoreCase))
+                    {
+                        int activeAttemptId = Convert.ToInt32(reader["AttemptId"]);
+
+                        Response.Redirect(
+                            "~/Student/StartQuiz.aspx?attemptId=" + activeAttemptId
+                        );
+
+                        return false;
+                    }
+
+
+                    // =============================================
+                    // VALUES
+                    // =============================================
+
+                    QuizId = Convert.ToInt32(reader["QuizId"]);
+
+                    string title = reader["Title"].ToString();
+
+                    DateTime startedAt = Convert.ToDateTime(reader["StartedAt"]);
+
+                    DateTime? submittedAt =
+                        reader["SubmittedAt"] == DBNull.Value
+                            ? (DateTime?)null
+                            : Convert.ToDateTime(reader["SubmittedAt"]);
+
+                    decimal totalMarks = Convert.ToDecimal(reader["TotalMarks"]);
+                    decimal awardedMarks = Convert.ToDecimal(reader["AwardedMarks"]);
+                    decimal gradedPossibleMarks = Convert.ToDecimal(reader["GradedPossibleMarks"]);
+                    int pendingSubjectiveCount = Convert.ToInt32(reader["PendingSubjectiveCount"]);
+
+
+                    // =============================================
+                    // TITLE
+                    // =============================================
+
+                    litQuizTitle.Text = Server.HtmlEncode(title);
+
+
+                    // =============================================
+                    // COMPLETION DATE
+                    // =============================================
+
+                    if (submittedAt.HasValue)
+                    {
+                        litCompletedDate.Text = submittedAt.Value.ToString("dd MMMM yyyy");
+                    }
+                    else
+                    {
+                        litCompletedDate.Text = "-";
+                    }
+
+
+                    // =============================================
+                    // TIME SPENT
+                    // =============================================
+
+                    DateTime finishTime = submittedAt.HasValue
+                        ? submittedAt.Value
+                        : DateTime.Now;
+
+                    TimeSpan duration = finishTime - startedAt;
+
+                    if (duration.TotalSeconds < 0)
+                    {
+                        duration = TimeSpan.Zero;
+                    }
+
+                    litTimeSpent.Text = FormatDuration(duration);
+
+
+                    // =============================================
+                    // PENDING GRADING
+                    // =============================================
+
+                    bool pending = status.Equals(
+                        "PendingGrading",
+                        StringComparison.OrdinalIgnoreCase
+                    );
+
+                    if (pending)
+                    {
+                        pnlPendingBadge.Visible = true;
+                        pnlPendingScore.Visible = true;
+
+                        pnlGradedBadge.Visible = false;
+                        pnlGradedScore.Visible = false;
+
+                        // -----------------------------------------
+                        // CURRENT GRADED SCORE
+                        // -----------------------------------------
+
+                        litCurrentScore.Text =
+                            awardedMarks.ToString("0.##")
+                            + " / "
+                            + gradedPossibleMarks.ToString("0.##")
+                            + "*";
+
+                        // -----------------------------------------
+                        // PENDING COUNT
+                        // -----------------------------------------
+
+                        litPendingCount.Text =
+                            pendingSubjectiveCount
+                            + (
+                                pendingSubjectiveCount == 1
+                                    ? " subjective question under review"
+                                    : " subjective questions under review"
+                            );
+                    }
+
+
+                    // =============================================
+                    // FULLY GRADED
+                    // =============================================
+
+                    else
+                    {
+                        pnlPendingBadge.Visible = false;
+                        pnlPendingScore.Visible = false;
+
+                        pnlGradedBadge.Visible = true;
+                        pnlGradedScore.Visible = true;
+
+                        litFinalScore.Text =
+                            awardedMarks.ToString("0.##")
+                            + " / "
+                            + totalMarks.ToString("0.##");
+
+                        decimal percentage = 0;
+
+                        if (totalMarks > 0)
+                        {
+                            percentage = awardedMarks / totalMarks * 100;
+                        }
+
+                        litFinalPercentage.Text =
+                            "Graded ("
+                            + percentage.ToString("0")
+                            + "%)";
+                    }
+
+
+                    // =============================================
+                    // TRY AGAIN
+                    // =============================================
+
+                    lnkTryAgain.NavigateUrl =
+                        ResolveUrl(
+                            "~/Student/StartQuiz.aspx?quizId=" + QuizId
+                        );
+
+                    return true;
                 }
             }
         }
 
 
         // =========================================================
-        // QUESTION BREAKDOWN
+        // BIND QUESTION BREAKDOWN
         // =========================================================
 
         private void BindQuestionBreakdown()
@@ -656,6 +402,7 @@ namespace SPMaster.Student
 
                     sa.SelectedOptionId,
                     sa.AnswerText,
+                    sa.LecturerFeedback,
 
 
                     /* -----------------------------------------
@@ -667,23 +414,27 @@ namespace SPMaster.Student
                        ----------------------------------------- */
 
                     CASE
-
                         WHEN ques.QuestionType = 'MCQ'
-                        THEN
-                            ISNULL(
-                                sa.MarksAwarded,
-                                0
-                            )
+                        THEN ISNULL(
+                            sa.MarksAwarded,
+                            0
+                        )
 
-                        ELSE
-                            sa.MarksAwarded
-
+                        ELSE sa.MarksAwarded
                     END AS DisplayMarksAwarded,
 
+
+                    /* -----------------------------------------
+                       STUDENT SELECTED OPTION
+                       ----------------------------------------- */
 
                     selectedOption.OptionText
                         AS SelectedOptionText,
 
+
+                    /* -----------------------------------------
+                       WHETHER SELECTED OPTION IS CORRECT
+                       ----------------------------------------- */
 
                     ISNULL(
                         selectedOption.IsCorrect,
@@ -691,30 +442,47 @@ namespace SPMaster.Student
                     ) AS SelectedOptionIsCorrect,
 
 
+                    /* -----------------------------------------
+                       CORRECT MCQ OPTION
+                       ----------------------------------------- */
+
                     correctOption.OptionText
                         AS CorrectOptionText
-
 
                 FROM QuizQuestions qq
 
 
-                INNER JOIN Questions ques
-                    ON qq.QuestionId =
-                       ques.QuestionId
+                /* =============================================
+                   QUESTION DETAILS
+                   ============================================= */
 
+                INNER JOIN Questions ques
+                    ON qq.QuestionId = ques.QuestionId
+
+
+                /* =============================================
+                   STUDENT ANSWER
+
+                   LEFT JOIN is used so unanswered questions
+                   still appear in the result breakdown.
+                   ============================================= */
 
                 LEFT JOIN StudentAnswers sa
-                    ON sa.QuizQuestionId =
-                       qq.QuizQuestionId
+                    ON sa.QuizQuestionId = qq.QuizQuestionId
+                    AND sa.AttemptId = @AttemptId
 
-                    AND sa.AttemptId =
-                        @AttemptId
 
+                /* =============================================
+                   STUDENT SELECTED MCQ OPTION
+                   ============================================= */
 
                 LEFT JOIN QuestionOptions selectedOption
-                    ON sa.SelectedOptionId =
-                       selectedOption.OptionId
+                    ON sa.SelectedOptionId = selectedOption.OptionId
 
+
+                /* =============================================
+                   CORRECT MCQ OPTION
+                   ============================================= */
 
                 OUTER APPLY
                 (
@@ -724,80 +492,40 @@ namespace SPMaster.Student
                     FROM QuestionOptions qo
 
                     WHERE
-                        qo.QuestionId =
-                            ques.QuestionId
-
-                        AND
-                        qo.IsCorrect = 1
+                        qo.QuestionId = ques.QuestionId
+                        AND qo.IsCorrect = 1
 
                     ORDER BY
                         qo.DisplayOrder
-
                 ) correctOption
 
 
-                WHERE
-                    qq.QuizId =
-                        @QuizId
+                /* =============================================
+                   CURRENT QUIZ ONLY
+                   ============================================= */
 
+                WHERE
+                    qq.QuizId = @QuizId
 
                 ORDER BY
                     qq.QuestionOrder;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@AttemptId", SqlDbType.Int).Value = AttemptId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = QuizId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@AttemptId",
-                        SqlDbType.Int
-                    ).Value =
-                        AttemptId;
-
-
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        QuizId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
 
-
-            rptResultQuestions.DataSource =
-                table;
-
-
+            rptResultQuestions.DataSource = table;
             rptResultQuestions.DataBind();
         }
 
@@ -806,26 +534,18 @@ namespace SPMaster.Student
         // QUESTION TYPE
         // =========================================================
 
-        protected bool IsMcq(
-            object questionType)
+        protected bool IsMcq(object questionType)
         {
             return string.Equals(
-                Convert.ToString(
-                    questionType
-                ),
+                Convert.ToString(questionType),
                 "MCQ",
-                StringComparison
-                    .OrdinalIgnoreCase
+                StringComparison.OrdinalIgnoreCase
             );
         }
 
-
-        protected string GetQuestionTypeText(
-            object questionType)
+        protected string GetQuestionTypeText(object questionType)
         {
-            return IsMcq(
-                questionType
-            )
+            return IsMcq(questionType)
                 ? "Objective"
                 : "Subjective";
         }
@@ -835,100 +555,42 @@ namespace SPMaster.Student
         // QUESTION ICON
         // =========================================================
 
-        protected string GetQuestionIcon(
-            object questionType,
-            object marksAwarded,
-            object maxMarks)
+        protected string GetQuestionIcon(object questionType, object marksAwarded, object maxMarks)
         {
-            if (
-                !IsMcq(
-                    questionType
-                )
-                &&
-                (
-                    marksAwarded == null
-                    ||
-                    marksAwarded == DBNull.Value
-                )
-            )
+            if (!IsMcq(questionType) &&
+                (marksAwarded == null || marksAwarded == DBNull.Value))
             {
-                return
-                    "bi bi-hourglass-split";
+                return "bi bi-hourglass-split";
             }
 
+            decimal awarded = Convert.ToDecimal(marksAwarded);
+            decimal maximum = Convert.ToDecimal(maxMarks);
 
-            decimal awarded =
-                Convert.ToDecimal(
-                    marksAwarded
-                );
-
-
-            decimal maximum =
-                Convert.ToDecimal(
-                    maxMarks
-                );
-
-
-            if (
-                awarded >= maximum
-            )
+            if (awarded >= maximum)
             {
                 return "bi bi-check-lg";
             }
 
-
             return "bi bi-x-lg";
         }
 
-
-        protected string GetQuestionIconCss(
-            object questionType,
-            object marksAwarded,
-            object maxMarks)
+        protected string GetQuestionIconCss(object questionType, object marksAwarded, object maxMarks)
         {
-            if (
-                !IsMcq(
-                    questionType
-                )
-                &&
-                (
-                    marksAwarded == null
-                    ||
-                    marksAwarded == DBNull.Value
-                )
-            )
+            if (!IsMcq(questionType) &&
+                (marksAwarded == null || marksAwarded == DBNull.Value))
             {
-                return
-                    "result-question-icon "
-                    + "result-icon-pending";
+                return "result-question-icon result-icon-pending";
             }
 
+            decimal awarded = Convert.ToDecimal(marksAwarded);
+            decimal maximum = Convert.ToDecimal(maxMarks);
 
-            decimal awarded =
-                Convert.ToDecimal(
-                    marksAwarded
-                );
-
-
-            decimal maximum =
-                Convert.ToDecimal(
-                    maxMarks
-                );
-
-
-            if (
-                awarded >= maximum
-            )
+            if (awarded >= maximum)
             {
-                return
-                    "result-question-icon "
-                    + "result-icon-correct";
+                return "result-question-icon result-icon-correct";
             }
 
-
-            return
-                "result-question-icon "
-                + "result-icon-incorrect";
+            return "result-question-icon result-icon-incorrect";
         }
 
 
@@ -936,75 +598,32 @@ namespace SPMaster.Student
         // QUESTION MARKS
         // =========================================================
 
-        protected string GetQuestionMarksText(
-            object questionType,
-            object marksAwarded,
-            object maxMarks)
+        protected string GetQuestionMarksText(object questionType, object marksAwarded, object maxMarks)
         {
-            if (
-                !IsMcq(
-                    questionType
-                )
-                &&
-                (
-                    marksAwarded == null
-                    ||
-                    marksAwarded == DBNull.Value
-                )
-            )
+            if (!IsMcq(questionType) &&
+                (marksAwarded == null || marksAwarded == DBNull.Value))
             {
                 return "Pending Lecturer Review";
             }
 
+            decimal awarded = Convert.ToDecimal(marksAwarded);
+            decimal maximum = Convert.ToDecimal(maxMarks);
 
-            decimal awarded =
-                Convert.ToDecimal(
-                    marksAwarded
-                );
-
-
-            decimal maximum =
-                Convert.ToDecimal(
-                    maxMarks
-                );
-
-
-            return "+"
-                + awarded.ToString(
-                    "0.##"
-                )
+            return awarded.ToString("0.##")
                 + " / "
-                + maximum.ToString(
-                    "0.##"
-                )
+                + maximum.ToString("0.##")
                 + " Marks";
         }
 
-
-        protected string GetQuestionMarksCss(
-            object questionType,
-            object marksAwarded)
+        protected string GetQuestionMarksCss(object questionType, object marksAwarded)
         {
-            if (
-                !IsMcq(
-                    questionType
-                )
-                &&
-                (
-                    marksAwarded == null
-                    ||
-                    marksAwarded == DBNull.Value
-                )
-            )
+            if (!IsMcq(questionType) &&
+                (marksAwarded == null || marksAwarded == DBNull.Value))
             {
-                return
-                    "result-question-pending";
+                return "result-question-pending";
             }
 
-
-            return
-                "result-question-marks "
-                + "result-marks-correct";
+            return "result-question-marks result-marks-correct";
         }
 
 
@@ -1012,103 +631,52 @@ namespace SPMaster.Student
         // OBJECTIVE ANSWER
         // =========================================================
 
-        protected string GetObjectiveAnswerCss(
-            object selectedOptionId,
-            object selectedOptionIsCorrect)
+        protected string GetObjectiveAnswerCss(object selectedOptionId, object selectedOptionIsCorrect)
         {
-            if (
-                selectedOptionId == null
-                ||
-                selectedOptionId == DBNull.Value
-            )
+            if (selectedOptionId == null || selectedOptionId == DBNull.Value)
             {
-                return
-                    "result-answer-box "
-                    + "result-answer-incorrect";
+                return "result-answer-box result-answer-incorrect";
             }
 
-
-            bool correct =
-                Convert.ToBoolean(
-                    selectedOptionIsCorrect
-                );
-
+            bool correct = Convert.ToBoolean(selectedOptionIsCorrect);
 
             return correct
-
-                ? "result-answer-box "
-                  + "result-answer-correct"
-
-                : "result-answer-box "
-                  + "result-answer-incorrect";
+                ? "result-answer-box result-answer-correct"
+                : "result-answer-box result-answer-incorrect";
         }
 
-
-        protected string GetSelectedAnswerText(
-            object selectedOptionText)
+        protected string GetSelectedAnswerText(object selectedOptionText)
         {
-            if (
-                selectedOptionText == null
-                ||
-                selectedOptionText == DBNull.Value
-                ||
-                string.IsNullOrWhiteSpace(
-                    Convert.ToString(
-                        selectedOptionText
-                    )
-                )
-            )
+            if (selectedOptionText == null ||
+                selectedOptionText == DBNull.Value ||
+                string.IsNullOrWhiteSpace(Convert.ToString(selectedOptionText)))
             {
-                return
-                    "No answer submitted";
+                return "No answer submitted";
             }
 
-
-            return Convert.ToString(
-                selectedOptionText
-            );
+            return Convert.ToString(selectedOptionText);
         }
 
-
-        protected string GetObjectiveResultText(
-            object selectedOptionId,
-            object selectedOptionIsCorrect)
+        protected string GetObjectiveResultText(object selectedOptionId, object selectedOptionIsCorrect)
         {
-            if (
-                selectedOptionId == null
-                ||
-                selectedOptionId == DBNull.Value
-            )
+            if (selectedOptionId == null || selectedOptionId == DBNull.Value)
             {
                 return "(No Answer)";
             }
 
-
-            return Convert.ToBoolean(
-                selectedOptionIsCorrect
-            )
+            return Convert.ToBoolean(selectedOptionIsCorrect)
                 ? "(Correct)"
                 : "(Incorrect)";
         }
 
-
-        protected bool ShowCorrectAnswer(
-            object selectedOptionId,
-            object selectedOptionIsCorrect)
+        protected bool ShowCorrectAnswer(object selectedOptionId, object selectedOptionIsCorrect)
         {
-            if (
-                selectedOptionId == null
-                ||
-                selectedOptionId == DBNull.Value
-            )
+            if (selectedOptionId == null || selectedOptionId == DBNull.Value)
             {
                 return true;
             }
 
-
-            return !Convert.ToBoolean(
-                selectedOptionIsCorrect
-            );
+            return !Convert.ToBoolean(selectedOptionIsCorrect);
         }
 
 
@@ -1116,25 +684,14 @@ namespace SPMaster.Student
         // SUBJECTIVE
         // =========================================================
 
-        protected string GetSubjectiveAnswer(
-            object answerText)
+        protected string GetSubjectiveAnswer(object answerText)
         {
-            string answer =
-                Convert.ToString(
-                    answerText
-                );
+            string answer = Convert.ToString(answerText);
 
-
-            if (
-                string.IsNullOrWhiteSpace(
-                    answer
-                )
-            )
+            if (string.IsNullOrWhiteSpace(answer))
             {
-                return
-                    "No answer submitted.";
+                return "No answer submitted.";
             }
-
 
             return answer;
         }
@@ -1144,14 +701,9 @@ namespace SPMaster.Student
         // HAS TEXT
         // =========================================================
 
-        protected bool HasText(
-            object value)
+        protected bool HasText(object value)
         {
-            return !string.IsNullOrWhiteSpace(
-                Convert.ToString(
-                    value
-                )
-            );
+            return !string.IsNullOrWhiteSpace(Convert.ToString(value));
         }
 
 
@@ -1159,42 +711,17 @@ namespace SPMaster.Student
         // DURATION
         // =========================================================
 
-        private string FormatDuration(
-            TimeSpan duration)
+        private string FormatDuration(TimeSpan duration)
         {
-            int totalMinutes =
-                (int)duration.TotalMinutes;
+            int totalMinutes = (int)duration.TotalMinutes;
+            int seconds = duration.Seconds;
 
-
-            int seconds =
-                duration.Seconds;
-
-
-            if (
-                totalMinutes <= 0
-            )
+            if (totalMinutes <= 0)
             {
-                return seconds
-                    + (
-                        seconds == 1
-                            ? " sec"
-                            : " secs"
-                    );
+                return seconds + (seconds == 1 ? " sec" : " secs");
             }
 
-
-            return totalMinutes
-                + (
-                    totalMinutes == 1
-                        ? " min "
-                        : " mins "
-                )
-                + seconds
-                + (
-                    seconds == 1
-                        ? " sec"
-                        : " secs"
-                );
+            return totalMinutes + (totalMinutes == 1 ? " min " : " mins ") + seconds + (seconds == 1 ? " sec" : " secs");
         }
     }
 }

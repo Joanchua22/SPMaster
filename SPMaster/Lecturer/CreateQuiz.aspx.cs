@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.WebControls;
 
-
 namespace SPMaster.Lecturer
 {
     public partial class CreateQuiz : System.Web.UI.Page
@@ -17,11 +16,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return ConfigurationManager
-                    .ConnectionStrings[
-                        "SPMasterConnectionString"
-                    ]
-                    .ConnectionString;
+                return ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
             }
         }
 
@@ -34,9 +29,7 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                return Convert.ToInt32(
-                    Session["UserId"]
-                );
+                return Convert.ToInt32(Session["UserId"]);
             }
         }
 
@@ -52,17 +45,10 @@ namespace SPMaster.Lecturer
             {
                 int quizId;
 
-
-                if (
-                    int.TryParse(
-                        Request.QueryString["id"],
-                        out quizId
-                    )
-                )
+                if (int.TryParse(Request.QueryString["id"], out quizId))
                 {
                     return quizId;
                 }
-
 
                 return null;
             }
@@ -80,31 +66,17 @@ namespace SPMaster.Lecturer
         {
             get
             {
-                if (
-                    ViewState[
-                        "AllocatedQuestions"
-                    ] == null
-                )
+                if (ViewState["AllocatedQuestions"] == null)
                 {
-                    ViewState[
-                        "AllocatedQuestions"
-                    ] =
-                        CreateAllocatedQuestionTable();
+                    ViewState["AllocatedQuestions"] = CreateAllocatedQuestionTable();
                 }
 
-
-                return
-                    (DataTable)
-                    ViewState[
-                        "AllocatedQuestions"
-                    ];
+                return (DataTable)ViewState["AllocatedQuestions"];
             }
 
             set
             {
-                ViewState[
-                    "AllocatedQuestions"
-                ] = value;
+                ViewState["AllocatedQuestions"] = value;
             }
         }
 
@@ -113,77 +85,37 @@ namespace SPMaster.Lecturer
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            // -----------------------------------------------------
-            // User must be logged in
-            // -----------------------------------------------------
-
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-
-            // -----------------------------------------------------
-            // Hide question-level message on each request.
-            //
-            // Individual field validators handle:
-            // - title
-            // - subject
-            // - form
-            // - time
-            // - pass percentage
-            // -----------------------------------------------------
-
-            lblQuestionValidation.Visible =
-                false;
-
-
-            // -----------------------------------------------------
-            // Initial page load only
-            // -----------------------------------------------------
+            lblQuestionValidation.Visible = false;
 
             if (!IsPostBack)
             {
                 BindSubjects();
-
                 BindForms();
 
 
                 // =================================================
                 // EDIT EXISTING DRAFT
                 // =================================================
-                    
+
                 if (EditingQuizId.HasValue)
                 {
-                    bool loaded =
-                        LoadQuiz(
-                            EditingQuizId.Value
-                        );
-
+                    bool loaded = LoadQuiz(EditingQuizId.Value);
 
                     if (!loaded)
                     {
-                        Response.Redirect(
-                            "~/Lecturer/Quizzes.aspx"
-                        );
-
+                        Response.Redirect("~/Lecturer/Quizzes.aspx");
                         return;
                     }
 
-
-                    LoadAllocatedQuestions(
-                        EditingQuizId.Value
-                    );
+                    LoadAllocatedQuestions(EditingQuizId.Value);
                 }
 
 
@@ -193,39 +125,26 @@ namespace SPMaster.Lecturer
 
                 else
                 {
-                    AllocatedQuestions =
-                        CreateAllocatedQuestionTable();
-
+                    AllocatedQuestions = CreateAllocatedQuestionTable();
 
                     // Default pass percentage
-                    txtPassPercentage.Text =
-                        "50";
-
+                    txtPassPercentage.Text = "50";
 
                     // Example:
                     // Question Bank ->
                     // Add to My Quiz ->
                     // Create New Quiz ->
                     // CreateQuiz.aspx?questionId=12
-
                     LoadIncomingQuestion();
                 }
 
-
                 BindAllocatedQuestions();
-
                 BindBankQuestions();
 
-                if (
-                    Request.QueryString["saved"]
-                    == "1"
-                )
+                if (Request.QueryString["saved"] == "1")
                 {
-                    lblSaveSuccess.Text =
-                        "Draft saved successfully.";
-
-                    pnlSaveSuccess.Visible =
-                        true;
+                    lblSaveSuccess.Text = "Draft saved successfully.";
+                    pnlSaveSuccess.Visible = true;
                 }
             }
         }
@@ -237,57 +156,16 @@ namespace SPMaster.Lecturer
 
         private DataTable CreateAllocatedQuestionTable()
         {
-            DataTable table =
-                new DataTable();
+            DataTable table = new DataTable();
 
-
-            table.Columns.Add(
-                "QuestionId",
-                typeof(int)
-            );
-
-
-            table.Columns.Add(
-                "SubjectId",
-                typeof(int)
-            );
-
-
-            table.Columns.Add(
-                "SubjectName",
-                typeof(string)
-            );
-
-
-            table.Columns.Add(
-                "QuestionType",
-                typeof(string)
-            );
-
-
-            table.Columns.Add(
-                "Difficulty",
-                typeof(string)
-            );
-
-
-            table.Columns.Add(
-                "QuestionText",
-                typeof(string)
-            );
-
-
-            table.Columns.Add(
-                "MaxMarks",
-                typeof(int)
-            );
-
-
-            table.Columns.Add(
-                "QuestionOrder",
-                typeof(int)
-            );
-
+            table.Columns.Add("QuestionId", typeof(int));
+            table.Columns.Add("SubjectId", typeof(int));
+            table.Columns.Add("SubjectName", typeof(string));
+            table.Columns.Add("QuestionType", typeof(string));
+            table.Columns.Add("Difficulty", typeof(string));
+            table.Columns.Add("QuestionText", typeof(string));
+            table.Columns.Add("MaxMarks", typeof(int));
+            table.Columns.Add("QuestionOrder", typeof(int));
 
             return table;
         }
@@ -303,59 +181,27 @@ namespace SPMaster.Lecturer
                 SELECT
                     SubjectId,
                     SubjectName
-
                 FROM Subjects
-
                 WHERE
                     IsActive = 1
-
                 ORDER BY
                     SubjectName;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    connection.Open();
+                connection.Open();
 
-
-                    ddlQuizSubject.DataSource =
-                        command.ExecuteReader();
-
-
-                    ddlQuizSubject.DataTextField =
-                        "SubjectName";
-
-
-                    ddlQuizSubject.DataValueField =
-                        "SubjectId";
-
-
-                    ddlQuizSubject.DataBind();
-                }
+                ddlQuizSubject.DataSource = command.ExecuteReader();
+                ddlQuizSubject.DataTextField = "SubjectName";
+                ddlQuizSubject.DataValueField = "SubjectId";
+                ddlQuizSubject.DataBind();
             }
 
-
-            // Empty option used by RequiredFieldValidator
             ddlQuizSubject.Items.Insert(
                 0,
-                new ListItem(
-                    "Select Subject",
-                    ""
-                )
+                new ListItem("Select Subject", "")
             );
         }
 
@@ -370,59 +216,27 @@ namespace SPMaster.Lecturer
                 SELECT
                     FormId,
                     FormName
-
                 FROM Forms
-
                 WHERE
                     IsActive = 1
-
                 ORDER BY
                     FormId;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
-                {
-                    connection.Open();
+                connection.Open();
 
-
-                    ddlFormLevel.DataSource =
-                        command.ExecuteReader();
-
-
-                    ddlFormLevel.DataTextField =
-                        "FormName";
-
-
-                    ddlFormLevel.DataValueField =
-                        "FormId";
-
-
-                    ddlFormLevel.DataBind();
-                }
+                ddlFormLevel.DataSource = command.ExecuteReader();
+                ddlFormLevel.DataTextField = "FormName";
+                ddlFormLevel.DataValueField = "FormId";
+                ddlFormLevel.DataBind();
             }
 
-
-            // Empty option used by RequiredFieldValidator
             ddlFormLevel.Items.Insert(
                 0,
-                new ListItem(
-                    "Select Form",
-                    ""
-                )
+                new ListItem("Select Form", "")
             );
         }
 
@@ -431,8 +245,7 @@ namespace SPMaster.Lecturer
         // LOAD EXISTING DRAFT QUIZ
         // =========================================================
 
-        private bool LoadQuiz(
-            int quizId)
+        private bool LoadQuiz(int quizId)
         {
             const string sql = @"
                 SELECT
@@ -442,108 +255,41 @@ namespace SPMaster.Lecturer
                     Description,
                     TimeLimitMinutes,
                     PassPercentage
-
                 FROM Quizzes
-
                 WHERE
                     QuizId = @QuizId
-
-                    AND
-                    CreatedByUserId = @UserId
-
-                    AND
-                    IsPublished = 0
-
-                    AND
-                    IsArchived = 0;
+                    AND CreatedByUserId = @UserId
+                    AND IsPublished = 0
+                    AND IsArchived = 0;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = CurrentUserId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    command.Parameters.Add(
-                        "@UserId",
-                        SqlDbType.Int
-                    ).Value =
-                        CurrentUserId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    if (!reader.Read())
                     {
-                        if (!reader.Read())
-                        {
-                            return false;
-                        }
-
-
-                        txtQuizTitle.Text =
-                            reader[
-                                "Title"
-                            ].ToString();
-
-
-                        ddlQuizSubject.SelectedValue =
-                            reader[
-                                "SubjectId"
-                            ].ToString();
-
-
-                        ddlFormLevel.SelectedValue =
-                            reader[
-                                "FormId"
-                            ].ToString();
-
-
-                        txtTimeLimit.Text =
-                            reader[
-                                "TimeLimitMinutes"
-                            ].ToString();
-
-
-                        txtPassPercentage.Text =
-                            reader[
-                                "PassPercentage"
-                            ].ToString();
-
-
-                        txtQuizInstructions.Text =
-                            reader[
-                                "Description"
-                            ] == DBNull.Value
-                                ? ""
-                                : reader[
-                                    "Description"
-                                ].ToString();
-
-
-                        return true;
+                        return false;
                     }
+
+                    txtQuizTitle.Text = reader["Title"].ToString();
+                    ddlQuizSubject.SelectedValue = reader["SubjectId"].ToString();
+                    ddlFormLevel.SelectedValue = reader["FormId"].ToString();
+                    txtTimeLimit.Text = reader["TimeLimitMinutes"].ToString();
+                    txtPassPercentage.Text = reader["PassPercentage"].ToString();
+
+                    txtQuizInstructions.Text =
+                        reader["Description"] == DBNull.Value
+                            ? ""
+                            : reader["Description"].ToString();
+
+                    return true;
                 }
             }
         }
@@ -553,8 +299,7 @@ namespace SPMaster.Lecturer
         // LOAD QUESTIONS ALREADY IN DRAFT QUIZ
         // =========================================================
 
-        private void LoadAllocatedQuestions(
-            int quizId)
+        private void LoadAllocatedQuestions(int quizId)
         {
             const string sql = @"
                 SELECT
@@ -564,113 +309,47 @@ namespace SPMaster.Lecturer
                     q.QuestionType,
                     q.Difficulty,
                     q.QuestionText,
-
                     qq.MaxMarks,
                     qq.QuestionOrder
-
                 FROM QuizQuestions qq
-
                 INNER JOIN Questions q
-                    ON qq.QuestionId =
-                       q.QuestionId
-
+                    ON qq.QuestionId = q.QuestionId
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
-
+                    ON q.SubjectId = s.SubjectId
                 WHERE
                     qq.QuizId = @QuizId
-
                 ORDER BY
                     qq.QuestionOrder;
             ";
 
+            DataTable table = CreateAllocatedQuestionTable();
 
-            DataTable table =
-                CreateAllocatedQuestionTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
-                        quizId;
-
-
-                    connection.Open();
-
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
-                    )
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            table.Rows.Add(
-                                Convert.ToInt32(
-                                    reader[
-                                        "QuestionId"
-                                    ]
-                                ),
-
-                                Convert.ToInt32(
-                                    reader[
-                                        "SubjectId"
-                                    ]
-                                ),
-
-                                reader[
-                                    "SubjectName"
-                                ].ToString(),
-
-                                reader[
-                                    "QuestionType"
-                                ].ToString(),
-
-                                reader[
-                                    "Difficulty"
-                                ].ToString(),
-
-                                reader[
-                                    "QuestionText"
-                                ].ToString(),
-
-                                Convert.ToInt32(
-                                    reader[
-                                        "MaxMarks"
-                                    ]
-                                ),
-
-                                Convert.ToInt32(
-                                    reader[
-                                        "QuestionOrder"
-                                    ]
-                                )
-                            );
-                        }
+                        table.Rows.Add(
+                            Convert.ToInt32(reader["QuestionId"]),
+                            Convert.ToInt32(reader["SubjectId"]),
+                            reader["SubjectName"].ToString(),
+                            reader["QuestionType"].ToString(),
+                            reader["Difficulty"].ToString(),
+                            reader["QuestionText"].ToString(),
+                            Convert.ToInt32(reader["MaxMarks"]),
+                            Convert.ToInt32(reader["QuestionOrder"])
+                        );
                     }
                 }
             }
 
-
-            AllocatedQuestions =
-                table;
+            AllocatedQuestions = table;
         }
 
 
@@ -685,19 +364,10 @@ namespace SPMaster.Lecturer
         {
             int questionId;
 
-
-            if (
-                !int.TryParse(
-                    Request.QueryString[
-                        "questionId"
-                    ],
-                    out questionId
-                )
-            )
+            if (!int.TryParse(Request.QueryString["questionId"], out questionId))
             {
                 return;
             }
-
 
             AddQuestionToAllocation(
                 questionId,
@@ -714,19 +384,11 @@ namespace SPMaster.Lecturer
             int questionId,
             bool autoSelectSubject)
         {
-            // -----------------------------------------------------
             // Prevent duplicate question
-            // -----------------------------------------------------
-
-            if (
-                IsQuestionAllocated(
-                    questionId
-                )
-            )
+            if (IsQuestionAllocated(questionId))
             {
                 return false;
             }
-
 
             const string sql = @"
                 SELECT
@@ -736,167 +398,76 @@ namespace SPMaster.Lecturer
                     q.QuestionType,
                     q.Difficulty,
                     q.QuestionText
-
                 FROM Questions q
-
                 INNER JOIN Subjects s
-                    ON q.SubjectId =
-                       s.SubjectId
-
+                    ON q.SubjectId = s.SubjectId
                 WHERE
-                    q.QuestionId =
-                        @QuestionId
-
-                    AND
-                    q.IsArchived = 0;
+                    q.QuestionId = @QuestionId
+                    AND q.IsArchived = 0;
             ";
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@QuestionId", SqlDbType.Int).Value = questionId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        questionId;
+                    if (!reader.Read())
+                    {
+                        return false;
+                    }
+
+                    int subjectId = Convert.ToInt32(reader["SubjectId"]);
 
 
-                    connection.Open();
+                    // =================================================
+                    // QUESTION PASSED FROM QUESTION BANK
+                    // Automatically choose its subject
+                    // =================================================
 
-
-                    using (
-                        SqlDataReader reader =
-                            command.ExecuteReader()
+                    if (
+                        autoSelectSubject
+                        && string.IsNullOrEmpty(ddlQuizSubject.SelectedValue)
                     )
                     {
-                        if (!reader.Read())
-                        {
-                            return false;
-                        }
-
-
-                        int subjectId =
-                            Convert.ToInt32(
-                                reader[
-                                    "SubjectId"
-                                ]
-                            );
-
-
-                        // =========================================
-                        // QUESTION PASSED FROM QUESTION BANK
-                        // Automatically choose its subject
-                        // =========================================
-
-                        if (
-                            autoSelectSubject
-                            &&
-                            string.IsNullOrEmpty(
-                                ddlQuizSubject
-                                    .SelectedValue
-                            )
-                        )
-                        {
-                            ddlQuizSubject
-                                .SelectedValue =
-                                subjectId
-                                    .ToString();
-                        }
-
-
-                        // =========================================
-                        // PREVENT SUBJECT MIXING
-                        // =========================================
-
-                        if (
-                            !string.IsNullOrEmpty(
-                                ddlQuizSubject
-                                    .SelectedValue
-                            )
-                            &&
-                            Convert.ToInt32(
-                                ddlQuizSubject
-                                    .SelectedValue
-                            ) != subjectId
-                        )
-                        {
-                            return false;
-                        }
-
-
-                        DataTable table =
-                            AllocatedQuestions;
-
-
-                        DataRow row =
-                            table.NewRow();
-
-
-                        row["QuestionId"] =
-                            questionId;
-
-
-                        row["SubjectId"] =
-                            subjectId;
-
-
-                        row["SubjectName"] =
-                            reader[
-                                "SubjectName"
-                            ].ToString();
-
-
-                        row["QuestionType"] =
-                            reader[
-                                "QuestionType"
-                            ].ToString();
-
-
-                        row["Difficulty"] =
-                            reader[
-                                "Difficulty"
-                            ].ToString();
-
-
-                        row["QuestionText"] =
-                            reader[
-                                "QuestionText"
-                            ].ToString();
-
-
-                        // Default marks for newly added question
-                        row["MaxMarks"] =
-                            1;
-
-
-                        row["QuestionOrder"] =
-                            table.Rows.Count + 1;
-
-
-                        table.Rows.Add(
-                            row
-                        );
-
-
-                        AllocatedQuestions =
-                            table;
-
-
-                        return true;
+                        ddlQuizSubject.SelectedValue = subjectId.ToString();
                     }
+
+
+                    // =================================================
+                    // PREVENT SUBJECT MIXING
+                    // =================================================
+
+                    if (
+                        !string.IsNullOrEmpty(ddlQuizSubject.SelectedValue)
+                        && Convert.ToInt32(ddlQuizSubject.SelectedValue) != subjectId
+                    )
+                    {
+                        return false;
+                    }
+
+                    DataTable table = AllocatedQuestions;
+                    DataRow row = table.NewRow();
+
+                    row["QuestionId"] = questionId;
+                    row["SubjectId"] = subjectId;
+                    row["SubjectName"] = reader["SubjectName"].ToString();
+                    row["QuestionType"] = reader["QuestionType"].ToString();
+                    row["Difficulty"] = reader["Difficulty"].ToString();
+                    row["QuestionText"] = reader["QuestionText"].ToString();
+
+                    // Default marks for newly added question
+                    row["MaxMarks"] = 1;
+                    row["QuestionOrder"] = table.Rows.Count + 1;
+
+                    table.Rows.Add(row);
+
+                    AllocatedQuestions = table;
+
+                    return true;
                 }
             }
         }
@@ -906,26 +477,15 @@ namespace SPMaster.Lecturer
         // CHECK WHETHER QUESTION IS ALREADY ALLOCATED
         // =========================================================
 
-        private bool IsQuestionAllocated(
-            int questionId)
+        private bool IsQuestionAllocated(int questionId)
         {
-            foreach (
-                DataRow row
-                in AllocatedQuestions.Rows
-            )
+            foreach (DataRow row in AllocatedQuestions.Rows)
             {
-                if (
-                    Convert.ToInt32(
-                        row[
-                            "QuestionId"
-                        ]
-                    ) == questionId
-                )
+                if (Convert.ToInt32(row["QuestionId"]) == questionId)
                 {
                     return true;
                 }
             }
-
 
             return false;
         }
@@ -937,71 +497,46 @@ namespace SPMaster.Lecturer
 
         private void BindAllocatedQuestions()
         {
-            DataTable table =
-                AllocatedQuestions;
+            DataTable table = AllocatedQuestions;
 
 
             // -----------------------------------------------------
-            // Recalculate order
+            // RECALCULATE ORDER
             // -----------------------------------------------------
 
-            for (
-                int i = 0;
-                i < table.Rows.Count;
-                i++
-            )
+            for (int i = 0; i < table.Rows.Count; i++)
             {
-                table.Rows[i][
-                    "QuestionOrder"
-                ] =
-                    i + 1;
+                table.Rows[i]["QuestionOrder"] = i + 1;
             }
 
-
-            AllocatedQuestions =
-                table;
+            AllocatedQuestions = table;
 
 
             // -----------------------------------------------------
-            // Bind Repeater
+            // BIND REPEATER
             // -----------------------------------------------------
 
-            rptAllocatedQuestions.DataSource =
-                table;
-
-
+            rptAllocatedQuestions.DataSource = table;
             rptAllocatedQuestions.DataBind();
 
 
             // -----------------------------------------------------
-            // Empty state
+            // EMPTY STATE
             // -----------------------------------------------------
 
-            pnlNoAllocatedQuestions.Visible =
-                table.Rows.Count == 0;
+            pnlNoAllocatedQuestions.Visible = table.Rows.Count == 0;
 
 
             // -----------------------------------------------------
-            // Total marks
+            // TOTAL MARKS
             // -----------------------------------------------------
 
-            int totalMarks =
-                0;
+            int totalMarks = 0;
 
-
-            foreach (
-                DataRow row
-                in table.Rows
-            )
+            foreach (DataRow row in table.Rows)
             {
-                totalMarks +=
-                    Convert.ToInt32(
-                        row[
-                            "MaxMarks"
-                        ]
-                    );
+                totalMarks += Convert.ToInt32(row["MaxMarks"]);
             }
-
 
             litQuizSummary.Text =
                 table.Rows.Count
@@ -1021,84 +556,47 @@ namespace SPMaster.Lecturer
 
         private void CaptureAllocatedMarks()
         {
-            DataTable table =
-                AllocatedQuestions;
+            DataTable table = AllocatedQuestions;
 
-
-            foreach (
-                RepeaterItem item
-                in rptAllocatedQuestions.Items
-            )
+            foreach (RepeaterItem item in rptAllocatedQuestions.Items)
             {
                 HiddenField hiddenQuestionId =
-                    (HiddenField)
-                    item.FindControl(
-                        "hfAllocatedQuestionId"
-                    );
-
+                    (HiddenField)item.FindControl("hfAllocatedQuestionId");
 
                 TextBox marksBox =
-                    (TextBox)
-                    item.FindControl(
-                        "txtMarks"
-                    );
-
+                    (TextBox)item.FindControl("txtMarks");
 
                 int questionId;
-
                 int marks;
-
 
                 if (
                     hiddenQuestionId == null
-                    ||
-                    marksBox == null
-                    ||
-                    !int.TryParse(
-                        hiddenQuestionId.Value,
-                        out questionId
-                    )
+                    || marksBox == null
+                    || !int.TryParse(hiddenQuestionId.Value, out questionId)
                 )
                 {
                     continue;
                 }
 
-
                 if (
-                    !int.TryParse(
-                        marksBox.Text,
-                        out marks
-                    )
-                    ||
-                    marks < 1
+                    !int.TryParse(marksBox.Text, out marks)
+                    || marks < 1
                 )
                 {
-                    marks =
-                        1;
+                    marks = 1;
                 }
 
+                DataRow[] rows = table.Select(
+                    "QuestionId = " + questionId
+                );
 
-                DataRow[] rows =
-                    table.Select(
-                        "QuestionId = "
-                        + questionId
-                    );
-
-
-                if (
-                    rows.Length > 0
-                )
+                if (rows.Length > 0)
                 {
-                    rows[0][
-                        "MaxMarks"
-                    ] =
-                        marks;
+                    rows[0]["MaxMarks"] = marks;
                 }
             }
 
-
-            AllocatedQuestions =
-                table;
+            AllocatedQuestions = table;
         }
 
 
@@ -1110,55 +608,30 @@ namespace SPMaster.Lecturer
             object source,
             RepeaterCommandEventArgs e)
         {
-            if (
-                e.CommandName
-                != "RemoveQuestion"
-            )
+            if (e.CommandName != "RemoveQuestion")
             {
                 return;
             }
 
-
-            lblQuestionValidation.Visible =
-                false;
-
+            lblQuestionValidation.Visible = false;
 
             CaptureAllocatedMarks();
 
+            int questionId = Convert.ToInt32(e.CommandArgument);
+            DataTable table = AllocatedQuestions;
 
-            int questionId =
-                Convert.ToInt32(
-                    e.CommandArgument
-                );
+            DataRow[] rows = table.Select(
+                "QuestionId = " + questionId
+            );
 
-
-            DataTable table =
-                AllocatedQuestions;
-
-
-            DataRow[] rows =
-                table.Select(
-                    "QuestionId = "
-                    + questionId
-                );
-
-
-            if (
-                rows.Length > 0
-            )
+            if (rows.Length > 0)
             {
-                table.Rows.Remove(
-                    rows[0]
-                );
+                table.Rows.Remove(rows[0]);
             }
 
-
-            AllocatedQuestions =
-                table;
-
+            AllocatedQuestions = table;
 
             BindAllocatedQuestions();
-
             BindBankQuestions();
         }
 
@@ -1174,81 +647,47 @@ namespace SPMaster.Lecturer
             object sender,
             EventArgs e)
         {
-            lblQuestionValidation.Visible =
-                false;
-
+            lblQuestionValidation.Visible = false;
 
             // Preserve marks entered before postback
             CaptureAllocatedMarks();
 
 
             // -----------------------------------------------------
-            // No subject selected
+            // NO SUBJECT SELECTED
             // -----------------------------------------------------
 
-            if (
-                string.IsNullOrEmpty(
-                    ddlQuizSubject
-                        .SelectedValue
-                )
-            )
+            if (string.IsNullOrEmpty(ddlQuizSubject.SelectedValue))
             {
                 BindAllocatedQuestions();
-
                 BindBankQuestions();
-
                 return;
             }
 
-
             int selectedSubjectId =
-                Convert.ToInt32(
-                    ddlQuizSubject
-                        .SelectedValue
-                );
+                Convert.ToInt32(ddlQuizSubject.SelectedValue);
 
-
-            DataTable table =
-                AllocatedQuestions;
+            DataTable table = AllocatedQuestions;
 
 
             // -----------------------------------------------------
-            // Remove questions that no longer match subject
+            // REMOVE QUESTIONS THAT NO LONGER MATCH SUBJECT
             // -----------------------------------------------------
 
-            for (
-                int i =
-                    table.Rows.Count - 1;
-                i >= 0;
-                i--
-            )
+            for (int i = table.Rows.Count - 1; i >= 0; i--)
             {
                 int questionSubjectId =
-                    Convert.ToInt32(
-                        table.Rows[i][
-                            "SubjectId"
-                        ]
-                    );
+                    Convert.ToInt32(table.Rows[i]["SubjectId"]);
 
-
-                if (
-                    questionSubjectId
-                    != selectedSubjectId
-                )
+                if (questionSubjectId != selectedSubjectId)
                 {
-                    table.Rows.RemoveAt(
-                        i
-                    );
+                    table.Rows.RemoveAt(i);
                 }
             }
 
-
-            AllocatedQuestions =
-                table;
-
+            AllocatedQuestions = table;
 
             BindAllocatedQuestions();
-
             BindBankQuestions();
         }
 
@@ -1260,41 +699,22 @@ namespace SPMaster.Lecturer
         private void BindBankQuestions()
         {
             // -----------------------------------------------------
-            // Subject must be selected first
+            // SUBJECT MUST BE SELECTED FIRST
             // -----------------------------------------------------
 
-            if (
-                string.IsNullOrEmpty(
-                    ddlQuizSubject
-                        .SelectedValue
-                )
-            )
+            if (string.IsNullOrEmpty(ddlQuizSubject.SelectedValue))
             {
-                rptBankQuestions.DataSource =
-                    null;
-
-
+                rptBankQuestions.DataSource = null;
                 rptBankQuestions.DataBind();
 
-
-                pnlNoBankQuestions.Visible =
-                    true;
-
-
-                litBankSubject.Text =
-                    "selected subject";
-
+                pnlNoBankQuestions.Visible = true;
+                litBankSubject.Text = "selected subject";
 
                 return;
             }
 
-
             int subjectId =
-                Convert.ToInt32(
-                    ddlQuizSubject
-                        .SelectedValue
-                );
-
+                Convert.ToInt32(ddlQuizSubject.SelectedValue);
 
             const string sql = @"
                 SELECT
@@ -1302,116 +722,51 @@ namespace SPMaster.Lecturer
                     q.QuestionText,
                     q.QuestionType,
                     q.Difficulty,
-
-                    u.FullName
-                        AS CreatorName
-
+                    u.FullName AS CreatorName
                 FROM Questions q
-
                 INNER JOIN Users u
-                    ON q.CreatedByUserId =
-                       u.UserId
-
+                    ON q.CreatedByUserId = u.UserId
                 WHERE
-                    q.SubjectId =
-                        @SubjectId
-
-                    AND
-                    q.IsArchived = 0
-
+                    q.SubjectId = @SubjectId
+                    AND q.IsArchived = 0
                 ORDER BY
                     q.CreatedAt DESC;
             ";
 
+            DataTable table = new DataTable();
 
-            DataTable table =
-                new DataTable();
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection
-                        )
-                )
+                command.Parameters.Add("@SubjectId", SqlDbType.Int).Value = subjectId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    command.Parameters.Add(
-                        "@SubjectId",
-                        SqlDbType.Int
-                    ).Value =
-                        subjectId;
-
-
-                    using (
-                        SqlDataAdapter adapter =
-                            new SqlDataAdapter(
-                                command
-                            )
-                    )
-                    {
-                        adapter.Fill(
-                            table
-                        );
-                    }
+                    adapter.Fill(table);
                 }
             }
 
 
             // -----------------------------------------------------
-            // Remove questions already allocated
+            // REMOVE QUESTIONS ALREADY ALLOCATED
             // -----------------------------------------------------
 
-            for (
-                int i =
-                    table.Rows.Count - 1;
-                i >= 0;
-                i--
-            )
+            for (int i = table.Rows.Count - 1; i >= 0; i--)
             {
                 int questionId =
-                    Convert.ToInt32(
-                        table.Rows[i][
-                            "QuestionId"
-                        ]
-                    );
+                    Convert.ToInt32(table.Rows[i]["QuestionId"]);
 
-
-                if (
-                    IsQuestionAllocated(
-                        questionId
-                    )
-                )
+                if (IsQuestionAllocated(questionId))
                 {
-                    table.Rows.RemoveAt(
-                        i
-                    );
+                    table.Rows.RemoveAt(i);
                 }
             }
 
-
-            rptBankQuestions.DataSource =
-                table;
-
-
+            rptBankQuestions.DataSource = table;
             rptBankQuestions.DataBind();
 
-
-            pnlNoBankQuestions.Visible =
-                table.Rows.Count == 0;
-
-
-            litBankSubject.Text =
-                ddlQuizSubject
-                    .SelectedItem
-                    .Text;
+            pnlNoBankQuestions.Visible = table.Rows.Count == 0;
+            litBankSubject.Text = ddlQuizSubject.SelectedItem.Text;
         }
 
 
@@ -1419,84 +774,51 @@ namespace SPMaster.Lecturer
         // ADD SELECTED BANK QUESTIONS
         // =========================================================
 
-        protected void btnAddToQuiz_Click(
-            object sender,
-            EventArgs e)
+        protected void btnAddToQuiz_Click(object sender, EventArgs e)
         {
-            lblQuestionValidation.Visible =
-                false;
-
+            lblQuestionValidation.Visible = false;
 
             CaptureAllocatedMarks();
 
+            int addedCount = 0;
 
-            int addedCount =
-                0;
-
-
-            foreach (
-                RepeaterItem item
-                in rptBankQuestions.Items
-            )
+            foreach (RepeaterItem item in rptBankQuestions.Items)
             {
                 CheckBox checkBox =
-                    (CheckBox)
-                    item.FindControl(
-                        "chkSelectQuestion"
-                    );
-
+                    (CheckBox)item.FindControl("chkSelectQuestion");
 
                 HiddenField hiddenId =
-                    (HiddenField)
-                    item.FindControl(
-                        "hfBankQuestionId"
-                    );
-
+                    (HiddenField)item.FindControl("hfBankQuestionId");
 
                 if (
                     checkBox == null
-                    ||
-                    hiddenId == null
-                    ||
-                    !checkBox.Checked
+                    || hiddenId == null
+                    || !checkBox.Checked
                 )
                 {
                     continue;
                 }
 
-
                 int questionId;
 
-
                 if (
-                    int.TryParse(
-                        hiddenId.Value,
-                        out questionId
-                    )
-                    &&
-                    AddQuestionToAllocation(
-                        questionId,
-                        false
-                    )
+                    int.TryParse(hiddenId.Value, out questionId)
+                    && AddQuestionToAllocation(questionId, false)
                 )
                 {
                     addedCount++;
                 }
             }
 
-
             BindAllocatedQuestions();
-
             BindBankQuestions();
 
 
             // -----------------------------------------------------
-            // Nothing selected
+            // NOTHING SELECTED
             // -----------------------------------------------------
 
-            if (
-                addedCount == 0
-            )
+            if (addedCount == 0)
             {
                 ShowQuestionMessage(
                     "Please select at least one question from the Question Bank."
@@ -1509,27 +831,18 @@ namespace SPMaster.Lecturer
         // SAVE DRAFT BUTTON
         // =========================================================
 
-        protected void btnSaveDraft_Click(
-            object sender,
-            EventArgs e)
+        protected void btnSaveDraft_Click(object sender, EventArgs e)
         {
             // ASP.NET validators:
             // errors appear directly under each input
-
-            Page.Validate(
-                "QuizValidation"
-            );
-
+            Page.Validate("QuizValidation");
 
             if (!Page.IsValid)
             {
                 return;
             }
 
-
-            SaveQuiz(
-                false
-            );
+            SaveQuiz(false);
         }
 
 
@@ -1537,26 +850,17 @@ namespace SPMaster.Lecturer
         // PREVIEW & PUBLISH BUTTON
         // =========================================================
 
-        protected void btnPreviewPublish_Click(
-            object sender,
-            EventArgs e)
+        protected void btnPreviewPublish_Click(object sender, EventArgs e)
         {
-            Page.Validate(
-                "QuizValidation"
-            );
-
+            Page.Validate("QuizValidation");
 
             if (!Page.IsValid)
             {
                 return;
             }
 
-
             // Preview requires questions
-            if (
-                AllocatedQuestions
-                    .Rows.Count == 0
-            )
+            if (AllocatedQuestions.Rows.Count == 0)
             {
                 ShowQuestionMessage(
                     "Please add at least one question before previewing the quiz."
@@ -1565,10 +869,7 @@ namespace SPMaster.Lecturer
                 return;
             }
 
-
-            SaveQuiz(
-                true
-            );
+            SaveQuiz(true);
         }
 
 
@@ -1576,23 +877,12 @@ namespace SPMaster.Lecturer
         // SAVE QUIZ
         // =========================================================
 
-        private void SaveQuiz(
-            bool goToPreview)
+        private void SaveQuiz(bool goToPreview)
         {
-            lblQuestionValidation.Visible =
-                false;
+            lblQuestionValidation.Visible = false;
 
-
-            // -----------------------------------------------------
             // Store current mark values
-            // -----------------------------------------------------
-
             CaptureAllocatedMarks();
-
-
-            // -----------------------------------------------------
-            // Validation already handled by ASP.NET validators
-            // -----------------------------------------------------
 
             if (!Page.IsValid)
             {
@@ -1601,42 +891,25 @@ namespace SPMaster.Lecturer
 
 
             // -----------------------------------------------------
-            // Parse validated values
+            // PARSE VALIDATED VALUES
             // -----------------------------------------------------
 
             int timeLimit;
 
-
-            if (
-                !int.TryParse(
-                    txtTimeLimit.Text,
-                    out timeLimit
-                )
-            )
+            if (!int.TryParse(txtTimeLimit.Text, out timeLimit))
             {
                 return;
             }
-
 
             decimal passPercentage;
 
-
-            if (
-                !decimal.TryParse(
-                    txtPassPercentage.Text,
-                    out passPercentage
-                )
-            )
+            if (!decimal.TryParse(txtPassPercentage.Text, out passPercentage))
             {
                 return;
             }
 
-
             int selectedSubjectId =
-                Convert.ToInt32(
-                    ddlQuizSubject
-                        .SelectedValue
-                );
+                Convert.ToInt32(ddlQuizSubject.SelectedValue);
 
 
             // =====================================================
@@ -1645,9 +918,7 @@ namespace SPMaster.Lecturer
 
             if (
                 goToPreview
-                &&
-                AllocatedQuestions
-                    .Rows.Count == 0
+                && AllocatedQuestions.Rows.Count == 0
             )
             {
                 ShowQuestionMessage(
@@ -1662,18 +933,9 @@ namespace SPMaster.Lecturer
             // FINAL SUBJECT SAFETY CHECK
             // =====================================================
 
-            foreach (
-                DataRow row
-                in AllocatedQuestions.Rows
-            )
+            foreach (DataRow row in AllocatedQuestions.Rows)
             {
-                if (
-                    Convert.ToInt32(
-                        row[
-                            "SubjectId"
-                        ]
-                    ) != selectedSubjectId
-                )
+                if (Convert.ToInt32(row["SubjectId"]) != selectedSubjectId)
                 {
                     ShowQuestionMessage(
                         "All allocated questions must match the selected quiz subject."
@@ -1688,24 +950,13 @@ namespace SPMaster.Lecturer
             // DATABASE TRANSACTION
             // =====================================================
 
-            int savedQuizId =
-                0;
+            int savedQuizId = 0;
 
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        ConnectionString
-                    )
-            )
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-
-                using (
-                    SqlTransaction transaction =
-                        connection.BeginTransaction()
-                )
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
                     try
                     {
@@ -1713,13 +964,9 @@ namespace SPMaster.Lecturer
                         // UPDATE EXISTING DRAFT
                         // =============================================
 
-                        if (
-                            EditingQuizId.HasValue
-                        )
+                        if (EditingQuizId.HasValue)
                         {
-                            savedQuizId =
-                                EditingQuizId.Value;
-
+                            savedQuizId = EditingQuizId.Value;
 
                             UpdateQuiz(
                                 connection,
@@ -1737,13 +984,12 @@ namespace SPMaster.Lecturer
 
                         else
                         {
-                            savedQuizId =
-                                InsertQuiz(
-                                    connection,
-                                    transaction,
-                                    timeLimit,
-                                    passPercentage
-                                );
+                            savedQuizId = InsertQuiz(
+                                connection,
+                                transaction,
+                                timeLimit,
+                                passPercentage
+                            );
                         }
 
 
@@ -1757,37 +1003,25 @@ namespace SPMaster.Lecturer
                             savedQuizId
                         );
 
-
                         InsertQuizQuestions(
                             connection,
                             transaction,
                             savedQuizId
                         );
 
-
-                        // =============================================
-                        // COMMIT
-                        // =============================================
-
                         transaction.Commit();
                     }
                     catch (Exception ex)
                     {
-                        // Rollback only when transaction
-                        // is still active
-                        if (
-                            transaction.Connection != null
-                        )
+                        if (transaction.Connection != null)
                         {
                             transaction.Rollback();
                         }
-
 
                         ShowQuestionMessage(
                             "Unable to save the quiz. "
                             + ex.Message
                         );
-
 
                         return;
                     }
@@ -1808,11 +1042,7 @@ namespace SPMaster.Lecturer
                     false
                 );
 
-
-                Context.ApplicationInstance
-                    .CompleteRequest();
-
-
+                Context.ApplicationInstance.CompleteRequest();
                 return;
             }
 
@@ -1831,9 +1061,7 @@ namespace SPMaster.Lecturer
                 false
             );
 
-
-            Context.ApplicationInstance
-                .CompleteRequest();
+            Context.ApplicationInstance.CompleteRequest();
         }
 
 
@@ -1861,7 +1089,6 @@ namespace SPMaster.Lecturer
                     IsArchived,
                     CreatedAt
                 )
-
                 VALUES
                 (
                     @SubjectId,
@@ -1876,24 +1103,19 @@ namespace SPMaster.Lecturer
                     GETDATE()
                 );
 
-
                 SELECT CAST(
                     SCOPE_IDENTITY()
                     AS INT
                 );
             ";
 
-
-            using (
-                SqlCommand command =
-                    CreateQuizCommand(
-                        sql,
-                        connection,
-                        transaction,
-                        timeLimit,
-                        passPercentage
-                    )
-            )
+            using (SqlCommand command = CreateQuizCommand(
+                sql,
+                connection,
+                transaction,
+                timeLimit,
+                passPercentage
+            ))
             {
                 return Convert.ToInt32(
                     command.ExecuteScalar()
@@ -1915,67 +1137,33 @@ namespace SPMaster.Lecturer
         {
             const string sql = @"
                 UPDATE Quizzes
-
                 SET
-                    SubjectId =
-                        @SubjectId,
-
-                    FormId =
-                        @FormId,
-
-                    Title =
-                        @Title,
-
-                    Description =
-                        @Description,
-
-                    TimeLimitMinutes =
-                        @TimeLimitMinutes,
-
-                    PassPercentage =
-                        @PassPercentage
-
+                    SubjectId = @SubjectId,
+                    FormId = @FormId,
+                    Title = @Title,
+                    Description = @Description,
+                    TimeLimitMinutes = @TimeLimitMinutes,
+                    PassPercentage = @PassPercentage
                 WHERE
-                    QuizId =
-                        @QuizId
-
-                    AND
-                    CreatedByUserId =
-                        @CreatedByUserId
-
-                    AND
-                    IsPublished = 0
-
-                    AND
-                    IsArchived = 0;
+                    QuizId = @QuizId
+                    AND CreatedByUserId = @CreatedByUserId
+                    AND IsPublished = 0
+                    AND IsArchived = 0;
             ";
 
-
-            using (
-                SqlCommand command =
-                    CreateQuizCommand(
-                        sql,
-                        connection,
-                        transaction,
-                        timeLimit,
-                        passPercentage
-                    )
-            )
+            using (SqlCommand command = CreateQuizCommand(
+                sql,
+                connection,
+                transaction,
+                timeLimit,
+                passPercentage
+            ))
             {
-                command.Parameters.Add(
-                    "@QuizId",
-                    SqlDbType.Int
-                ).Value =
-                    quizId;
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
 
+                int affectedRows = command.ExecuteNonQuery();
 
-                int affectedRows =
-                    command.ExecuteNonQuery();
-
-
-                if (
-                    affectedRows == 0
-                )
+                if (affectedRows == 0)
                 {
                     throw new Exception(
                         "Quiz was not found or cannot be edited."
@@ -1996,49 +1184,23 @@ namespace SPMaster.Lecturer
             int timeLimit,
             decimal passPercentage)
         {
-            SqlCommand command =
-                new SqlCommand(
-                    sql,
-                    connection,
-                    transaction
-                );
+            SqlCommand command = new SqlCommand(
+                sql,
+                connection,
+                transaction
+            );
 
+            command.Parameters.Add("@SubjectId", SqlDbType.Int).Value =
+                Convert.ToInt32(ddlQuizSubject.SelectedValue);
 
-            command.Parameters.Add(
-                "@SubjectId",
-                SqlDbType.Int
-            ).Value =
-                Convert.ToInt32(
-                    ddlQuizSubject
-                        .SelectedValue
-                );
+            command.Parameters.Add("@FormId", SqlDbType.Int).Value =
+                Convert.ToInt32(ddlFormLevel.SelectedValue);
 
-
-            command.Parameters.Add(
-                "@FormId",
-                SqlDbType.Int
-            ).Value =
-                Convert.ToInt32(
-                    ddlFormLevel
-                        .SelectedValue
-                );
-
-
-            command.Parameters.Add(
-                "@CreatedByUserId",
-                SqlDbType.Int
-            ).Value =
+            command.Parameters.Add("@CreatedByUserId", SqlDbType.Int).Value =
                 CurrentUserId;
 
-
-            command.Parameters.Add(
-                "@Title",
-                SqlDbType.NVarChar,
-                250
-            ).Value =
-                txtQuizTitle
-                    .Text
-                    .Trim();
+            command.Parameters.Add("@Title", SqlDbType.NVarChar, 250).Value =
+                txtQuizTitle.Text.Trim();
 
 
             // -----------------------------------------------------
@@ -2046,25 +1208,13 @@ namespace SPMaster.Lecturer
             // Instructions are stored in Quizzes.Description.
             // -----------------------------------------------------
 
-            command.Parameters.Add(
-                "@Description",
-                SqlDbType.NVarChar
-            ).Value =
-                string.IsNullOrWhiteSpace(
-                    txtQuizInstructions.Text
-                )
+            command.Parameters.Add("@Description", SqlDbType.NVarChar).Value =
+                string.IsNullOrWhiteSpace(txtQuizInstructions.Text)
                     ? (object)DBNull.Value
-                    : txtQuizInstructions
-                        .Text
-                        .Trim();
+                    : txtQuizInstructions.Text.Trim();
 
-
-            command.Parameters.Add(
-                "@TimeLimitMinutes",
-                SqlDbType.Int
-            ).Value =
+            command.Parameters.Add("@TimeLimitMinutes", SqlDbType.Int).Value =
                 timeLimit;
-
 
             SqlParameter passParameter =
                 command.Parameters.Add(
@@ -2072,18 +1222,9 @@ namespace SPMaster.Lecturer
                     SqlDbType.Decimal
                 );
 
-
-            passParameter.Precision =
-                5;
-
-
-            passParameter.Scale =
-                2;
-
-
-            passParameter.Value =
-                passPercentage;
-
+            passParameter.Precision = 5;
+            passParameter.Scale = 2;
+            passParameter.Value = passPercentage;
 
             return command;
         }
@@ -2103,27 +1244,17 @@ namespace SPMaster.Lecturer
         {
             const string sql = @"
                 DELETE FROM QuizQuestions
-
                 WHERE
                     QuizId = @QuizId;
             ";
 
-
-            using (
-                SqlCommand command =
-                    new SqlCommand(
-                        sql,
-                        connection,
-                        transaction
-                    )
-            )
+            using (SqlCommand command = new SqlCommand(
+                sql,
+                connection,
+                transaction
+            ))
             {
-                command.Parameters.Add(
-                    "@QuizId",
-                    SqlDbType.Int
-                ).Value =
-                    quizId;
-
+                command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
 
                 command.ExecuteNonQuery();
             }
@@ -2147,7 +1278,6 @@ namespace SPMaster.Lecturer
                     QuestionOrder,
                     MaxMarks
                 )
-
                 VALUES
                 (
                     @QuizId,
@@ -2157,64 +1287,30 @@ namespace SPMaster.Lecturer
                 );
             ";
 
+            int order = 1;
 
-            int order =
-                1;
-
-
-            foreach (
-                DataRow row
-                in AllocatedQuestions.Rows
-            )
+            foreach (DataRow row in AllocatedQuestions.Rows)
             {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            sql,
-                            connection,
-                            transaction
-                        )
-                )
+                using (SqlCommand command = new SqlCommand(
+                    sql,
+                    connection,
+                    transaction
+                ))
                 {
-                    command.Parameters.Add(
-                        "@QuizId",
-                        SqlDbType.Int
-                    ).Value =
+                    command.Parameters.Add("@QuizId", SqlDbType.Int).Value =
                         quizId;
 
+                    command.Parameters.Add("@QuestionId", SqlDbType.Int).Value =
+                        Convert.ToInt32(row["QuestionId"]);
 
-                    command.Parameters.Add(
-                        "@QuestionId",
-                        SqlDbType.Int
-                    ).Value =
-                        Convert.ToInt32(
-                            row[
-                                "QuestionId"
-                            ]
-                        );
-
-
-                    command.Parameters.Add(
-                        "@QuestionOrder",
-                        SqlDbType.Int
-                    ).Value =
+                    command.Parameters.Add("@QuestionOrder", SqlDbType.Int).Value =
                         order;
 
-
-                    command.Parameters.Add(
-                        "@MaxMarks",
-                        SqlDbType.Int
-                    ).Value =
-                        Convert.ToInt32(
-                            row[
-                                "MaxMarks"
-                            ]
-                        );
-
+                    command.Parameters.Add("@MaxMarks", SqlDbType.Int).Value =
+                        Convert.ToInt32(row["MaxMarks"]);
 
                     command.ExecuteNonQuery();
                 }
-
 
                 order++;
             }
@@ -2225,26 +1321,19 @@ namespace SPMaster.Lecturer
         // QUESTION TYPE DISPLAY
         // =========================================================
 
-        protected string GetQuestionTypeDisplay(
-            object questionType)
+        protected string GetQuestionTypeDisplay(object questionType)
         {
-            string type =
-                Convert.ToString(
-                    questionType
-                );
-
+            string type = Convert.ToString(questionType);
 
             if (
                 type.Equals(
                     "MCQ",
-                    StringComparison
-                        .OrdinalIgnoreCase
+                    StringComparison.OrdinalIgnoreCase
                 )
             )
             {
                 return "Single Choice";
             }
-
 
             return "Subjective";
         }
@@ -2254,19 +1343,13 @@ namespace SPMaster.Lecturer
         // QUESTION TYPE CSS
         // =========================================================
 
-        protected string GetQuestionTypeCss(
-            object questionType)
+        protected string GetQuestionTypeCss(object questionType)
         {
-            string type =
-                Convert.ToString(
-                    questionType
-                );
-
+            string type = Convert.ToString(questionType);
 
             return type.Equals(
                 "MCQ",
-                StringComparison
-                    .OrdinalIgnoreCase
+                StringComparison.OrdinalIgnoreCase
             )
                 ? "type-mcq"
                 : "type-subjective";
@@ -2275,22 +1358,12 @@ namespace SPMaster.Lecturer
 
         // =========================================================
         // QUESTION / QUIZ-LEVEL INLINE MESSAGE
-        //
-        // Used only for errors that do NOT belong to one specific
-        // general-information field.
-        //
-        // Required-field errors are handled by ASP.NET validators.
         // =========================================================
 
-        private void ShowQuestionMessage(
-            string message)
+        private void ShowQuestionMessage(string message)
         {
-            lblQuestionValidation.Text =
-                message;
-
-
-            lblQuestionValidation.Visible =
-                true;
+            lblQuestionValidation.Text = message;
+            lblQuestionValidation.Visible = true;
         }
     }
 }
