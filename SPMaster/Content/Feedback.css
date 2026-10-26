@@ -544,4 +544,14 @@ body.feedback-modal-open {
         align-items: flex-start;
         flex-direction: column;
     }
+
+    .feedback-quiz-search {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .feedback-search-button,
+    .feedback-clear-button {
+        width: 100%;
+    }
 }

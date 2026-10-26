@@ -81,7 +81,6 @@ namespace SPMaster
                 }
             }
         }
-
         // =========================================================
         // LOAD / SEARCH QUIZZES INTO POPUP DROPDOWN
         // =========================================================
@@ -161,21 +160,27 @@ namespace SPMaster
             ddlRelatedQuiz.DataBind();
 
 
-            ddlRelatedQuiz.Items.Insert(
-                0,
+            ListItem placeholder =
                 new ListItem(
-                    "General Feedback / No Related Quiz",
-                    "GENERAL"
-                )
-            );
+                    "Select a related quiz",
+                    ""
+                );
+
 
             ddlRelatedQuiz.Items.Insert(
                 0,
-                new ListItem(
-                    "Select feedback type / related quiz",
-                    ""
-                )
+                placeholder
             );
+
+
+            ddlRelatedQuiz.SelectedIndex =
+                0;
+
+
+            ddlRelatedQuiz.Items[0]
+                .Attributes[
+                    "disabled"
+                ] = "disabled";
         }
         // =========================================================
         // SEARCH QUIZ

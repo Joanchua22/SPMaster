@@ -39,8 +39,7 @@
                 </h1>
 
                 <p>
-                    Submit questions regarding SPM quizzes,
-                    system issues or suggestions.
+                     Submit feedback or report issues related to SPM quizzes.
                 </p>
 
             </div>
