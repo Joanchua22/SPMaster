@@ -87,6 +87,24 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.Literal litDraftQuizCount;
 
         /// <summary>
+        /// litActiveSessionCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litActiveSessionCount;
+
+        /// <summary>
+        /// litSessionAttemptCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litSessionAttemptCount;
+
+        /// <summary>
         /// litGradingQueueCount control.
         /// </summary>
         /// <remarks>
@@ -112,6 +130,33 @@ namespace SPMaster.Lecturer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlNoRecentQuizzes;
+
+        /// <summary>
+        /// pnlActiveSessions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlActiveSessions;
+
+        /// <summary>
+        /// rptActiveSessions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptActiveSessions;
+
+        /// <summary>
+        /// pnlNoActiveSessions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoActiveSessions;
 
         /// <summary>
         /// litSideQueueCount control.

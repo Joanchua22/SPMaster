@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
 
 namespace SPMaster.Student
@@ -88,6 +89,8 @@ namespace SPMaster.Student
                 LoadRecentAttempts();
             }
         }
+
+
         private void LoadWeeklyActivity()
         {
             const string sql = @"
@@ -1113,6 +1116,8 @@ namespace SPMaster.Student
             rptRecentAttempts.Visible =
                 table.Rows.Count > 0;
         }
+
+
         // =========================================================
         // FIND SESSION
         // =========================================================

@@ -60,15 +60,12 @@ namespace SPMaster.Lecturer
         private void LoadDashboard()
         {
             LoadQuestionBankSummary();
-
             LoadQuizSummary();
-
+            LoadSessionSummary();
             LoadGradingSummary();
-
             BindRecentQuizzes();
-
+            BindActiveSessions();
             BindGradingQueue();
-
             LoadCohortPerformance();
         }
 
@@ -131,6 +128,74 @@ namespace SPMaster.Lecturer
                         litPublishedQuizCount.Text = published + (published == 1 ? " Quiz" : " Quizzes");
                         litDraftQuizCount.Text = drafts + (drafts == 1 ? " Draft" : " Drafts");
                     }
+                }
+            }
+        }
+
+
+        // =========================================================
+        // SESSION SUMMARY
+        // =========================================================
+
+        private void LoadSessionSummary()
+        {
+            const string sql = @"
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM QuizSessions
+                WHERE
+                    LecturerUserId = @LecturerId
+                    AND IsOpen = 1
+            ) AS ActiveSessionCount,
+
+            (
+                SELECT COUNT(*)
+                FROM QuizAttempts QA
+                INNER JOIN QuizSessions QS
+                    ON QA.SessionId = QS.SessionId
+                WHERE
+                    QS.LecturerUserId = @LecturerId
+            ) AS TotalAttemptCount;
+    ";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@LecturerId", SqlDbType.Int).Value = CurrentUserId;
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (!reader.Read())
+                    {
+                        return;
+                    }
+
+                    int activeSessions = Convert.ToInt32(
+                        reader["ActiveSessionCount"]
+                    );
+
+                    int totalAttempts = Convert.ToInt32(
+                        reader["TotalAttemptCount"]
+                    );
+
+                    litActiveSessionCount.Text =
+                        activeSessions
+                        + (
+                            activeSessions == 1
+                                ? " Active"
+                                : " Active"
+                        );
+
+                    litSessionAttemptCount.Text =
+                        totalAttempts
+                        + (
+                            totalAttempts == 1
+                                ? " Total attempt"
+                                : " Total attempts"
+                        );
                 }
             }
         }
@@ -266,6 +331,76 @@ namespace SPMaster.Lecturer
             rptRecentQuizzes.DataBind();
         }
 
+
+        // =========================================================
+        // ACTIVE CLASSROOM SESSIONS
+        // =========================================================
+
+        private void BindActiveSessions()
+        {
+            const string sql = @"
+        SELECT TOP 3
+            QS.SessionId,
+            QS.SessionTitle,
+            QS.JoinCode,
+            QS.CreatedAt,
+
+            Q.Title AS QuizTitle,
+
+            COUNT(
+                QA.AttemptId
+            ) AS AttemptCount,
+
+            SUM(
+                CASE
+                    WHEN QA.AttemptStatus = 'PendingGrading'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS PendingCount
+
+        FROM QuizSessions QS
+
+        INNER JOIN Quizzes Q
+            ON QS.QuizId = Q.QuizId
+
+        LEFT JOIN QuizAttempts QA
+            ON QS.SessionId = QA.SessionId
+
+        WHERE
+            QS.LecturerUserId = @LecturerId
+            AND QS.IsOpen = 1
+
+        GROUP BY
+            QS.SessionId,
+            QS.SessionTitle,
+            QS.JoinCode,
+            QS.CreatedAt,
+            Q.Title
+
+        ORDER BY
+            QS.CreatedAt DESC;
+    ";
+
+            DataTable table = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@LecturerId", SqlDbType.Int).Value = CurrentUserId;
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(table);
+                }
+            }
+
+            rptActiveSessions.DataSource = table;
+            rptActiveSessions.DataBind();
+
+            pnlActiveSessions.Visible = table.Rows.Count > 0;
+            pnlNoActiveSessions.Visible = table.Rows.Count == 0;
+        }
 
 
         // =========================================================
