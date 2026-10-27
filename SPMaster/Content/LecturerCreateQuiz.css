@@ -674,23 +674,29 @@ body {
    ========================================================= */
 
 .empty-questions-state {
-    padding: 28px 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 150px;
+    padding: 24px;
+    border-radius: 16px;
+    background: #f7f1ff;
+    text-align: center;
 }
 
-
     .empty-questions-state h3 {
-        margin: 0 0 8px;
+        margin: 0 0 6px;
         color: var(--portal-navy);
-        font-size: 17px;
+        font-size: 18px;
         font-weight: 700;
-        line-height: 1.4;
     }
-
 
     .empty-questions-state p {
         margin: 0;
         color: var(--portal-muted);
-        font-size: 12px;
+        font-size: 13px;
         line-height: 1.5;
     }
 

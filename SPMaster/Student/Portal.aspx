@@ -28,40 +28,6 @@
 
 
         <%-- =====================================================
-             WELCOME HEADER
-             ===================================================== --%>
-
-        <section class="student-dashboard-heading">
-
-            <div>
-
-                <h1>
-                    Welcome,
-                    <asp:Label
-                        ID="lblStudentName"
-                        runat="server">
-                    </asp:Label>!
-                </h1>
-
-            </div>
-
-
-            <div class="student-date">
-
-                <i class="bi bi-calendar3"></i>
-
-                <asp:Label
-                    ID="lblCurrentDate"
-                    runat="server">
-                </asp:Label>
-
-            </div>
-
-        </section>
-
-
-
-        <%-- =====================================================
              HERO
              ===================================================== --%>
 

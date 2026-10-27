@@ -317,8 +317,21 @@
                     </asp:Panel>
 
 
-                    <asp:Panel ID="pnlNoActiveSessions" runat="server" Visible="false" CssClass="dashboard-empty-message">
-                        No active classroom sessions.
+                    <asp:Panel ID="pnlNoActiveSessions"
+                        runat="server"
+                        Visible="false"
+                        CssClass="dashboard-empty-message classroom-empty-message">
+
+                        <i class="bi bi-broadcast"></i>
+
+                        <strong>
+                            No active classroom sessions
+                        </strong>
+
+                        <span>
+                            Host a new session to get started.
+                        </span>
+
                     </asp:Panel>
 
                 </section>

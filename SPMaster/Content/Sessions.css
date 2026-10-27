@@ -3,10 +3,19 @@
    ========================================================= */
 
 .sessions-page {
+    --session-purple: #7c28ef;
+    --session-purple-hover: #6920d4;
+    --session-navy: #292052;
+    --session-muted: #61596e;
+    --session-white: #ffffff;
+    --session-lavender: #f1eaff;
+    --session-yellow: #ffe14d;
+    --session-border: #eae5f2;
+    --session-button-font-size: 12px;
     min-height: 100vh;
-    padding: 34px 42px 60px;
-    background: #ffe452;
-    color: #261d39;
+    padding: 16px 42px 60px;
+    background: var(--session-yellow);
+    color: var(--session-navy);
 }
 
 
@@ -24,29 +33,44 @@
 
     .sessions-header h1 {
         margin: 0 0 4px;
+        color: var(--session-navy);
         font-size: 30px;
         font-weight: 800;
+        line-height: 1.2;
     }
 
     .sessions-header p {
         margin: 0;
         color: #6f6654;
         font-size: 13px;
+        line-height: 1.5;
     }
 
 .host-session-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     border: 0;
     border-radius: 999px;
     padding: 11px 20px;
-    background: #7c28ef;
-    color: #ffffff;
-    font-size: 13px;
+    background: var(--session-purple);
+    color: var(--session-white);
+    font-family: inherit;
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
     .host-session-button i {
-        margin-right: 6px;
+        margin-right: 0;
+        font-size: 14px;
+    }
+
+    .host-session-button:hover {
+        background: var(--session-purple-hover);
+        transform: translateY(-1px);
     }
 
 
@@ -58,9 +82,11 @@
     margin-bottom: 20px;
     padding: 12px 16px;
     border-radius: 12px;
-    background: #ffffff;
-    font-size: 13px;
+    background: var(--session-white);
+    color: var(--session-navy);
+    font-size: 12px;
     font-weight: 600;
+    line-height: 1.5;
 }
 
 
@@ -82,20 +108,22 @@
 
     .session-group-title h2 {
         margin: 0 0 3px;
-        font-size: 19px;
+        color: var(--session-navy);
+        font-size: 18px;
         font-weight: 800;
     }
 
     .session-group-title p {
         margin: 0;
         color: #766c56;
-        font-size: 12px;
+        font-size: 13px;
+        line-height: 1.5;
     }
 
 .session-count {
+    color: #6d6250;
     font-size: 12px;
     font-weight: 700;
-    color: #6d6250;
 }
 
 
@@ -120,7 +148,7 @@
     min-width: 0;
     padding: 20px;
     border-radius: 17px;
-    background: #ffffff;
+    background: var(--session-white);
     box-shadow: 0 8px 24px rgba(72, 50, 0, 0.08);
 }
 
@@ -136,19 +164,24 @@
     margin-bottom: 11px;
 }
 
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
 .session-status {
     display: inline-flex;
     align-items: center;
     min-height: 24px;
     padding: 3px 10px;
     border-radius: 999px;
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .status-open {
     background: #eee3ff;
-    color: #7c28ef;
+    color: var(--session-purple);
 }
 
 .status-closed {
@@ -158,27 +191,34 @@
 
 .session-date {
     color: #746c7e;
-    font-size: 10px;
+    font-size: 11px;
 }
+
+
+/* =========================================================
+   SESSION CONTENT
+   ========================================================= */
 
 .session-card h3 {
     margin: 0 0 5px;
+    color: var(--session-navy);
     font-size: 17px;
     font-weight: 800;
+    line-height: 1.35;
 }
 
 .session-quiz-title {
     min-height: 34px;
     margin: 0 0 7px;
     color: #746c7e;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
 .session-subject {
     display: inline-block;
     margin-bottom: 14px;
-    color: #7c28ef;
+    color: var(--session-purple);
     font-size: 11px;
     font-weight: 700;
 }
@@ -203,7 +243,7 @@
     display: block;
     margin-bottom: 5px;
     color: #867d90;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -216,25 +256,35 @@
 }
 
     .code-row strong {
-        color: #7c28ef;
+        color: var(--session-purple);
         font-size: 17px;
+        font-weight: 800;
         letter-spacing: 1.5px;
     }
 
 .copy-code-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     border-radius: 999px;
     padding: 6px 10px;
     background: #eee2ff;
-    color: #7c28ef;
-    font-size: 10px;
+    color: var(--session-purple);
+    font-family: inherit;
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+    .copy-code-button:hover {
+        background: #e4d5ff;
+    }
 
 .archived-label {
     color: #8a8a8a;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 
@@ -259,12 +309,14 @@
     .session-stat strong {
         display: block;
         margin-bottom: 2px;
+        color: var(--session-navy);
         font-size: 16px;
+        font-weight: 800;
     }
 
     .session-stat span {
         color: #837b8e;
-        font-size: 9px;
+        font-size: 11px;
     }
 
 .pending-number {
@@ -288,12 +340,14 @@
 
     .session-average span {
         color: #766c56;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 600;
     }
 
     .session-average strong {
+        color: var(--session-navy);
         font-size: 14px;
+        font-weight: 800;
     }
 
 
@@ -315,17 +369,19 @@
     justify-content: center;
     min-height: 35px;
     border-radius: 9px;
-    background: #7c28ef;
-    color: #ffffff;
-    font-size: 11px;
+    background: var(--session-purple);
+    color: var(--session-white);
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
     .session-details-button:hover,
     .final-analytics-button:hover {
-        color: #ffffff;
-        background: #6720ca;
+        background: var(--session-purple-hover);
+        color: var(--session-white);
+        transform: translateY(-1px);
     }
 
 .close-session-button {
@@ -337,10 +393,15 @@
     border-radius: 9px;
     background: #f5eefb;
     color: #5f526b;
-    font-size: 10px;
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     text-decoration: none;
+    transition: background-color 0.2s ease;
 }
+
+    .close-session-button:hover {
+        background: #eadff3;
+    }
 
 .final-analytics-button {
     margin-top: auto;
@@ -349,7 +410,7 @@
 }
 
     .final-analytics-button:hover {
-        color: #ffffff;
+        color: var(--session-white);
     }
 
 
@@ -371,18 +432,20 @@
 
     .session-empty i {
         margin-bottom: 8px;
-        color: #7c28ef;
+        color: var(--session-purple);
         font-size: 28px;
     }
 
     .session-empty strong {
         margin-bottom: 3px;
+        color: var(--session-navy);
         font-size: 14px;
     }
 
     .session-empty span {
         color: #807687;
-        font-size: 11px;
+        font-size: 12px;
+        line-height: 1.5;
     }
 
 
@@ -407,7 +470,8 @@
 .session-modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(45, 34, 31, 0.58);
+    background: rgba(41, 32, 82, 0.55);
+    backdrop-filter: blur(4px);
 }
 
 .session-modal-card {
@@ -416,9 +480,15 @@
     width: min(500px, 100%);
     padding: 25px;
     border-radius: 18px;
-    background: #ffffff;
+    background: var(--session-white);
+    color: var(--session-navy);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
+
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
 
 .session-modal-header {
     display: flex;
@@ -429,23 +499,30 @@
 
     .session-modal-header h2 {
         margin: 0 0 4px;
-        font-size: 20px;
+        color: var(--session-navy);
+        font-size: 18px;
         font-weight: 800;
     }
 
     .session-modal-header p {
         margin: 0;
         color: #847b8c;
-        font-size: 11px;
+        font-size: 13px;
+        line-height: 1.5;
     }
 
 .modal-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     width: 34px;
     height: 34px;
     border: 0;
     border-radius: 50%;
     background: #f5f0fa;
     color: #6f637b;
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -462,8 +539,8 @@
         display: block;
         margin-bottom: 7px;
         color: #4b4154;
-        font-size: 10px;
-        font-weight: 800;
+        font-size: 12px;
+        font-weight: 700;
         text-transform: uppercase;
     }
 
@@ -477,18 +554,37 @@
     outline: none;
     background: #faf7ff;
     color: #32293b;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: 13px;
 }
 
     .modal-input:focus {
-        border-color: #7c28ef;
+        border-color: var(--session-purple);
+        box-shadow: 0 0 0 2px rgba(124, 40, 239, 0.10);
     }
+
+
+/* =========================================================
+   REQUIRED FIELD
+   ========================================================= */
+
+.required-mark {
+    margin-left: 2px;
+    color: #d92d20;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FIELD VALIDATION ERROR
+   ========================================================= */
 
 .field-error {
     display: block;
-    margin-top: 5px;
-    color: #c84141;
-    font-size: 10px;
+    margin-top: 6px;
+    color: #d92d20;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 
@@ -511,18 +607,19 @@
         display: block;
         margin-bottom: 2px;
         color: #84768f;
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .generated-code-card strong {
-        color: #7c28ef;
+        color: var(--session-purple);
         font-size: 18px;
+        font-weight: 800;
         letter-spacing: 1.5px;
     }
 
 .regenerate-button {
-    color: #7c28ef;
-    font-size: 10px;
+    color: var(--session-purple);
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     text-decoration: none;
 }
@@ -541,11 +638,15 @@
 
 .modal-cancel-button,
 .modal-create-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 37px;
     padding: 0 17px;
     border: 0;
     border-radius: 999px;
-    font-size: 11px;
+    font-family: inherit;
+    font-size: var(--session-button-font-size);
     font-weight: 700;
     cursor: pointer;
 }
@@ -556,9 +657,22 @@
 }
 
 .modal-create-button {
-    background: #7c28ef;
-    color: #ffffff;
+    background: var(--session-purple);
+    color: var(--session-white);
 }
+
+.modal-cancel-button:hover {
+    background: #e8e1ec;
+}
+
+.modal-create-button:hover {
+    background: var(--session-purple-hover);
+}
+
+
+/* =========================================================
+   HOST ERROR
+   ========================================================= */
 
 .host-error {
     margin-bottom: 15px;
@@ -566,12 +680,35 @@
     border-radius: 9px;
     background: #fff0f0;
     color: #b93e3e;
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
 }
 
 body.session-modal-open {
     overflow: hidden;
 }
+
+
+/* =========================================================
+   VALIDATION SUMMARY
+   ========================================================= */
+
+.validation-summary {
+    margin-bottom: 18px;
+    padding: 11px 14px;
+    border: 1px solid #f0b8b8;
+    border-radius: 10px;
+    background: #fff2f2;
+    color: #bd3030;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+    .validation-summary ul {
+        margin: 5px 0 0 18px;
+        padding: 0;
+    }
 
 
 /* =========================================================
@@ -605,46 +742,3 @@ body.session-modal-open {
         width: 100%;
     }
 }
-/* =========================================================
-   REQUIRED FIELD
-   ========================================================= */
-
-.required-mark {
-    margin-left: 2px;
-    color: #d92d20;
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   FIELD VALIDATION ERROR
-   ========================================================= */
-
-.field-error {
-    display: block;
-    margin-top: 6px;
-    color: #d92d20;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-
-/* =========================================================
-   VALIDATION SUMMARY
-   ========================================================= */
-
-.validation-summary {
-    margin-bottom: 18px;
-    padding: 11px 14px;
-    border: 1px solid #f0b8b8;
-    border-radius: 10px;
-    background: #fff2f2;
-    color: #bd3030;
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-    .validation-summary ul {
-        margin: 5px 0 0 18px;
-        padding: 0;
-    }

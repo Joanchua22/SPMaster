@@ -1,17 +1,19 @@
-﻿/* =========================
+﻿/* =========================================================
    QUESTION BANK PAGE
-   ========================= */
+   ========================================================= */
 
 .question-bank-page {
-    --qb-button-font-size: 13px;
+    --qb-button-font-size: 12px;
+    --qb-tag-font-size: 11px;
+    --qb-meta-font-size: 11px;
     width: 100%;
     color: var(--portal-navy);
 }
 
 
-/* =========================
+/* =========================================================
    PAGE HEADER
-   ========================= */
+   ========================================================= */
 
 .question-bank-header {
     display: flex;
@@ -24,6 +26,7 @@
     .question-bank-header h1 {
         margin: 0;
         font-size: 30px;
+        font-weight: 800;
         line-height: 1.2;
         letter-spacing: -0.6px;
     }
@@ -31,18 +34,14 @@
     .question-bank-header p {
         margin: 4px 0 0;
         color: #514766;
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 1.5;
     }
 
-    .add-question-button i {
-        font-size: 16px;
-        line-height: 1;
-    }
 
-    .add-question-button:hover {
-        background: var(--portal-purple-dark);
-        transform: translateY(-2px);
-    }
+/* =========================================================
+   ADD QUESTION BUTTON
+   ========================================================= */
 
 .add-question-button {
     display: inline-flex;
@@ -54,32 +53,38 @@
     padding: 9px 18px;
     border-radius: 999px;
     background: #7c28ef;
-    color: white !important;
+    color: #ffffff !important;
     font-size: var(--qb-button-font-size);
     font-weight: 700;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
+    .add-question-button i {
+        font-size: 15px;
+        line-height: 1;
+    }
 
-/* =========================
+    .add-question-button:hover {
+        background: var(--portal-purple-dark);
+        transform: translateY(-1px);
+    }
+
+
+/* =========================================================
    SEARCH & FILTERS
-   ========================= */
+   ========================================================= */
 
 .question-filter-card {
     display: grid;
     grid-template-columns: minmax(250px, 1fr) 135px 150px 150px;
     gap: 10px;
-    padding: 16px;
+    padding: 14px;
     border-radius: 18px;
     background: var(--portal-white);
     box-shadow: 0 3px 0 rgba(41, 32, 82, 0.05);
 }
 
-.question-search {
-    position: relative;
-    min-width: 0;
-}
-
+.question-search,
 .question-filter-wrapper {
     position: relative;
     min-width: 0;
@@ -94,6 +99,7 @@
         outline: none;
         background: #f3ecff;
         color: var(--portal-navy);
+        font-family: inherit;
         font-size: 13px;
     }
 
@@ -131,16 +137,20 @@
     border: 0;
     border-radius: 999px;
     outline: none;
-    background: #f3ecff;
-    color: var(--portal-navy);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    /* Remove browser default arrow */
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    background: #f3ecff;
+    color: var(--portal-navy);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
 }
+
+    .question-filter:focus {
+        box-shadow: 0 0 0 2px var(--portal-purple);
+    }
 
 .filter-arrow {
     position: absolute;
@@ -152,14 +162,10 @@
     transform: translateY(-50%);
 }
 
-    .question-filter:focus {
-        box-shadow: 0 0 0 2px var(--portal-purple);
-    }
 
-
-/* =========================
+/* =========================================================
    TABS
-   ========================= */
+   ========================================================= */
 
 .question-tabs {
     display: flex;
@@ -169,8 +175,6 @@
     margin-bottom: 18px;
 }
 
-
-    /* ASP:LinkButton renders as <a> */
     .question-tabs .question-tab {
         display: inline-flex;
         align-items: center;
@@ -183,7 +187,7 @@
         background: #f1eaff;
         color: var(--portal-navy) !important;
         font-family: "Segoe UI", Arial, sans-serif;
-        font-size: 13px;
+        font-size: var(--qb-button-font-size);
         font-weight: 700;
         line-height: 1;
         text-decoration: none !important;
@@ -192,37 +196,29 @@
         transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-
-        /* Normal tab hover */
         .question-tabs .question-tab:hover {
             background: #e6d8ff;
             color: var(--portal-navy) !important;
         }
 
-
-        /* Selected tab */
         .question-tabs .question-tab.active {
             background: #7c28ef;
             color: #ffffff !important;
         }
 
-
-            /* Selected tab hover */
             .question-tabs .question-tab.active:hover {
                 background: #6920d4;
                 color: #ffffff !important;
             }
 
-
-        /* Remove browser focus underline */
         .question-tabs .question-tab:focus {
             text-decoration: none !important;
         }
 
 
-/* =========================
+/* =========================================================
    QUESTIONS
-   ========================= */
+   ========================================================= */
 
 .question-list {
     display: flex;
@@ -253,12 +249,17 @@
     min-width: 0;
 }
 
+
+/* =========================================================
+   QUESTION TAGS
+   ========================================================= */
+
 .question-tag {
     display: inline-flex;
     align-items: center;
-    padding: 3px 9px;
+    padding: 4px 9px;
     border-radius: 999px;
-    font-size: 9px;
+    font-size: var(--qb-tag-font-size);
     font-weight: 600;
     line-height: 1.4;
 }
@@ -305,8 +306,13 @@
 
 .question-owner {
     color: var(--portal-muted);
-    font-size: 9px;
+    font-size: var(--qb-meta-font-size);
 }
+
+
+/* =========================================================
+   QUESTION ACTIONS
+   ========================================================= */
 
 .question-actions {
     display: flex;
@@ -327,8 +333,10 @@
     border-radius: 18px;
     background: #f2ebff;
     color: var(--portal-navy);
+    font-family: inherit;
     font-size: var(--qb-button-font-size);
     font-weight: 600;
+    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -337,7 +345,6 @@
         background: #e6d8ff;
         transform: translateY(-1px);
     }
-
 
 .question-action-danger {
     background: #ffe2df;
@@ -352,7 +359,7 @@
 
 .question-action-primary {
     background: #792ce5;
-    color: white !important;
+    color: #ffffff !important;
 }
 
     .question-action-primary:hover {
@@ -360,9 +367,9 @@
     }
 
 
-/* =========================
+/* =========================================================
    QUESTION TEXT
-   ========================= */
+   ========================================================= */
 
 .question-text {
     margin: 9px 0 7px;
@@ -373,9 +380,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    QUESTION META
-   ========================= */
+   ========================================================= */
 
 .question-meta {
     display: flex;
@@ -383,12 +390,14 @@
     flex-wrap: wrap;
     gap: 8px;
     color: var(--portal-muted);
-    font-size: 10px;
+    font-size: var(--qb-meta-font-size);
+    line-height: 1.5;
 }
 
 .meta-dot {
     color: var(--portal-navy);
 }
+
 
 /* =========================================================
    ADD TO QUIZ MODAL
@@ -405,25 +414,25 @@
 }
 
     .add-quiz-modal[hidden] {
-        display: none;
+        display: none !important;
     }
 
 
-/* =========================
-   OVERLAY
-   ========================= */
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
 
 .add-quiz-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(41, 32, 82, 0.48);
-    backdrop-filter: blur(3px);
+    background: rgba(41, 32, 82, 0.55);
+    backdrop-filter: blur(4px);
 }
 
 
-/* =========================
-   DIALOG
-   ========================= */
+/* =========================================================
+   MODAL DIALOG
+   ========================================================= */
 
 .add-quiz-dialog {
     position: relative;
@@ -432,13 +441,14 @@
     padding: 24px;
     border-radius: 20px;
     background: var(--portal-white);
+    color: var(--portal-navy);
     box-shadow: 0 22px 55px rgba(41, 32, 82, 0.25);
 }
 
 
-/* =========================
-   HEADER
-   ========================= */
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
 
 .add-quiz-header {
     display: flex;
@@ -452,7 +462,7 @@
     display: block;
     margin-bottom: 2px;
     color: #7c28ef;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -460,19 +470,21 @@
 .add-quiz-header h2 {
     margin: 0;
     color: var(--portal-navy);
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 800;
 }
 
 .add-quiz-header p {
     margin: 3px 0 0;
     color: var(--portal-muted);
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 
-/* =========================
-   CLOSE
-   ========================= */
+/* =========================================================
+   MODAL CLOSE BUTTON
+   ========================================================= */
 
 .add-quiz-close {
     display: flex;
@@ -486,8 +498,10 @@
     border-radius: 50%;
     background: #f1eaff;
     color: var(--portal-navy);
+    font-size: 14px;
     cursor: pointer;
 }
+
 
 /* =========================================================
    ADD TO QUIZ INLINE ERROR
@@ -529,6 +543,7 @@
     color: #26733b;
     font-size: 12px;
     font-weight: 600;
+    line-height: 1.4;
 }
 
     .add-quiz-success[hidden] {
@@ -536,9 +551,9 @@
     }
 
 
-/* =========================
+/* =========================================================
    DRAFT QUIZ LIST
-   ========================= */
+   ========================================================= */
 
 .draft-quiz-section {
     margin-bottom: 18px;
@@ -588,14 +603,14 @@
 .draft-quiz-title {
     margin: 0;
     color: var(--portal-navy);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     line-height: 1.4;
 }
 
 .draft-quiz-meta {
     color: #7c28ef;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -603,7 +618,7 @@
 .draft-quiz-description {
     margin: 0;
     color: var(--portal-muted);
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.5;
 }
 
@@ -615,6 +630,7 @@
     font-size: 12px;
     text-align: center;
 }
+
 
 /* =========================================================
    ALREADY ADDED QUIZ
@@ -642,14 +658,14 @@
     border-radius: 999px;
     background: #ddd2ec;
     color: #594e67;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
 
-/* =========================
-   FOOTER
-   ========================= */
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
 
 .add-quiz-footer {
     display: flex;
@@ -666,47 +682,54 @@
     gap: 8px;
 }
 
-
 .create-new-quiz-button,
 .add-quiz-cancel,
 .add-selected-quiz-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 36px;
     padding: 7px 14px;
     border: 0;
     border-radius: 999px;
     font-family: inherit;
-    font-size: 13px;
+    font-size: var(--qb-button-font-size);
     font-weight: 700;
+    text-decoration: none;
     cursor: pointer;
 }
-
 
 .create-new-quiz-button {
     background: #f1eaff;
     color: #7c28ef;
 }
 
-
 .add-quiz-cancel {
     background: #f1eaff;
     color: var(--portal-navy);
 }
-
 
 .add-selected-quiz-button {
     background: #7c28ef;
     color: #ffffff;
 }
 
+.create-new-quiz-button:hover {
+    background: #e6d8ff;
+}
 
-    .add-selected-quiz-button:hover {
-        background: #6920d4;
-    }
+.add-quiz-cancel:hover {
+    background: #e6d8ff;
+}
+
+.add-selected-quiz-button:hover {
+    background: #6920d4;
+}
 
 
-/* =========================
+/* =========================================================
    TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 900px) {
 
@@ -724,9 +747,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    SMALL TABLET
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 760px) {
 
@@ -744,9 +767,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 560px) {
 
@@ -805,9 +828,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    SMALL MOBILE
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 400px) {
 

@@ -389,136 +389,72 @@ namespace SPMaster.Student
         private void BindQuestionBreakdown()
         {
             const string sql = @"
-                SELECT
-                    qq.QuizQuestionId,
-                    qq.QuestionOrder,
-                    qq.MaxMarks,
+        SELECT
+            qq.QuizQuestionId,
+            qq.QuestionOrder,
+            qq.MaxMarks,
 
-                    ques.QuestionId,
-                    ques.QuestionText,
-                    ques.QuestionType,
-                    ques.Explanation,
-                    ques.ModelAnswer,
+            ques.QuestionId,
+            ques.QuestionText,
+            ques.QuestionType,
+            ques.Explanation,
+            ques.ModelAnswer,
 
-                    sa.SelectedOptionId,
-                    sa.AnswerText,
-                    sa.LecturerFeedback,
+            sa.SelectedOptionId,
+            sa.AnswerText,
+            sa.LecturerFeedback,
 
-        ques.QuestionId,
-        ques.QuestionText,
-        ques.QuestionType,
-        ques.Explanation,
-        ques.ModelAnswer,
+            CASE
+                WHEN ques.QuestionType = 'MCQ'
+                THEN ISNULL(sa.MarksAwarded, 0)
+                ELSE sa.MarksAwarded
+            END AS DisplayMarksAwarded,
 
-        sa.SelectedOptionId,
-        sa.AnswerText,
-        sa.LecturerFeedback,
+            selectedOption.OptionText AS SelectedOptionText,
 
+            ISNULL(
+                selectedOption.IsCorrect,
+                0
+            ) AS SelectedOptionIsCorrect,
 
-                    CASE
-                        WHEN ques.QuestionType = 'MCQ'
-                        THEN ISNULL(
-                            sa.MarksAwarded,
-                            0
-                        )
+            correctOption.OptionText AS CorrectOptionText
 
-                        ELSE sa.MarksAwarded
-                    END AS DisplayMarksAwarded,
-
-        END AS DisplayMarksAwarded,
-
-                    /* -----------------------------------------
-                       STUDENT SELECTED OPTION
-                       ----------------------------------------- */
-
-                    selectedOption.OptionText
-                        AS SelectedOptionText,
-
-        selectedOption.OptionText
-            AS SelectedOptionText,
-
-                    /* -----------------------------------------
-                       WHETHER SELECTED OPTION IS CORRECT
-                       ----------------------------------------- */
-
-                    ISNULL(
-                        selectedOption.IsCorrect,
-                        0
-                    ) AS SelectedOptionIsCorrect,
-
-        ISNULL(
-            selectedOption.IsCorrect,
-            0
-        ) AS SelectedOptionIsCorrect,
-
-                    /* -----------------------------------------
-                       CORRECT MCQ OPTION
-                       ----------------------------------------- */
-
-                    correctOption.OptionText
-                        AS CorrectOptionText
-
-                FROM QuizQuestions qq
+        FROM QuizQuestions qq
 
 
-                /* =============================================
-                   QUESTION DETAILS
-                   ============================================= */
-
-                INNER JOIN Questions ques
-                    ON qq.QuestionId = ques.QuestionId
+        INNER JOIN Questions ques
+            ON qq.QuestionId = ques.QuestionId
 
 
-                /* =============================================
-                   STUDENT ANSWER
-
-                   LEFT JOIN is used so unanswered questions
-                   still appear in the result breakdown.
-                   ============================================= */
-
-                LEFT JOIN StudentAnswers sa
-                    ON sa.QuizQuestionId = qq.QuizQuestionId
-                    AND sa.AttemptId = @AttemptId
+        LEFT JOIN StudentAnswers sa
+            ON sa.QuizQuestionId = qq.QuizQuestionId
+            AND sa.AttemptId = @AttemptId
 
 
-                /* =============================================
-                   STUDENT SELECTED MCQ OPTION
-                   ============================================= */
+        LEFT JOIN QuestionOptions selectedOption
+            ON sa.SelectedOptionId = selectedOption.OptionId
 
-                LEFT JOIN QuestionOptions selectedOption
-                    ON sa.SelectedOptionId = selectedOption.OptionId
+        OUTER APPLY
+        (
+            SELECT TOP 1
+                qo.OptionText
 
+            FROM QuestionOptions qo
 
-                /* =============================================
-                   CORRECT MCQ OPTION
-                   ============================================= */
+            WHERE
+                qo.QuestionId = ques.QuestionId
+                AND qo.IsCorrect = 1
 
-                OUTER APPLY
-                (
-                    SELECT TOP 1
-                        qo.OptionText
+            ORDER BY
+                qo.DisplayOrder
+        ) correctOption
 
-                    FROM QuestionOptions qo
+        WHERE
+            qq.QuizId = @QuizId
 
-                    WHERE
-                        qo.QuestionId = ques.QuestionId
-                        AND qo.IsCorrect = 1
-
-                    ORDER BY
-                        qo.DisplayOrder
-                ) correctOption
-
-
-                /* =============================================
-                   CURRENT QUIZ ONLY
-                   ============================================= */
-
-                WHERE
-                    qq.QuizId = @QuizId
-
-                ORDER BY
-                    qq.QuestionOrder;
-            ";
+        ORDER BY
+            qq.QuestionOrder;
+    ";
 
             DataTable table = new DataTable();
 

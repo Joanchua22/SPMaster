@@ -3,10 +3,19 @@
    ========================================================= */
 
 .grading-page {
+    --grading-purple: #7c28ef;
+    --grading-purple-hover: #6920d4;
+    --grading-navy: #292052;
+    --grading-muted: #61596e;
+    --grading-white: #ffffff;
+    --grading-lavender: #f1eaff;
+    --grading-yellow: #ffe14d;
+    --grading-border: #eae5f2;
+    --grading-button-font-size: 12px;
     min-height: calc(100vh - 80px);
-    padding: 28px 34px 50px;
-    background: #ffe34f;
-    color: #2f2540;
+    padding: 20px 34px 50px;
+    background: var(--grading-yellow);
+    color: var(--grading-navy);
     box-sizing: border-box;
 }
 
@@ -18,12 +27,13 @@
 .grading-message {
     margin-bottom: 20px;
     padding: 14px 18px;
+    border: 1px solid #b7e4c7;
     border-radius: 12px;
     background: #e9f9ee;
-    border: 1px solid #b7e4c7;
     color: #267a45;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
 }
 
 
@@ -39,26 +49,29 @@
     margin-bottom: 24px;
 }
 
-
     .grading-header h1 {
         margin: 0 0 5px;
-        font-size: 31px;
+        color: var(--grading-navy);
+        font-size: 30px;
         font-weight: 800;
-        color: #261d33;
+        line-height: 1.2;
     }
-
 
     .grading-header p {
         margin: 0;
-        font-size: 14px;
-        color: #665a70;
+        color: var(--grading-muted);
+        font-size: 13px;
+        line-height: 1.5;
     }
 
+
+/* =========================================================
+   FILTER
+   ========================================================= */
 
 .grading-filter {
     min-width: 220px;
 }
-
 
 .grading-filter-select {
     width: 100%;
@@ -66,17 +79,17 @@
     padding: 0 38px 0 14px;
     border: 1px solid #ebe5ef;
     border-radius: 12px;
-    background: #ffffff;
-    color: #443651;
-    font-size: 13px;
-    font-weight: 700;
     outline: none;
+    background: var(--grading-white);
+    color: #443651;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
 }
 
-
     .grading-filter-select:focus {
-        border-color: #7c28ef;
+        border-color: var(--grading-purple);
         box-shadow: 0 0 0 3px rgba(124, 40, 239, 0.12);
     }
 
@@ -91,18 +104,21 @@
     gap: 13px;
 }
 
-
 .grading-queue-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 25px;
     padding: 18px 20px;
-    background: #ffffff;
     border-radius: 17px;
+    background: var(--grading-white);
     box-shadow: 0 5px 14px rgba(62, 42, 79, 0.08);
 }
 
+
+/* =========================================================
+   STUDENT
+   ========================================================= */
 
 .grading-student {
     display: flex;
@@ -111,79 +127,79 @@
     min-width: 0;
 }
 
-
 .grading-avatar {
-    width: 45px;
-    height: 45px;
-    flex: 0 0 45px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 0 0 45px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     background: #f0e4ff;
-    color: #7c28ef;
+    color: var(--grading-purple);
     font-size: 13px;
     font-weight: 800;
 }
-
 
 .grading-student-info {
     min-width: 0;
 }
 
-
     .grading-student-info h2 {
         margin: 0 0 4px;
+        color: #33253e;
         font-size: 16px;
         font-weight: 800;
-        color: #33253e;
     }
-
 
     .grading-student-info p {
         margin: 0;
         color: #6c6174;
-        font-size: 12px;
+        font-size: 13px;
         line-height: 1.5;
     }
-
 
         .grading-student-info p strong {
             color: #55475f;
             font-weight: 700;
         }
 
-
 .grading-divider {
     margin: 0 4px;
 }
 
 
+/* =========================================================
+   QUEUE META
+   ========================================================= */
+
 .grading-queue-meta {
     display: flex;
     align-items: center;
-    gap: 10px;
     flex-wrap: wrap;
+    gap: 10px;
     margin-top: 7px;
-    font-size: 11px;
     color: #887e90;
+    font-size: 11px;
 }
-
 
 .grading-subjective-count {
     padding: 3px 9px;
     border-radius: 20px;
     background: #ffe2e4;
     color: #cc4b58;
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 700;
 }
-
 
 .grading-queue-action {
     flex: 0 0 auto;
 }
 
+
+/* =========================================================
+   GRADE SUBMISSION BUTTON
+   ========================================================= */
 
 .grade-submission-button {
     display: inline-flex;
@@ -192,18 +208,17 @@
     min-width: 130px;
     padding: 10px 18px;
     border-radius: 22px;
-    background: #7c28ef;
-    color: #ffffff !important;
-    font-size: 12px;
-    font-weight: 800;
+    background: var(--grading-purple);
+    color: var(--grading-white) !important;
+    font-size: var(--grading-button-font-size);
+    font-weight: 700;
     text-decoration: none !important;
-    transition: 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-
     .grade-submission-button:hover {
-        background: #6820ca;
-        color: #ffffff !important;
+        background: var(--grading-purple-hover);
+        color: var(--grading-white) !important;
         transform: translateY(-1px);
     }
 
@@ -214,40 +229,38 @@
 
 .grading-empty {
     padding: 48px 25px;
-    text-align: center;
-    background: #ffffff;
     border-radius: 18px;
+    background: var(--grading-white);
+    text-align: center;
     box-shadow: 0 5px 14px rgba(62, 42, 79, 0.08);
 }
 
-
 .grading-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 52px;
     height: 52px;
     margin: 0 auto 14px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #eee2ff;
-    color: #7c28ef;
+    color: var(--grading-purple);
     font-size: 24px;
 }
 
-
 .grading-empty h2 {
     margin: 0 0 7px;
-    font-size: 20px;
     color: #33253e;
+    font-size: 18px;
+    font-weight: 800;
 }
-
 
 .grading-empty p {
     margin: 0;
     color: #756a7c;
     font-size: 13px;
+    line-height: 1.5;
 }
-
 
 .grading-detail-empty {
     margin-top: 18px;
@@ -266,35 +279,31 @@
     margin-bottom: 20px;
 }
 
-
 .grading-detail-heading {
     display: flex;
     align-items: center;
     gap: 13px;
 }
 
-
 .grading-back-button {
-    width: 39px;
-    height: 39px;
-    flex: 0 0 39px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #ffffff;
+    flex: 0 0 39px;
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    background: var(--grading-white);
     color: #604c6d !important;
     text-decoration: none !important;
     box-shadow: 0 4px 10px rgba(62, 42, 79, 0.08);
-    transition: 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
-
     .grading-back-button:hover {
-        color: #7c28ef !important;
+        color: var(--grading-purple) !important;
         transform: translateX(-2px);
     }
-
 
 .grading-context {
     display: block;
@@ -304,22 +313,21 @@
     font-weight: 700;
 }
 
-
 .grading-detail-heading h1 {
     margin: 0;
-    color: #291e36;
+    color: var(--grading-navy);
     font-size: 29px;
     font-weight: 800;
+    line-height: 1.2;
 }
-
 
 .attempt-badge {
     padding: 8px 16px;
     border-radius: 20px;
     background: #eee2ff;
-    color: #7c28ef;
+    color: var(--grading-purple);
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 
@@ -331,22 +339,21 @@
     margin-bottom: 18px;
     padding: 13px 17px;
     border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
 }
-
 
 .grading-detail-error {
+    border: 1px solid #ffc4c9;
     background: #fff0f0;
     color: #c23b48;
-    border: 1px solid #ffc4c9;
 }
 
-
 .grading-detail-success {
+    border: 1px solid #b8e3c4;
     background: #ebf9ef;
     color: #267a45;
-    border: 1px solid #b8e3c4;
 }
 
 
@@ -361,11 +368,10 @@
     gap: 20px;
     margin-bottom: 20px;
     padding: 22px 24px;
-    background: #ffffff;
     border-radius: 17px;
+    background: var(--grading-white);
     box-shadow: 0 5px 14px rgba(62, 42, 79, 0.08);
 }
-
 
     .objective-summary-card h2 {
         margin: 0 0 6px;
@@ -374,22 +380,21 @@
         font-weight: 800;
     }
 
-
     .objective-summary-card p {
         margin: 0;
         color: #776d7d;
-        font-size: 12px;
+        font-size: 13px;
+        line-height: 1.5;
     }
-
 
 .objective-score {
     flex: 0 0 auto;
     padding: 8px 14px;
     border-radius: 20px;
     background: #f1e7ff;
-    color: #7c28ef;
+    color: var(--grading-purple);
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 
@@ -401,10 +406,9 @@
     margin-bottom: 20px;
     padding: 23px;
     border-radius: 18px;
-    background: #ffffff;
+    background: var(--grading-white);
     box-shadow: 0 5px 14px rgba(62, 42, 79, 0.08);
 }
-
 
 .subjective-card-header {
     display: flex;
@@ -414,14 +418,12 @@
     margin-bottom: 15px;
 }
 
-
     .subjective-card-header h2 {
         margin: 0;
         color: #33243f;
         font-size: 17px;
         font-weight: 800;
     }
-
 
 .max-mark-badge {
     flex: 0 0 auto;
@@ -430,7 +432,7 @@
     background: #ffdf48;
     color: #44320c;
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 
@@ -444,43 +446,36 @@
     border-radius: 16px;
 }
 
-
     .grading-answer-box p {
         margin: 5px 0 0;
+        color: #55485e;
         font-size: 13px;
         line-height: 1.65;
-        color: #55485e;
         white-space: pre-wrap;
     }
-
 
 .grading-box-label {
     display: block;
     color: #694f7a;
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 700;
 }
-
 
 .question-box {
     background: #f6f0fc;
 }
 
-
 .student-answer-box {
     background: #f4ecff;
 }
 
-
     .student-answer-box .grading-box-label {
-        color: #7c28ef;
+        color: var(--grading-purple);
     }
-
 
 .model-answer-box {
     background: #eee5f8;
 }
-
 
     .model-answer-box .grading-box-label {
         color: #70469d;
@@ -498,22 +493,25 @@
     margin-top: 20px;
 }
 
-
 .grading-field label {
     display: block;
     margin-bottom: 7px;
     color: #4c3e55;
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
     text-transform: uppercase;
     letter-spacing: 0.3px;
 }
-
 
 .required-mark {
     color: #d33a4b;
 }
 
+
+/* =========================================================
+   MARK INPUT
+   ========================================================= */
 
 .grading-mark-input-wrapper {
     display: flex;
@@ -521,21 +519,20 @@
     gap: 8px;
 }
 
-
 .grading-mark-input {
+    box-sizing: border-box;
     width: 74px;
     height: 40px;
     padding: 0 11px;
     border: 1px solid #ece3f0;
     border-radius: 10px;
+    outline: none;
     background: #faf7fc;
     color: #34273f;
-    font-size: 14px;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 700;
-    box-sizing: border-box;
-    outline: none;
 }
-
 
 .grading-mark-input-wrapper span {
     color: #615568;
@@ -544,29 +541,31 @@
 }
 
 
+/* =========================================================
+   FEEDBACK INPUT
+   ========================================================= */
+
 .grading-feedback-input {
+    box-sizing: border-box;
     width: 100%;
     min-height: 74px;
     padding: 11px 13px;
     border: 1px solid #ece3f0;
     border-radius: 10px;
+    outline: none;
     resize: vertical;
     background: #faf7fc;
     color: #45384d;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.5;
-    box-sizing: border-box;
-    outline: none;
 }
-
 
     .grading-mark-input:focus,
     .grading-feedback-input:focus {
-        border-color: #7c28ef;
-        box-shadow: 0 0 0 3px rgba(124, 40, 239, 0.1);
+        border-color: var(--grading-purple);
+        box-shadow: 0 0 0 3px rgba(124, 40, 239, 0.10);
     }
-
 
     .grading-mark-input:disabled,
     .grading-feedback-input:disabled {
@@ -576,12 +575,16 @@
     }
 
 
+/* =========================================================
+   FIELD ERROR
+   ========================================================= */
+
 .grading-field-error {
     display: block;
     margin-top: 6px;
     color: #d03c49;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 
@@ -597,14 +600,18 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 15px 19px;
     margin-top: 22px;
-    background: rgba(255, 255, 255, 0.97);
+    padding: 15px 19px;
     border-radius: 17px;
+    background: rgba(255, 255, 255, 0.97);
     box-shadow: 0 7px 24px rgba(64, 44, 80, 0.15);
     backdrop-filter: blur(8px);
 }
 
+
+/* =========================================================
+   PROVISIONAL SCORE
+   ========================================================= */
 
 .provisional-score {
     display: flex;
@@ -612,28 +619,25 @@
     gap: 10px;
 }
 
-
 .provisional-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     background: #eee3ff;
-    color: #7c28ef;
+    color: var(--grading-purple);
     font-size: 17px;
 }
-
 
 .provisional-score span {
     display: block;
     margin-bottom: 2px;
     color: #786b80;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
-
 
 .provisional-score strong {
     color: #392b44;
@@ -642,47 +646,50 @@
 }
 
 
+/* =========================================================
+   FOOTER ACTIONS
+   ========================================================= */
+
 .grading-footer-actions {
     display: flex;
     align-items: center;
     gap: 9px;
 }
 
-
 .grading-save-button,
 .grading-publish-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 39px;
     padding: 0 18px;
     border-radius: 20px;
-    font-size: 11px;
-    font-weight: 800;
+    font-family: inherit;
+    font-size: var(--grading-button-font-size);
+    font-weight: 700;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-
 
 .grading-save-button {
     border: 1px solid #e5ddea;
-    background: #ffffff;
+    background: var(--grading-white);
     color: #5d4c68;
 }
-
 
     .grading-save-button:hover {
         background: #f5eff8;
     }
 
-
 .grading-publish-button {
-    border: 1px solid #7c28ef;
-    background: #7c28ef;
-    color: #ffffff;
+    border: 1px solid var(--grading-purple);
+    background: var(--grading-purple);
+    color: var(--grading-white);
 }
 
-
     .grading-publish-button:hover {
-        background: #6820ca;
-        border-color: #6820ca;
+        border-color: var(--grading-purple-hover);
+        background: var(--grading-purple-hover);
         transform: translateY(-1px);
     }
 
@@ -693,9 +700,8 @@
 
 .grading-page a.grade-submission-button,
 .grading-page a.grade-submission-button:visited {
-    color: #ffffff !important;
+    color: var(--grading-white) !important;
 }
-
 
 .grading-page a.grading-back-button,
 .grading-page a.grading-back-button:visited {
@@ -713,29 +719,24 @@
         padding: 24px 22px 45px;
     }
 
-
     .grading-header,
     .grading-detail-header {
         align-items: stretch;
         flex-direction: column;
     }
 
-
     .grading-filter {
         width: 100%;
     }
-
 
     .grading-input-grid {
         grid-template-columns: 1fr;
     }
 
-
     .grading-footer-card {
         align-items: stretch;
         flex-direction: column;
     }
-
 
     .grading-footer-actions {
         justify-content: flex-end;
@@ -753,53 +754,48 @@
         padding: 20px 14px 40px;
     }
 
-
     .grading-header h1,
     .grading-detail-heading h1 {
         font-size: 24px;
     }
 
+    .grading-header p {
+        font-size: 12px;
+    }
 
     .grading-queue-card {
         align-items: stretch;
         flex-direction: column;
     }
 
-
     .grading-queue-action {
         width: 100%;
     }
-
 
     .grade-submission-button {
         width: 100%;
         box-sizing: border-box;
     }
 
-
     .subjective-card-header {
         align-items: flex-start;
         flex-direction: column;
     }
-
 
     .objective-summary-card {
         align-items: flex-start;
         flex-direction: column;
     }
 
-
     .grading-footer-actions {
         flex-direction: column;
         width: 100%;
     }
 
-
     .grading-save-button,
     .grading-publish-button {
         width: 100%;
     }
-
 
     .grading-student {
         align-items: flex-start;

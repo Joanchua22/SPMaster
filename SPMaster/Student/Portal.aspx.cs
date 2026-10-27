@@ -600,27 +600,15 @@ namespace SPMaster.Student
             rptSubjectHubs.Visible =
                 table.Rows.Count > 0;
         }
+
         private void LoadStudentHeader()
         {
             string studentName =
                 Session["FullName"] == null
-                ? "Student"
-                : Session["FullName"]
-                    .ToString();
+                    ? "Student"
+                    : Session["FullName"].ToString();
 
-
-            lblStudentName.Text =
-                studentName;
-
-
-            lblHeroName.Text =
-                studentName;
-
-
-            lblCurrentDate.Text =
-                DateTime.Now.ToString(
-                    "dd MMMM yyyy"
-                );
+            lblHeroName.Text = studentName;
         }
 
         private void LoadStudentSummary()
