@@ -40,736 +40,223 @@
 
         </asp:Panel>
 
+
         <%-- =====================================================
-             QUEUE + REVIEW VIEW
+             PAGE HEADER
              ===================================================== --%>
 
-        <asp:Panel
-            ID="pnlQueueView"
-            runat="server"
-            Visible="true">
+        <section class="grading-header">
 
-            <%-- =================================================
-                 PAGE HEADER
-                 ================================================= --%>
+            <div>
 
-            <section class="grading-header">
+                <h1>
+                    Grading
+                </h1>
 
-                <div>
-
-                    <h1>
-                        Grading
-                    </h1>
-
-                    <p>
-                        Grade pending submissions and review
-                        previously published results.
-                    </p>
-
-                </div>
-
-                <div class="grading-filter">
-
-                    <asp:DropDownList
-                        ID="ddlQuizFilter"
-                        runat="server"
-                        CssClass="grading-filter-select"
-                        AutoPostBack="true"
-                        OnSelectedIndexChanged="ddlQuizFilter_SelectedIndexChanged">
-                    </asp:DropDownList>
-
-                </div>
-
-            </section>
-
-            <%-- =================================================
-                 SEARCH
-                 ================================================= --%>
-
-            <div class="grading-filter"
-                 style="display:flex;gap:10px;margin-bottom:24px;align-items:center;">
-
-                <asp:TextBox
-                    ID="txtSearch"
-                    runat="server"
-                    CssClass="grading-filter-select"
-                    placeholder="Search student, quiz or session..."
-                    style="min-width:300px;">
-                </asp:TextBox>
-
-                <asp:Button
-                    ID="btnSearch"
-                    runat="server"
-                    Text="Search"
-                    CssClass="grade-submission-button"
-                    CausesValidation="false"
-                    OnClick="btnSearch_Click" />
-
-                <asp:Button
-                    ID="btnClearSearch"
-                    runat="server"
-                    Text="Clear"
-                    CssClass="grading-save-button"
-                    CausesValidation="false"
-                    OnClick="btnClearSearch_Click" />
+                <p>
+                    Grade pending submissions and review
+                    previously published results.
+                </p>
 
             </div>
 
-            <%-- =================================================
-                 PENDING GRADING HEADER
-                 ================================================= --%>
+            <div class="grading-filter">
 
-            <section class="grading-detail-header"
-                     style="margin-bottom:18px;">
+                <asp:DropDownList
+                    ID="ddlQuizFilter"
+                    runat="server"
+                    CssClass="grading-filter-select"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="ddlQuizFilter_SelectedIndexChanged">
+                </asp:DropDownList>
 
-                <div class="grading-detail-heading">
+            </div>
 
-                    <div>
+        </section>
 
-                        <h1 style="font-size:22px;">
-                            Pending Grading
-                        </h1>
-
-                        <span class="grading-context">
-                            Subjective submissions waiting for review.
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <%-- =================================================
-                 NO PENDING / NO SEARCH RESULT
-                 ================================================= --%>
-
-            <asp:Panel
-                ID="pnlNoPending"
-                runat="server"
-                Visible="false"
-                CssClass="grading-empty">
-
-                <div class="grading-empty-icon">
-
-                    <i class="bi bi-check-circle"></i>
-
-                </div>
-
-                <h2>
-
-                    <asp:Label
-                        ID="lblNoPendingTitle"
-                        runat="server">
-                    </asp:Label>
-
-                </h2>
-
-                <p>
-
-                    <asp:Label
-                        ID="lblNoPendingDescription"
-                        runat="server">
-                    </asp:Label>
-
-                </p>
-
-            </asp:Panel>
-
-            <%-- =================================================
-                 PENDING GRADING LIST
-                 ================================================= --%>
-
-            <asp:Panel
-                ID="pnlQueueList"
-                runat="server"
-                Visible="false"
-                CssClass="grading-queue">
-
-                <asp:Repeater
-                    ID="rptGradingQueue"
-                    runat="server">
-
-                    <ItemTemplate>
-
-                        <article class="grading-queue-card">
-
-                            <%-- STUDENT INFORMATION --%>
-
-                            <div class="grading-student">
-
-                                <div class="grading-avatar">
-
-                                    <%# Eval("StudentInitials") %>
-
-                                </div>
-
-                                <div class="grading-student-info">
-
-                                    <h2>
-
-                                        <%# Eval("StudentName") %>
-
-                                    </h2>
-
-                                    <p>
-
-                                        Quiz:
-                                        <strong>
-
-                                            <%# Eval("QuizTitle") %>
-
-                                        </strong>
-
-                                        <asp:PlaceHolder
-                                            ID="phSession"
-                                            runat="server"
-                                            Visible='<%# Convert.ToBoolean(Eval("HasSession")) %>'>
-
-                                            <span class="grading-divider">
-                                                •
-                                            </span>
-
-                                            Session:
-                                            <strong>
-
-                                                <%# Eval("SessionTitle") %>
-
-                                            </strong>
-
-                                        </asp:PlaceHolder>
-
-                                    </p>
-
-                                    <div class="grading-queue-meta">
-
-                                        <span class="grading-subjective-count">
-
-                                            <%# Eval("SubjectiveCountText") %>
-
-                                        </span>
-
-                                        <span>
-
-                                            Submitted
-                                            <%# Eval("SubmittedAtText") %>
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <%-- ACTION --%>
-
-                            <div class="grading-queue-action">
-
-                                <asp:HyperLink
-                                    ID="lnkGradeSubmission"
-                                    runat="server"
-                                    CssClass="grade-submission-button"
-                                    NavigateUrl='<%# Eval("GradeUrl") %>'>
-
-                                    Grade Submission
-
-                                </asp:HyperLink>
-
-                            </div>
-
-                        </article>
-
-                    </ItemTemplate>
-
-                </asp:Repeater>
-
-            </asp:Panel>
-
-            <%-- =================================================
-                 PAST GRADING REVIEWS HEADER
-                 ================================================= --%>
-
-            <section class="grading-detail-header"
-                     style="margin-top:38px;margin-bottom:18px;">
-
-                <div class="grading-detail-heading">
-
-                    <div>
-
-                        <h1 style="font-size:22px;">
-                            Past Grading Reviews
-                        </h1>
-
-                        <span class="grading-context">
-                            Review results that you have already finalised.
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <%-- =================================================
-                 NO REVIEW HISTORY / NO SEARCH RESULT
-                 ================================================= --%>
-
-            <asp:Panel
-                ID="pnlNoReviews"
-                runat="server"
-                Visible="false"
-                CssClass="grading-empty">
-
-                <div class="grading-empty-icon">
-
-                    <i class="bi bi-journal-check"></i>
-
-                </div>
-
-                <h2>
-
-                    <asp:Label
-                        ID="lblNoReviewsTitle"
-                        runat="server">
-                    </asp:Label>
-
-                </h2>
-
-                <p>
-
-                    <asp:Label
-                        ID="lblNoReviewsDescription"
-                        runat="server">
-                    </asp:Label>
-
-                </p>
-
-            </asp:Panel>
-
-            <%-- =================================================
-                 REVIEW HISTORY LIST
-                 ================================================= --%>
-
-            <asp:Panel
-                ID="pnlReviewList"
-                runat="server"
-                Visible="false"
-                CssClass="grading-queue">
-
-                <asp:Repeater
-                    ID="rptReviewHistory"
-                    runat="server">
-
-                    <ItemTemplate>
-
-                        <article class="grading-queue-card">
-
-                            <%-- STUDENT INFORMATION --%>
-
-                            <div class="grading-student">
-
-                                <div class="grading-avatar">
-
-                                    <%# Eval("StudentInitials") %>
-
-                                </div>
-
-                                <div class="grading-student-info">
-
-                                    <h2>
-
-                                        <%# Eval("StudentName") %>
-
-                                    </h2>
-
-                                    <p>
-
-                                        Quiz:
-                                        <strong>
-
-                                            <%# Eval("QuizTitle") %>
-
-                                        </strong>
-
-                                        <asp:PlaceHolder
-                                            ID="phReviewSession"
-                                            runat="server"
-                                            Visible='<%# Convert.ToBoolean(Eval("HasSession")) %>'>
-
-                                            <span class="grading-divider">
-                                                •
-                                            </span>
-
-                                            Session:
-                                            <strong>
-
-                                                <%# Eval("SessionTitle") %>
-
-                                            </strong>
-
-                                        </asp:PlaceHolder>
-
-                                    </p>
-
-                                    <div class="grading-queue-meta">
-
-                                        <span class="grading-subjective-count">
-
-                                            <%# Eval("FinalScoreText") %>
-
-                                        </span>
-
-                                        <span>
-
-                                            Graded
-                                            <%# Eval("GradedAtText") %>
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <%-- ACTION --%>
-
-                            <div class="grading-queue-action">
-
-                                <asp:HyperLink
-                                    ID="lnkReviewGrade"
-                                    runat="server"
-                                    CssClass="grade-submission-button"
-                                    NavigateUrl='<%# Eval("ReviewUrl") %>'>
-
-                                    Review Grade
-
-                                </asp:HyperLink>
-
-                            </div>
-
-                        </article>
-
-                    </ItemTemplate>
-
-                </asp:Repeater>
-
-            </asp:Panel>
-
-        </asp:Panel>
 
         <%-- =====================================================
-             INDIVIDUAL GRADING / REVIEW VIEW
+             SEARCH
              ===================================================== --%>
 
-        <asp:Panel
-            ID="pnlGradingView"
-            runat="server"
-            Visible="false">
+        <div class="grading-filter"
+             style="display:flex;gap:10px;margin-bottom:24px;align-items:center;">
 
-            <%-- =================================================
-                 TOP BAR
-                 ================================================= --%>
-
-            <section class="grading-detail-header">
-
-                <div class="grading-detail-heading">
-
-                    <asp:HyperLink
-                        ID="lnkBackToQueue"
-                        runat="server"
-                        NavigateUrl="~/Lecturer/Grading.aspx"
-                        CssClass="grading-back-button">
-
-                        <i class="bi bi-arrow-left"></i>
-
-                    </asp:HyperLink>
-
-                    <div>
-
-                        <span class="grading-context">
-
-                            <asp:Label
-                                ID="lblDetailContext"
-                                runat="server">
-                            </asp:Label>
-
-                        </span>
-
-                        <h1>
-
-                            Grading:
-
-                            <asp:Label
-                                ID="lblStudentName"
-                                runat="server">
-                            </asp:Label>
-
-                        </h1>
-
-                    </div>
-
-                </div>
-
-                <div class="attempt-badge">
-
-                    <asp:Label
-                        ID="lblAttemptBadge"
-                        runat="server">
-                    </asp:Label>
-
-                </div>
-
-            </section>
-
-            <%-- =================================================
-                 DETAIL MESSAGE
-                 ================================================= --%>
-
-            <asp:Panel
-                ID="pnlDetailMessage"
+            <asp:TextBox
+                ID="txtSearch"
                 runat="server"
-                Visible="false"
-                CssClass="grading-detail-message">
+                CssClass="grading-filter-select"
+                placeholder="Search student, quiz or session..."
+                style="min-width:300px;">
+            </asp:TextBox>
 
-                <asp:Label
-                    ID="lblDetailMessage"
-                    runat="server">
-                </asp:Label>
+            <asp:Button
+                ID="btnSearch"
+                runat="server"
+                Text="Search"
+                CssClass="grade-submission-button"
+                CausesValidation="false"
+                OnClick="btnSearch_Click" />
 
-            </asp:Panel>
+            <asp:Button
+                ID="btnClearSearch"
+                runat="server"
+                Text="Clear"
+                CssClass="grading-save-button"
+                CausesValidation="false"
+                OnClick="btnClearSearch_Click" />
 
-            <%-- =================================================
-                 OBJECTIVE SUMMARY
-                 ================================================= --%>
+        </div>
 
-            <section class="objective-summary-card">
+
+        <%-- =====================================================
+             PENDING GRADING HEADER
+             ===================================================== --%>
+
+        <section class="grading-detail-header"
+                 style="margin-bottom:18px;">
+
+            <div class="grading-detail-heading">
 
                 <div>
 
-                    <h2>
-                        1. Objective Questions (Auto-Marked)
-                    </h2>
+                    <h1 style="font-size:22px;">
+                        Pending Grading
+                    </h1>
 
-                    <p>
-                        Single-choice questions are checked
-                        automatically according to the answer key.
-                    </p>
-
-                </div>
-
-                <div class="objective-score">
-
-                    <asp:Label
-                        ID="lblObjectiveScore"
-                        runat="server"
-                        Text="0 / 0 Marks">
-                    </asp:Label>
+                    <span class="grading-context">
+                        Subjective submissions waiting for review.
+                    </span>
 
                 </div>
 
-            </section>
+            </div>
 
-            <%-- =================================================
-                 NO SUBJECTIVE QUESTIONS
-                 ================================================= --%>
+        </section>
 
-            <asp:Panel
-                ID="pnlNoSubjective"
-                runat="server"
-                Visible="false"
-                CssClass="grading-empty grading-detail-empty">
 
-                <div class="grading-empty-icon">
+        <%-- =====================================================
+             NO PENDING
+             ===================================================== --%>
 
-                    <i class="bi bi-check-circle"></i>
+        <asp:Panel
+            ID="pnlNoPending"
+            runat="server"
+            Visible="false"
+            CssClass="grading-empty">
 
-                </div>
+            <div class="grading-empty-icon">
 
-                <h2>
-                    No subjective grading required
-                </h2>
+                <i class="bi bi-check-circle"></i>
 
-                <p>
-                    This attempt does not contain any subjective
-                    questions requiring manual grading.
-                </p>
+            </div>
 
-            </asp:Panel>
+            <h2>
 
-            <%-- =================================================
-                 SUBJECTIVE QUESTIONS
-                 ================================================= --%>
+                <asp:Label
+                    ID="lblNoPendingTitle"
+                    runat="server">
+                </asp:Label>
+
+            </h2>
+
+            <p>
+
+                <asp:Label
+                    ID="lblNoPendingDescription"
+                    runat="server">
+                </asp:Label>
+
+            </p>
+
+        </asp:Panel>
+
+
+        <%-- =====================================================
+             PENDING QUEUE
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlQueueList"
+            runat="server"
+            Visible="false"
+            CssClass="grading-queue">
 
             <asp:Repeater
-                ID="rptSubjectiveQuestions"
+                ID="rptGradingQueue"
                 runat="server">
 
                 <ItemTemplate>
 
-                    <article class="subjective-grading-card">
+                    <article class="grading-queue-card">
 
-                        <%-- HIDDEN VALUES --%>
+                        <div class="grading-student">
 
-                        <asp:HiddenField
-                            ID="hfAnswerId"
-                            runat="server"
-                            Value='<%# Eval("AnswerId") %>' />
+                            <div class="grading-avatar">
 
-                        <asp:HiddenField
-                            ID="hfQuizQuestionId"
-                            runat="server"
-                            Value='<%# Eval("QuizQuestionId") %>' />
+                                <%# Eval("StudentInitials") %>
 
-                        <asp:HiddenField
-                            ID="hfMaxMarks"
-                            runat="server"
-                            Value='<%# Eval("MaxMarks") %>' />
+                            </div>
 
-                        <%-- QUESTION HEADER --%>
+                            <div class="grading-student-info">
 
-                        <div class="subjective-card-header">
+                                <h2>
+                                    <%# Eval("StudentName") %>
+                                </h2>
 
-                            <h2>
+                                <p>
 
-                                <%# Eval("QuestionHeading") %>
+                                    Quiz:
+                                    <strong>
+                                        <%# Eval("QuizTitle") %>
+                                    </strong>
 
-                            </h2>
+                                    <asp:PlaceHolder
+                                        ID="phSession"
+                                        runat="server"
+                                        Visible='<%# Convert.ToBoolean(Eval("HasSession")) %>'>
 
-                            <span class="max-mark-badge">
+                                        <span class="grading-divider">
+                                            •
+                                        </span>
 
-                                Max:
-                                <%# Eval("MaxMarksText") %>
+                                        Session:
+                                        <strong>
+                                            <%# Eval("SessionTitle") %>
+                                        </strong>
 
-                            </span>
+                                    </asp:PlaceHolder>
 
-                        </div>
+                                </p>
 
-                        <%-- QUESTION PROMPT --%>
+                                <div class="grading-queue-meta">
 
-                        <div class="grading-answer-box question-box">
-
-                            <span class="grading-box-label">
-
-                                Question Prompt:
-
-                            </span>
-
-                            <p>
-
-                                <%# Eval("QuestionText") %>
-
-                            </p>
-
-                        </div>
-
-                        <%-- STUDENT ANSWER --%>
-
-                        <div class="grading-answer-box student-answer-box">
-
-                            <span class="grading-box-label">
-
-                                Student's Submitted Response:
-
-                            </span>
-
-                            <p>
-
-                                <%# Eval("StudentAnswerText") %>
-
-                            </p>
-
-                        </div>
-
-                        <%-- MODEL ANSWER --%>
-
-                        <div class="grading-answer-box model-answer-box">
-
-                            <span class="grading-box-label">
-
-                                <i class="bi bi-caret-down-fill"></i>
-
-                                Lecturer Reference &amp; Model Answer
-
-                            </span>
-
-                            <p>
-
-                                <%# Eval("ModelAnswerText") %>
-
-                            </p>
-
-                        </div>
-
-                        <%-- MARKS + FEEDBACK --%>
-
-                        <div class="grading-input-grid">
-
-                            <%-- MARKS --%>
-
-                            <div class="grading-field grading-mark-field">
-
-                                <label>
-
-                                    Awarded Marks
-
-                                    <span class="required-mark">
-                                        *
+                                    <span class="grading-subjective-count">
+                                        <%# Eval("SubjectiveCountText") %>
                                     </span>
 
-                                </label>
-
-                                <div class="grading-mark-input-wrapper">
-
-                                    <asp:TextBox
-                                        ID="txtAwardedMarks"
-                                        runat="server"
-                                        CssClass="grading-mark-input"
-                                        Text='<%# Eval("MarksText") %>'
-                                        MaxLength="8">
-                                    </asp:TextBox>
-
                                     <span>
-
-                                        /
-                                        <%# Eval("MaxMarksText") %>
-
+                                        Submitted
+                                        <%# Eval("SubmittedAtText") %>
                                     </span>
 
                                 </div>
 
-                                <asp:Label
-                                    ID="lblMarkError"
-                                    runat="server"
-                                    Visible="false"
-                                    CssClass="grading-field-error">
-                                </asp:Label>
-
                             </div>
 
-                            <%-- FEEDBACK --%>
+                        </div>
 
-                            <div class="grading-field">
+                        <div class="grading-queue-action">
 
-                                <label>
+                            <asp:HyperLink
+                                ID="lnkGradeSubmission"
+                                runat="server"
+                                CssClass="grade-submission-button"
+                                NavigateUrl='<%# Eval("GradeUrl") %>'>
 
-                                    Lecturer Feedback Note
+                                Grade Submission
 
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtLecturerFeedback"
-                                    runat="server"
-                                    CssClass="grading-feedback-input"
-                                    Text='<%# Eval("LecturerFeedback") %>'
-                                    TextMode="MultiLine"
-                                    Rows="3"
-                                    MaxLength="1000"
-                                    placeholder="Enter feedback for the student...">
-                                </asp:TextBox>
-
-                            </div>
+                            </asp:HyperLink>
 
                         </div>
 
@@ -779,57 +266,156 @@
 
             </asp:Repeater>
 
-            <%-- =================================================
-                 BOTTOM SUMMARY
-                 ================================================= --%>
+        </asp:Panel>
 
-            <asp:Panel
-                ID="pnlGradingFooter"
-                runat="server"
-                Visible="false"
-                CssClass="grading-footer-card">
 
-                <div class="provisional-score">
+        <%-- =====================================================
+             REVIEW HISTORY HEADER
+             ===================================================== --%>
 
-                    <div class="provisional-icon">
+        <section class="grading-detail-header"
+                 style="margin-top:38px;margin-bottom:18px;">
 
-                        <i class="bi bi-check-circle"></i>
+            <div class="grading-detail-heading">
 
-                    </div>
+                <div>
 
-                    <div>
+                    <h1 style="font-size:22px;">
+                        Past Grading Reviews
+                    </h1>
 
-                        <span>
-                            Total Score
-                        </span>
+                    <span class="grading-context">
+                        Review results that you have already finalised.
+                    </span>
 
-                        <strong>
+                </div>
 
-                            <asp:Label
-                                ID="lblProvisionalScore"
+            </div>
+
+        </section>
+
+
+        <%-- =====================================================
+             NO REVIEWS
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlNoReviews"
+            runat="server"
+            Visible="false"
+            CssClass="grading-empty">
+
+            <div class="grading-empty-icon">
+
+                <i class="bi bi-journal-check"></i>
+
+            </div>
+
+            <h2>
+                No grading history found
+            </h2>
+
+            <p>
+                Finalised subjective grading will appear here
+                for future review.
+            </p>
+
+        </asp:Panel>
+
+
+        <%-- =====================================================
+             REVIEW HISTORY
+             ===================================================== --%>
+
+        <asp:Panel
+            ID="pnlReviewList"
+            runat="server"
+            Visible="false"
+            CssClass="grading-queue">
+
+            <asp:Repeater
+                ID="rptReviewHistory"
+                runat="server">
+
+                <ItemTemplate>
+
+                    <article class="grading-queue-card">
+
+                        <div class="grading-student">
+
+                            <div class="grading-avatar">
+
+                                <%# Eval("StudentInitials") %>
+
+                            </div>
+
+                            <div class="grading-student-info">
+
+                                <h2>
+                                    <%# Eval("StudentName") %>
+                                </h2>
+
+                                <p>
+
+                                    Quiz:
+                                    <strong>
+                                        <%# Eval("QuizTitle") %>
+                                    </strong>
+
+                                    <asp:PlaceHolder
+                                        ID="phReviewSession"
+                                        runat="server"
+                                        Visible='<%# Convert.ToBoolean(Eval("HasSession")) %>'>
+
+                                        <span class="grading-divider">
+                                            •
+                                        </span>
+
+                                        Session:
+                                        <strong>
+                                            <%# Eval("SessionTitle") %>
+                                        </strong>
+
+                                    </asp:PlaceHolder>
+
+                                </p>
+
+                                <div class="grading-queue-meta">
+
+                                    <span class="grading-subjective-count">
+                                        <%# Eval("FinalScoreText") %>
+                                    </span>
+
+                                    <span>
+                                        Graded
+                                        <%# Eval("GradedAtText") %>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grading-queue-action">
+
+                            <asp:HyperLink
+                                ID="lnkReviewGrade"
                                 runat="server"
-                                Text="0 / 0 Total">
-                            </asp:Label>
+                                CssClass="grade-submission-button"
+                                NavigateUrl='<%# Eval("ReviewUrl") %>'>
 
-                        </strong>
+                                Review Grade
 
-                    </div>
+                            </asp:HyperLink>
 
-                </div>
+                        </div>
 
-                <div class="grading-footer-actions">
+                    </article>
 
-                    <asp:Button
-                        ID="btnFinalize"
-                        runat="server"
-                        Text="Finalise & Publish Result"
-                        CssClass="grading-publish-button"
-                        CausesValidation="false"
-                        OnClick="btnFinalize_Click" />
+                </ItemTemplate>
 
-                </div>
-
-            </asp:Panel>
+            </asp:Repeater>
 
         </asp:Panel>
 

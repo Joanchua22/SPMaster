@@ -137,6 +137,7 @@
     <Content Include="Content\ViewContent.css" />
     <Content Include="Content\Feedback.css" />
     <Content Include="Lecturer\CreateQuestion.aspx" />
+    <Content Include="Lecturer\GradingDetails.aspx" />
     <Content Include="Scripts\Feedback.js" />
     <Content Include="Feedback.aspx" />
     <Content Include="ForgotPassword.aspx" />
@@ -288,6 +289,13 @@
     </Compile>
     <Compile Include="Lecturer\CreateQuiz.aspx.designer.cs">
       <DependentUpon>CreateQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Lecturer\GradingDetails.aspx.cs">
+      <DependentUpon>GradingDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Lecturer\GradingDetails.aspx.designer.cs">
+      <DependentUpon>GradingDetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="Lecturer\Performance.aspx.cs">
       <DependentUpon>Performance.aspx</DependentUpon>

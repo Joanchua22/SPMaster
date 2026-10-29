@@ -593,9 +593,9 @@
    ========================================================= */
 
 .grading-footer-card {
-    position: sticky;
-    bottom: 14px;
-    z-index: 10;
+    position: static;
+    bottom: auto;
+    z-index: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
