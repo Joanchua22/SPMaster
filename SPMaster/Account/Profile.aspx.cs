@@ -3,98 +3,56 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 
-
 namespace SPMaster.Account
 {
-    public partial class Profile :
-        System.Web.UI.Page
+    public partial class Profile : System.Web.UI.Page
     {
         // =========================================================
         // SELECT MASTER PAGE BY ROLE
         // =========================================================
 
-        protected void Page_PreInit(
-            object sender,
-            EventArgs e)
+        protected void Page_PreInit(object sender, EventArgs e)
         {
-            if (
-                Session["Role"] == null
-            )
+            if (Session["Role"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
+            string role = Session["Role"].ToString().Trim();
 
-            string role =
-                Session["Role"]
-                .ToString()
-                .Trim();
-
-
-            // Admin uses Dashboard.Master
-            if (
-                role.Equals(
-                    "Admin",
-                    StringComparison.OrdinalIgnoreCase
-                )
-            )
+            if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                MasterPageFile =
-                    "~/Master/Dashboard.Master";
+                MasterPageFile = "~/Master/Dashboard.Master";
             }
-
-            // Student / Lecturer use Portal.Master
             else
             {
-                MasterPageFile =
-                    "~/Master/Portal.Master";
+                MasterPageFile = "~/Master/Portal.Master";
             }
         }
-
-
 
         // =========================================================
         // PAGE LOAD
         // =========================================================
 
-        protected void Page_Load(
-            object sender,
-            EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            pnlSuccess.Visible =
-                false;
+            pnlSuccess.Visible = false;
+            lblMessage.Visible = false;
 
-
-            lblMessage.Visible =
-                false;
-
-
-            if (
-                Session["UserId"] == null
-            )
+            if (Session["UserId"] == null)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-
             SetNavigation();
-
 
             if (!IsPostBack)
             {
                 LoadProfile();
             }
         }
-
-
 
         // =========================================================
         // DATABASE CONNECTION
@@ -103,13 +61,9 @@ namespace SPMaster.Account
         private string GetConnectionString()
         {
             return ConfigurationManager
-                .ConnectionStrings[
-                    "SPMasterConnectionString"
-                ]
+                .ConnectionStrings["SPMasterConnectionString"]
                 .ConnectionString;
         }
-
-
 
         // =========================================================
         // CURRENT USER ID
@@ -119,25 +73,16 @@ namespace SPMaster.Account
         {
             int userId;
 
-
             if (
-                Session["UserId"] == null
-                ||
-                !int.TryParse(
-                    Session["UserId"]
-                        .ToString(),
-                    out userId
-                )
+                Session["UserId"] == null ||
+                !int.TryParse(Session["UserId"].ToString(), out userId)
             )
             {
                 return 0;
             }
 
-
             return userId;
         }
-
-
 
         // =========================================================
         // ROLE NAVIGATION
@@ -145,56 +90,28 @@ namespace SPMaster.Account
 
         private void SetNavigation()
         {
-            pnlAdminNavigation.Visible =
-                false;
-
-
-            pnlLecturerNavigation.Visible =
-                false;
-
-
-            pnlStudentNavigation.Visible =
-                false;
-
+            pnlAdminNavigation.Visible = false;
+            pnlLecturerNavigation.Visible = false;
+            pnlStudentNavigation.Visible = false;
 
             string role =
                 Session["Role"] == null
                 ? ""
-                : Session["Role"]
-                    .ToString()
-                    .Trim();
+                : Session["Role"].ToString().Trim();
 
-
-            if (
-                role.Equals(
-                    "Admin",
-                    StringComparison.OrdinalIgnoreCase
-                )
-            )
+            if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                pnlAdminNavigation.Visible =
-                    true;
+                pnlAdminNavigation.Visible = true;
             }
-
-            else if (
-                role.Equals(
-                    "Lecturer",
-                    StringComparison.OrdinalIgnoreCase
-                )
-            )
+            else if (role.Equals("Lecturer", StringComparison.OrdinalIgnoreCase))
             {
-                pnlLecturerNavigation.Visible =
-                    true;
+                pnlLecturerNavigation.Visible = true;
             }
-
             else
             {
-                pnlStudentNavigation.Visible =
-                    true;
+                pnlStudentNavigation.Visible = true;
             }
         }
-
-
 
         // =========================================================
         // LOAD PROFILE
@@ -202,205 +119,126 @@ namespace SPMaster.Account
 
         private void LoadProfile()
         {
-            int userId =
-                GetUserId();
+            int userId = GetUserId();
 
-
-            if (
-                userId == 0
-            )
+            if (userId == 0)
             {
-                Response.Redirect(
-                    "~/Login.aspx"
-                );
-
+                Response.Redirect("~/Login.aspx");
                 return;
             }
 
-
             const string query = @"
                 SELECT
-
                     U.UserId,
                     U.FullName,
                     U.Email,
                     U.SchoolName,
                     U.ProfileImagePath,
                     U.CreatedAt,
-
                     R.RoleName
-
                 FROM Users U
-
                 INNER JOIN Roles R
-                    ON U.RoleId =
-                       R.RoleId
-
-                WHERE
-                    U.UserId =
-                    @UserId;
+                    ON U.RoleId = R.RoleId
+                WHERE U.UserId = @UserId;
             ";
-
 
             using (
                 SqlConnection connection =
-                    new SqlConnection(
-                        GetConnectionString()
-                    )
+                    new SqlConnection(GetConnectionString())
             )
             {
                 using (
                     SqlCommand command =
-                        new SqlCommand(
-                            query,
-                            connection
-                        )
+                        new SqlCommand(query, connection)
                 )
                 {
-                    command.Parameters
-                        .AddWithValue(
-                            "@UserId",
-                            userId
-                        );
-
+                    command.Parameters.AddWithValue(
+                        "@UserId",
+                        userId
+                    );
 
                     connection.Open();
-
 
                     using (
                         SqlDataReader reader =
                             command.ExecuteReader()
                     )
                     {
-                        if (
-                            !reader.Read()
-                        )
+                        if (!reader.Read())
                         {
                             ShowError(
                                 "Unable to find your profile."
                             );
 
-
-                            btnSaveProfile.Visible =
-                                false;
-
-
+                            btnSaveProfile.Visible = false;
                             return;
                         }
 
-
-                        // =========================================
-                        // USER INFORMATION
-                        // =========================================
-
                         string fullName =
-                            reader["FullName"]
-                                .ToString();
-
+                            reader["FullName"].ToString();
 
                         string email =
-                            reader["Email"]
-                                .ToString();
-
+                            reader["Email"].ToString();
 
                         string school =
-                            reader["SchoolName"]
-                                .ToString();
-
+                            reader["SchoolName"].ToString();
 
                         string role =
-                            reader["RoleName"]
-                                .ToString();
-
+                            reader["RoleName"].ToString();
 
                         string profileImagePath =
-                            reader["ProfileImagePath"]
-                            == DBNull.Value
+                            reader["ProfileImagePath"] == DBNull.Value
                             ? ""
-                            : reader[
-                                "ProfileImagePath"
-                              ].ToString();
-
-
+                            : reader["ProfileImagePath"].ToString();
 
                         // =========================================
                         // FORM VALUES
                         // =========================================
 
-                        txtFullName.Text =
-                            fullName;
+                        txtFullName.Text = fullName;
 
-
-                        txtEmail.Text =
-                            email;
-
+                        // Display only - cannot be edited
+                        lblEmail.Text = email;
 
                         if (ddlSchool.Items.FindByValue(school) != null)
                         {
-                            ddlSchool.SelectedValue =
-                                school;
+                            ddlSchool.SelectedValue = school;
                         }
                         else
                         {
-                            ddlSchool.SelectedValue =
-                                "";
+                            ddlSchool.SelectedValue = "";
                         }
 
-
-                        lblInstitutionalRole.Text =
-                            role;
-
-
+                        lblInstitutionalRole.Text = role;
 
                         // =========================================
                         // PAGE HEADING
                         // =========================================
 
                         lblProfileHeading.Text =
-                            role
-                            + " Profile";
-
-
+                            role + " Profile";
 
                         // =========================================
                         // PROFILE INITIALS
                         // =========================================
 
-                        string initials =
-                            GetInitials(
-                                fullName
-                            );
-
-
                         lblProfileInitials.Text =
-                            initials;
-
-
+                            GetInitials(fullName);
 
                         // =========================================
                         // PROFILE DESCRIPTION
                         // =========================================
 
-                        if (
-                            string.IsNullOrWhiteSpace(
-                                school
-                            )
-                        )
+                        if (string.IsNullOrWhiteSpace(school))
                         {
                             lblProfileDescription.Text =
-                                role
-                                + " Account";
+                                role + " Account";
                         }
                         else
                         {
                             lblProfileDescription.Text =
-                                school
-                                + " "
-                                + role
-                                + " Account";
+                                school + " " + role + " Account";
                         }
-
-
 
                         // =========================================
                         // PROFILE PHOTO
@@ -414,132 +252,79 @@ namespace SPMaster.Account
             }
         }
 
-
-
         // =========================================================
         // GET USER INITIALS
         // =========================================================
 
-        private string GetInitials(
-            string fullName)
+        private string GetInitials(string fullName)
         {
-            if (
-                string.IsNullOrWhiteSpace(
-                    fullName
-                )
-            )
+            if (string.IsNullOrWhiteSpace(fullName))
             {
                 return "U";
             }
 
-
             string[] parts =
                 fullName
-                .Trim()
-                .Split(
-                    new char[] { ' ' },
-                    StringSplitOptions
-                        .RemoveEmptyEntries
-                );
+                    .Trim()
+                    .Split(
+                        new char[] { ' ' },
+                        StringSplitOptions.RemoveEmptyEntries
+                    );
 
-
-            if (
-                parts.Length == 1
-            )
+            if (parts.Length == 1)
             {
                 return parts[0]
-                    .Substring(
-                        0,
-                        1
-                    )
+                    .Substring(0, 1)
                     .ToUpper();
             }
 
-
             string first =
                 parts[0]
-                .Substring(
-                    0,
-                    1
-                );
-
+                    .Substring(0, 1);
 
             string last =
-                parts[
-                    parts.Length - 1
-                ]
-                .Substring(
-                    0,
-                    1
-                );
+                parts[parts.Length - 1]
+                    .Substring(0, 1);
 
-
-            return (
-                first
-                + last
-            ).ToUpper();
+            return (first + last).ToUpper();
         }
-
-
 
         // =========================================================
         // DISPLAY SAVED PROFILE IMAGE
         // =========================================================
 
-        private void ShowProfileImage(
-            string imagePath)
+        private void ShowProfileImage(string imagePath)
         {
-            if (
-                string.IsNullOrWhiteSpace(
-                    imagePath
-                )
-            )
+            if (string.IsNullOrWhiteSpace(imagePath))
             {
-                imgProfile.ImageUrl =
-                    "";
+                imgProfile.ImageUrl = "";
 
-
-                imgProfile.Style[
-                    "display"
-                ] =
+                imgProfile.Style["display"] =
                     "none";
 
-
-                lblProfileInitials.Style[
-                    "display"
-                ] =
+                lblProfileInitials.Style["display"] =
                     "inline";
-
 
                 return;
             }
 
-
             imgProfile.ImageUrl =
-                ResolveUrl(
-                    imagePath
-                );
+                ResolveUrl(imagePath);
 
-
-            imgProfile.Style[
-                "display"
-            ] =
+            imgProfile.Style["display"] =
                 "block";
 
-
-            lblProfileInitials.Style[
-                "display"
-            ] =
+            lblProfileInitials.Style["display"] =
                 "none";
         }
-
-
 
         // =========================================================
         // SAVE PROFILE
         // =========================================================
 
-        protected void btnSaveProfile_Click(object sender, EventArgs e)
+        protected void btnSaveProfile_Click(
+            object sender,
+            EventArgs e)
         {
             if (!Page.IsValid)
             {
@@ -548,66 +333,36 @@ namespace SPMaster.Account
 
             int userId = GetUserId();
 
-
             if (userId == 0)
             {
-                ShowError("Your session has expired. Please log in again.");
-                return;
-            }
-
-            string fullName = txtFullName.Text.Trim();
-
-            string email = txtEmail.Text.Trim();
-
-            string school = ddlSchool.SelectedValue.Trim();
-
-
-
-            // =====================================================
-            // EMAIL DUPLICATE CHECK
-            // =====================================================
-
-            if (
-                EmailExists(
-                    email,
-                    userId
-                )
-            )
-            {
                 ShowError(
-                    "This email address is already used by another account."
+                    "Your session has expired. Please log in again."
                 );
 
                 return;
             }
 
+            string fullName =
+                txtFullName.Text.Trim();
 
+            string school =
+                ddlSchool.SelectedValue.Trim();
 
             // =====================================================
             // NEW PROFILE IMAGE
             // =====================================================
 
-            string profileImagePath =
-                null;
-
+            string profileImagePath = null;
 
             bool hasNewImage =
                 fuProfilePhoto.HasFile;
 
-
-
-            if (
-                hasNewImage
-            )
+            if (hasNewImage)
             {
                 string extension =
                     Path.GetExtension(
-                        fuProfilePhoto
-                            .FileName
-                    )
-                    .ToLower();
-
-
+                        fuProfilePhoto.FileName
+                    ).ToLower();
 
                 string[] allowedExtensions =
                 {
@@ -617,38 +372,25 @@ namespace SPMaster.Account
                     ".webp"
                 };
 
-
-                bool allowed =
-                    false;
-
+                bool allowed = false;
 
                 foreach (
                     string allowedExtension
                     in allowedExtensions
                 )
                 {
-                    if (
-                        extension
-                        ==
-                        allowedExtension
-                    )
+                    if (extension == allowedExtension)
                     {
-                        allowed =
-                            true;
-
+                        allowed = true;
                         break;
                     }
                 }
 
-
-
-                // =================================================
+                // ===============================================
                 // INVALID FILE TYPE
-                // =================================================
+                // ===============================================
 
-                if (
-                    !allowed
-                )
+                if (!allowed)
                 {
                     ShowError(
                         "Please upload a JPG, PNG or WEBP image."
@@ -657,11 +399,9 @@ namespace SPMaster.Account
                     return;
                 }
 
-
-
-                // =================================================
+                // ===============================================
                 // FILE SIZE LIMIT
-                // =================================================
+                // ===============================================
 
                 if (
                     fuProfilePhoto
@@ -678,44 +418,32 @@ namespace SPMaster.Account
                     return;
                 }
 
-
-
-                // =================================================
+                // ===============================================
                 // PROFILE IMAGE FOLDER
-                // =================================================
+                // ===============================================
 
                 string folder =
                     Server.MapPath(
                         "~/Images/ProfileImages/"
                     );
 
-
-                if (
-                    !Directory.Exists(
-                        folder
-                    )
-                )
+                if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(
                         folder
                     );
                 }
 
-
-
-                // =================================================
+                // ===============================================
                 // UNIQUE FILE NAME
-                // =================================================
+                // ===============================================
 
                 string fileName =
                     "profile_"
                     + userId
                     + "_"
-                    + Guid.NewGuid()
-                        .ToString("N")
+                    + Guid.NewGuid().ToString("N")
                     + extension;
-
-
 
                 string physicalPath =
                     Path.Combine(
@@ -723,80 +451,47 @@ namespace SPMaster.Account
                         fileName
                     );
 
+                // ===============================================
+                // SAVE IMAGE
+                // ===============================================
 
-
-                // =================================================
-                // SAVE PHYSICAL IMAGE
-                // =================================================
-
-                fuProfilePhoto
-                    .SaveAs(
-                        physicalPath
-                    );
-
-
+                fuProfilePhoto.SaveAs(
+                    physicalPath
+                );
 
                 profileImagePath =
                     "~/Images/ProfileImages/"
                     + fileName;
             }
 
-
-
             // =====================================================
             // DATABASE UPDATE
+            // Email is intentionally NOT updated.
             // =====================================================
 
             string query;
 
-
-            if (
-                hasNewImage
-            )
+            if (hasNewImage)
             {
                 query = @"
                     UPDATE Users
-
                     SET
-                        FullName =
-                            @FullName,
-
-                        Email =
-                            @Email,
-
-                        SchoolName =
-                            @SchoolName,
-
-                        ProfileImagePath =
-                            @ProfileImagePath
-
-                    WHERE
-                        UserId =
-                            @UserId;
+                        FullName = @FullName,
+                        SchoolName = @SchoolName,
+                        ProfileImagePath = @ProfileImagePath
+                    WHERE UserId = @UserId;
                 ";
             }
             else
             {
                 query = @"
                     UPDATE Users
-
                     SET
-                        FullName =
-                            @FullName,
-
-                        Email =
-                            @Email,
-
-                        SchoolName =
-                            @SchoolName
-
-                    WHERE
-                        UserId =
-                            @UserId;
+                        FullName = @FullName,
+                        SchoolName = @SchoolName
+                    WHERE UserId = @UserId;
                 ";
             }
-
-
 
             using (
                 SqlConnection connection =
@@ -813,56 +508,34 @@ namespace SPMaster.Account
                         )
                 )
                 {
-                    command.Parameters
-                        .AddWithValue(
-                            "@FullName",
-                            fullName
-                        );
+                    command.Parameters.AddWithValue(
+                        "@FullName",
+                        fullName
+                    );
 
+                    command.Parameters.AddWithValue(
+                        "@SchoolName",
+                        school
+                    );
 
-                    command.Parameters
-                        .AddWithValue(
-                            "@Email",
-                            email
-                        );
+                    command.Parameters.AddWithValue(
+                        "@UserId",
+                        userId
+                    );
 
-
-                    command.Parameters
-                        .AddWithValue(
-                            "@SchoolName",
-                            school
-                        );
-
-
-                    command.Parameters
-                        .AddWithValue(
-                            "@UserId",
-                            userId
-                        );
-
-
-
-                    if (
-                        hasNewImage
-                    )
+                    if (hasNewImage)
                     {
-                        command.Parameters
-                            .AddWithValue(
-                                "@ProfileImagePath",
-                                profileImagePath
-                            );
+                        command.Parameters.AddWithValue(
+                            "@ProfileImagePath",
+                            profileImagePath
+                        );
                     }
-
-
 
                     try
                     {
                         connection.Open();
 
-
                         command.ExecuteNonQuery();
-
-
 
                         // =========================================
                         // UPDATE SESSION
@@ -871,33 +544,19 @@ namespace SPMaster.Account
                         Session["FullName"] =
                             fullName;
 
-
-                        Session["Email"] =
-                            email;
-
-
+                        // Email is NOT changed.
 
                         // =========================================
-                        // RELOAD PROFILE CARD
+                        // RELOAD PROFILE
                         // =========================================
 
                         LoadProfile();
 
-
-
                         // =========================================
-                        // RELOAD TOP-RIGHT USER HEADER
-                        //
-                        // Admin:
-                        //     Dashboard.Master
-                        //
-                        // Student / Lecturer:
-                        //     Portal.Master
+                        // REFRESH TOP-RIGHT HEADER
                         // =========================================
 
                         RefreshMasterUserHeader();
-
-
 
                         // =========================================
                         // SUCCESS MESSAGE
@@ -906,13 +565,9 @@ namespace SPMaster.Account
                         lblSuccessMessage.Text =
                             "Profile updated successfully.";
 
-
-                        pnlSuccess.Visible =
-                            true;
+                        pnlSuccess.Visible = true;
                     }
-                    catch (
-                        Exception
-                    )
+                    catch (Exception)
                     {
                         ShowError(
                             "Unable to update your profile. Please try again."
@@ -921,8 +576,6 @@ namespace SPMaster.Account
                 }
             }
         }
-
-
 
         // =========================================================
         // RESET PROFILE PHOTO
@@ -935,27 +588,16 @@ namespace SPMaster.Account
             int userId =
                 GetUserId();
 
-
-            if (
-                userId == 0
-            )
+            if (userId == 0)
             {
                 return;
             }
 
-
             const string query = @"
                 UPDATE Users
-
-                SET
-                    ProfileImagePath =
-                        NULL
-
-                WHERE
-                    UserId =
-                        @UserId;
+                SET ProfileImagePath = NULL
+                WHERE UserId = @UserId;
             ";
-
 
             using (
                 SqlConnection connection =
@@ -972,52 +614,28 @@ namespace SPMaster.Account
                         )
                 )
                 {
-                    command.Parameters
-                        .AddWithValue(
-                            "@UserId",
-                            userId
-                        );
-
+                    command.Parameters.AddWithValue(
+                        "@UserId",
+                        userId
+                    );
 
                     try
                     {
                         connection.Open();
 
-
                         command.ExecuteNonQuery();
-
-
-
-                        // =========================================
-                        // RELOAD PROFILE CARD
-                        // =========================================
 
                         LoadProfile();
 
-
-
-                        // =========================================
-                        // RELOAD TOP-RIGHT USER HEADER
-                        // =========================================
-
                         RefreshMasterUserHeader();
-
-
-
-                        // =========================================
-                        // SUCCESS MESSAGE
-                        // =========================================
 
                         lblSuccessMessage.Text =
                             "Profile photo reset successfully.";
 
-
                         pnlSuccess.Visible =
                             true;
                     }
-                    catch (
-                        Exception
-                    )
+                    catch (Exception)
                     {
                         ShowError(
                             "Unable to reset your profile photo."
@@ -1027,142 +645,40 @@ namespace SPMaster.Account
             }
         }
 
-
-
         // =========================================================
         // REFRESH CURRENT MASTER PAGE USER HEADER
-        //
-        // Admin:
-        //     Dashboard.Master
-        //
-        // Student / Lecturer:
-        //     Portal.Master
         // =========================================================
 
         private void RefreshMasterUserHeader()
         {
-            // =====================================================
             // ADMIN
-            // =====================================================
-
             SPMaster.Dashboard dashboardMaster =
-                Master
-                as SPMaster.Dashboard;
+                Master as SPMaster.Dashboard;
 
-
-            if (
-                dashboardMaster != null
-            )
+            if (dashboardMaster != null)
             {
-                dashboardMaster
-                    .LoadCurrentUser();
-
+                dashboardMaster.LoadCurrentUser();
                 return;
             }
 
-
-
-            // =====================================================
             // STUDENT / LECTURER
-            // =====================================================
-
             SPMaster.Master.Portal portalMaster =
-                Master
-                as SPMaster.Master.Portal;
+                Master as SPMaster.Master.Portal;
 
-
-            if (
-                portalMaster != null
-            )
+            if (portalMaster != null)
             {
-                portalMaster
-                    .LoadCurrentUser();
+                portalMaster.LoadCurrentUser();
             }
         }
-
-
-
-        // =========================================================
-        // CHECK EMAIL DUPLICATE
-        // =========================================================
-
-        private bool EmailExists(
-            string email,
-            int userId)
-        {
-            const string query = @"
-                SELECT
-                    COUNT(*)
-
-                FROM Users
-
-                WHERE
-                    Email =
-                        @Email
-
-                    AND
-
-                    UserId <>
-                        @UserId;
-            ";
-
-
-            using (
-                SqlConnection connection =
-                    new SqlConnection(
-                        GetConnectionString()
-                    )
-            )
-            {
-                using (
-                    SqlCommand command =
-                        new SqlCommand(
-                            query,
-                            connection
-                        )
-                )
-                {
-                    command.Parameters
-                        .AddWithValue(
-                            "@Email",
-                            email
-                        );
-
-
-                    command.Parameters
-                        .AddWithValue(
-                            "@UserId",
-                            userId
-                        );
-
-
-                    connection.Open();
-
-
-                    int count =
-                        Convert.ToInt32(
-                            command.ExecuteScalar()
-                        );
-
-
-                    return
-                        count > 0;
-                }
-            }
-        }
-
-
 
         // =========================================================
         // ERROR MESSAGE
         // =========================================================
 
-        private void ShowError(
-            string message)
+        private void ShowError(string message)
         {
             lblMessage.Text =
                 message;
-
 
             lblMessage.Visible =
                 true;
