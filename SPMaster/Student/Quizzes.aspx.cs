@@ -435,6 +435,268 @@ namespace SPMaster.Student
             litAttemptCount.Text = table.Rows.Count.ToString();
         }
 
+        // =========================================================
+        // Join Session
+        // =========================================================
+        private string JoinConnectionString =>
+            ConfigurationManager.ConnectionStrings["SPMasterConnectionString"].ConnectionString;
+
+        private int JoinStudentId => Convert.ToInt32(Session["UserId"]);
+
+        private DataRow GetJoinSession(string code)
+        {
+            const string sql = @"
+        SELECT QS.SessionId, QS.SessionTitle, QS.QuizId, QS.IsOpen,
+               Q.Title AS QuizTitle, Q.TimeLimitMinutes,
+               Q.IsPublished, Q.IsArchived,
+               (SELECT COUNT(*) FROM QuizQuestions
+                WHERE QuizId = Q.QuizId) AS QuestionCount,
+               (SELECT ISNULL(SUM(MaxMarks), 0) FROM QuizQuestions
+                WHERE QuizId = Q.QuizId) AS TotalMarks
+        FROM QuizSessions QS
+        INNER JOIN Quizzes Q ON QS.QuizId = Q.QuizId
+        WHERE UPPER(LTRIM(RTRIM(QS.JoinCode))) = @JoinCode;";
+
+            DataTable table = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(JoinConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+            {
+                command.Parameters.Add("@JoinCode", SqlDbType.NVarChar, 20).Value = code;
+                adapter.Fill(table);
+            }
+
+            return table.Rows.Count > 0 ? table.Rows[0] : null;
+        }
+
+        private int GetStudentSessionValue(string sql, int sessionId)
+        {
+            using (SqlConnection connection = new SqlConnection(JoinConnectionString))
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@SessionId", SqlDbType.Int).Value = sessionId;
+                command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = JoinStudentId;
+
+                connection.Open();
+                object result = command.ExecuteScalar();
+
+                return result == null || result == DBNull.Value
+                    ? 0 : Convert.ToInt32(result);
+            }
+        }
+
+        private bool HasSubmittedJoinSession(int sessionId)
+        {
+            const string sql = @"
+        SELECT COUNT(*) FROM QuizAttempts
+        WHERE SessionId = @SessionId
+          AND StudentUserId = @StudentUserId
+          AND SubmittedAt IS NOT NULL;";
+
+            return GetStudentSessionValue(sql, sessionId) > 0;
+        }
+
+        private int GetExistingJoinAttempt(int sessionId)
+        {
+            const string sql = @"
+        SELECT TOP 1 AttemptId FROM QuizAttempts
+        WHERE SessionId = @SessionId
+          AND StudentUserId = @StudentUserId
+          AND SubmittedAt IS NULL
+          AND AttemptStatus = 'InProgress'
+        ORDER BY StartedAt DESC;";
+
+            return GetStudentSessionValue(sql, sessionId);
+        }
+
+        private void ShowJoinError(string message)
+        {
+            lblJoinError.Text = message;
+            pnlJoinError.Visible = true;
+            pnlFoundSession.Visible = false;
+            btnStartSession.Visible = false;
+            hfOpenJoinModal.Value = "1";
+        }
+
+        // =========================================================
+        //  Join Code
+        // =========================================================
+        protected void btnFindSession_Click(object sender, EventArgs e)
+        {
+            hfOpenJoinModal.Value = "1";
+            pnlJoinError.Visible = false;
+            pnlFoundSession.Visible = false;
+            btnStartSession.Visible = false;
+            hfFoundSessionId.Value = "";
+            hfFoundQuizId.Value = "";
+
+            Page.Validate("JoinSession");
+            if (!Page.IsValid) return;
+
+            string code = txtJoinCode.Text.Trim().ToUpperInvariant();
+
+            try
+            {
+                DataRow session = GetJoinSession(code);
+
+                if (session == null)
+                {
+                    ShowJoinError("Session not found. Please check the join code.");
+                    return;
+                }
+
+                if (!Convert.ToBoolean(session["IsOpen"]))
+                {
+                    ShowJoinError("This session has already been closed.");
+                    return;
+                }
+
+                if (!Convert.ToBoolean(session["IsPublished"]) ||
+                    Convert.ToBoolean(session["IsArchived"]))
+                {
+                    ShowJoinError("This quiz is no longer available.");
+                    return;
+                }
+
+                int sessionId = Convert.ToInt32(session["SessionId"]);
+                int quizId = Convert.ToInt32(session["QuizId"]);
+                int questionCount = Convert.ToInt32(session["QuestionCount"]);
+                int timeLimit = Convert.ToInt32(session["TimeLimitMinutes"]);
+
+                if (HasSubmittedJoinSession(sessionId))
+                {
+                    ShowJoinError("You have already submitted this quiz.");
+                    return;
+                }
+
+                if (questionCount <= 0 || timeLimit <= 0)
+                {
+                    ShowJoinError("This quiz does not have valid questions or a time limit.");
+                    return;
+                }
+
+                lblFoundQuizTitle.Text = Server.HtmlEncode(session["QuizTitle"].ToString());
+                lblFoundSessionTitle.Text = Server.HtmlEncode(session["SessionTitle"].ToString());
+                lblFoundQuestionCount.Text = questionCount.ToString();
+                lblFoundMarks.Text = Convert.ToDecimal(session["TotalMarks"]).ToString("0.##");
+                lblFoundTime.Text = timeLimit.ToString();
+
+                hfFoundSessionId.Value = sessionId.ToString();
+                hfFoundQuizId.Value = quizId.ToString();
+
+                pnlFoundSession.Visible = true;
+                btnStartSession.Visible = true;
+
+                btnStartSession.Text = GetExistingJoinAttempt(sessionId) > 0
+                    ? "Continue Attempt" : "Start Attempt";
+            }
+            catch (SqlException)
+            {
+                ShowJoinError("Unable to connect to the database. Please try again.");
+            }
+            catch (Exception)
+            {
+                ShowJoinError("Something went wrong while finding the session.");
+            }
+        }
+
+        /// =========================================================
+        // Start or Continue Attempt
+        // =========================================================
+        protected void btnStartSession_Click(object sender, EventArgs e)
+        {
+            hfOpenJoinModal.Value = "1";
+            pnlJoinError.Visible = false;
+
+            try
+            {
+                int sessionId, quizId;
+
+                if (!int.TryParse(hfFoundSessionId.Value, out sessionId) ||
+                    !int.TryParse(hfFoundQuizId.Value, out quizId))
+                {
+                    ShowJoinError("Please find the session again.");
+                    return;
+                }
+
+                string code = txtJoinCode.Text.Trim().ToUpperInvariant();
+                DataRow session = GetJoinSession(code);
+
+                if (session == null ||
+                    Convert.ToInt32(session["SessionId"]) != sessionId ||
+                    Convert.ToInt32(session["QuizId"]) != quizId ||
+                    !Convert.ToBoolean(session["IsOpen"]) ||
+                    !Convert.ToBoolean(session["IsPublished"]) ||
+                    Convert.ToBoolean(session["IsArchived"]))
+                {
+                    ShowJoinError("This session is invalid or no longer available.");
+                    return;
+                }
+
+                if (HasSubmittedJoinSession(sessionId))
+                {
+                    ShowJoinError("You have already submitted this quiz.");
+                    return;
+                }
+
+                int existingAttemptId = GetExistingJoinAttempt(sessionId);
+
+                if (existingAttemptId > 0)
+                {
+                    GoToJoinAttempt(existingAttemptId);
+                    return;
+                }
+
+                int timeLimit = Convert.ToInt32(session["TimeLimitMinutes"]);
+                int questionCount = Convert.ToInt32(session["QuestionCount"]);
+
+                if (timeLimit <= 0 || questionCount <= 0)
+                {
+                    ShowJoinError("This quiz cannot be started.");
+                    return;
+                }
+
+                const string sql = @"
+            INSERT INTO QuizAttempts
+                (QuizId, StudentUserId, SessionId, StartedAt,
+                 ExpiresAt, SubmittedAt, AttemptStatus)
+            VALUES
+                (@QuizId, @StudentUserId, @SessionId, GETDATE(),
+                 DATEADD(MINUTE, @TimeLimit, GETDATE()), NULL, 'InProgress');
+            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                int attemptId;
+
+                using (SqlConnection connection = new SqlConnection(JoinConnectionString))
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
+                    command.Parameters.Add("@StudentUserId", SqlDbType.Int).Value = JoinStudentId;
+                    command.Parameters.Add("@SessionId", SqlDbType.Int).Value = sessionId;
+                    command.Parameters.Add("@TimeLimit", SqlDbType.Int).Value = timeLimit;
+
+                    connection.Open();
+                    attemptId = Convert.ToInt32(command.ExecuteScalar());
+                }
+
+                GoToJoinAttempt(attemptId);
+            }
+            catch (SqlException)
+            {
+                ShowJoinError("Unable to start the quiz. Please try again.");
+            }
+            catch (Exception)
+            {
+                ShowJoinError("Something went wrong while starting the quiz.");
+            }
+        }
+
+        private void GoToJoinAttempt(int attemptId)
+        {
+            Response.Redirect("~/Student/StartQuiz.aspx?attemptId=" + attemptId, false);
+            Context.ApplicationInstance.CompleteRequest();
+        }
 
         // =========================================================
         // QUIZ CARD HELPERS

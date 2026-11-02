@@ -188,6 +188,9 @@
 /* =========================================================
    JOIN CODE
    ========================================================= */
+.student-join-modal[hidden] {
+    display: none !important;
+}
 
 .join-code-button {
     display: inline-flex;
