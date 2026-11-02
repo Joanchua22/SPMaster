@@ -320,7 +320,7 @@
                     <button
                         type="button"
                         class="settings-eye-button"
-                        onclick="togglePassword('<%= txtCurrentPassword.ClientID %>', this)"
+                        onclick="settingsTogglePassword('<%= txtCurrentPassword.ClientID %>', this)"
                         aria-label="Show or hide current password">
 
                         <i class="bi bi-eye"></i>
@@ -367,7 +367,7 @@
                     <button
                         type="button"
                         class="settings-eye-button"
-                        onclick="togglePassword('<%= txtNewPassword.ClientID %>', this)"
+                        onclick="settingsTogglePassword('<%= txtNewPassword.ClientID %>', this)"
                         aria-label="Show or hide new password">
 
                         <i class="bi bi-eye"></i>
@@ -418,7 +418,7 @@
                     <button
                         type="button"
                         class="settings-eye-button"
-                        onclick="togglePassword('<%= txtConfirmPassword.ClientID %>', this)"
+                        onclick="settingsTogglePassword('<%= txtConfirmPassword.ClientID %>', this)"
                         aria-label="Show or hide confirm password">
 
                         <i class="bi bi-eye"></i>

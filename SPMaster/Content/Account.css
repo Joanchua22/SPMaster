@@ -330,6 +330,18 @@
         box-shadow: 0 0 0 2px rgba(140, 77, 255, 0.22);
     }
 
+.profile-readonly-field {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-radius: 22px;
+    background: #f4effc;
+    color: #4b4453;
+    font-size: 14px;
+    box-sizing: border-box;
+    cursor: default;
+}
 
 /* ==========================================
    PROFILE ROLE

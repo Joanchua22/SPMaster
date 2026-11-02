@@ -360,44 +360,18 @@
 
                 </div>
 
-
                 <%-- EMAIL --%>
                 <div class="profile-form-group">
-
-                    <label for="<%= txtEmail.ClientID %>">
+                    <label>
                         EMAIL ADDRESS
                     </label>
 
-
-                    <asp:TextBox
-                        ID="txtEmail"
-                        runat="server"
-                        CssClass="profile-form-input"
-                        MaxLength="254"
-                        TextMode="Email">
-                    </asp:TextBox>
-
-
-                    <asp:RequiredFieldValidator
-                        ID="rfvEmail"
-                        runat="server"
-                        ControlToValidate="txtEmail"
-                        ErrorMessage="Email address is required."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RequiredFieldValidator>
-
-
-                    <asp:RegularExpressionValidator
-                        ID="revEmail"
-                        runat="server"
-                        ControlToValidate="txtEmail"
-                        ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
-                        ErrorMessage="Please enter a valid email address."
-                        CssClass="validation-message"
-                        Display="Dynamic">
-                    </asp:RegularExpressionValidator>
-
+                    <div class="profile-readonly-field">
+                        <asp:Label
+                            ID="lblEmail"
+                            runat="server">
+                        </asp:Label>
+                    </div>
                 </div>
 
                 <%-- SCHOOL --%>
