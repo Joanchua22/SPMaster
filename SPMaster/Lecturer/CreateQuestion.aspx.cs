@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Web.UI.WebControls;
+using System.Linq;
 
 namespace SPMaster.Lecturer
 {
@@ -369,11 +370,7 @@ namespace SPMaster.Lecturer
 
                 questionId = InsertQuestion(mediaPath);
 
-                Response.Redirect(
-                    "~/Lecturer/CreateQuestion.aspx?id="
-                    + questionId
-                    + "&saved=1"
-                );
+                Response.Redirect("~/Lecturer/CreateQuestion.aspx?saved=1");
             }
             catch (Exception ex)
             {
@@ -932,6 +929,24 @@ namespace SPMaster.Lecturer
         {
             lblQuestionError.Text = message;
             pnlQuestionError.Visible = true;
+        }
+
+
+        protected void ValidateDuplicateOptions(object source,ServerValidateEventArgs args)
+        {
+            if (ddlQuestionType.SelectedValue!= "MCQ")
+            {
+                args.IsValid = true;
+                return;
+            }
+
+            string optionA = txtOptionA.Text.Trim();
+            string optionB = txtOptionB.Text.Trim();
+            string optionC = txtOptionC.Text.Trim();
+            string optionD = txtOptionD.Text.Trim();
+            string[] options = {optionA,optionB,optionC,optionD};
+            int uniqueCount = options.Select(option =>option.ToLowerInvariant()).Distinct().Count();
+            args.IsValid = uniqueCount == 4;
         }
     }
 }

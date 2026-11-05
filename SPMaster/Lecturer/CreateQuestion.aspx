@@ -339,6 +339,8 @@
                     <%-- CORRECT OPTION VALIDATION --%>
                     <asp:CustomValidator ID="valCorrectOption" runat="server" ErrorMessage="Please select the correct answer." CssClass="cq-validation-error" Display="Dynamic" ClientValidationFunction="validateCorrectOption" OnServerValidate="ValidateCorrectOption" ValidationGroup="QuestionValidation"></asp:CustomValidator>
 
+                    <asp:CustomValidator ID="valDuplicateOptions" runat="server" ErrorMessage="Answer choices must be different from each other." CssClass="cq-validation-error" Display="Dynamic" ClientValidationFunction="validateDuplicateOptions" OnServerValidate="ValidateDuplicateOptions" ValidationGroup="QuestionValidation"></asp:CustomValidator>
+
                 </div>
 
 
@@ -693,6 +695,46 @@
                 return "";
             }
 
+            function validateDuplicateOptions(sender, args) {
+
+                var questionType =
+                    document.getElementById("ddlQuestionType").value;
+
+                if (questionType !== "MCQ") {
+                    args.IsValid = true;
+                    return;
+                }
+
+                var optionA =
+                    document.getElementById("txtOptionA")
+                        .value.trim().toLowerCase();
+
+                var optionB =
+                    document.getElementById("txtOptionB")
+                        .value.trim().toLowerCase();
+
+                var optionC =
+                    document.getElementById("txtOptionC")
+                        .value.trim().toLowerCase();
+
+                var optionD =
+                    document.getElementById("txtOptionD")
+                        .value.trim().toLowerCase();
+
+                var options = [
+                    optionA,
+                    optionB,
+                    optionC,
+                    optionD
+                ];
+
+                var uniqueOptions =
+                    new Set(options);
+
+                args.IsValid =
+                    uniqueOptions.size === 4;
+            }
+
 
             /* =====================================================
                PREVIEW QUESTION
@@ -762,6 +804,8 @@
                     });
                 });
             }
+
+
 
 
             /* =====================================================

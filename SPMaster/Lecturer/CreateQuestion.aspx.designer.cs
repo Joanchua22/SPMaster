@@ -330,6 +330,15 @@ namespace SPMaster.Lecturer
         protected global::System.Web.UI.WebControls.CustomValidator valCorrectOption;
 
         /// <summary>
+        /// valDuplicateOptions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valDuplicateOptions;
+
+        /// <summary>
         /// txtModelAnswer control.
         /// </summary>
         /// <remarks>
