@@ -1057,8 +1057,8 @@ namespace SPMaster.Student
                     row["ActionText"] =
                         "Pending";
 
-                    row["ActionCss"] =
-                        "recent-attempt-button disabled";
+                    row["ActionCss"] = 
+                        "recent-attempt-pending";
 
                     row["ActionUrl"] =
                         "#";
@@ -1078,14 +1078,14 @@ namespace SPMaster.Student
                         "bi bi-check-circle";
 
                     row["ActionText"] =
-                        "Completed";
+                        "View Result";
 
                     row["ActionCss"] =
-                        "recent-attempt-button completed-button";
+                        "recent-attempt-result-link";
 
                     row["ActionUrl"] =
                         ResolveUrl(
-                            "~/Student/Performance.aspx"
+                            "~/Student/QuizResult.aspx?attemptId=" + row["AttemptId"]
                         );
                 }
             }

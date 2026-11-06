@@ -1039,26 +1039,53 @@ body.student-join-open {
 /* =========================================================
    RECENT ATTEMPT BUTTON
    ========================================================= */
-
-.recent-attempt-button {
-    display: inline-block;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: var(--student-button-font-size);
-    font-weight: 600;
-    text-decoration: none;
+/* Recent Attempts - Alignment */
+.recent-attempt-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-.completed-button {
-    border: 1px solid #7c28ef;
-    background: #ffffff;
-    color: #7c28ef;
-    font-size: var(--student-button-font-size);
-}
+    /* Status badge */
+    .recent-attempt-actions .recent-status {
+        flex-shrink: 0;
+    }
 
-    .completed-button:hover {
-        border-color: #7c28ef;
-        background: #7c28ef;
-        color: #ffffff;
-        transform: translateY(-1px);
+    /* Continue, View Result, Pending */
+    .recent-attempt-actions .recent-attempt-button,
+    .recent-attempt-actions .recent-attempt-result-link,
+    .recent-attempt-actions .recent-attempt-pending {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        padding: 7px 12px !important;
+        border: 1px solid #8c4dff !important;
+        border-radius: 999px !important;
+        background: #ffffff !important;
+        color: #292052 !important;
+        font-size: 11px !important;
+        font-weight: 600;
+        text-decoration: none !important;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
+
+    /* Continue & View Result - Hover */
+    .recent-attempt-actions a.recent-attempt-button:hover,
+    .recent-attempt-actions a.recent-attempt-result-link:hover {
+        background: #8c4dff !important;
+        color: #ffffff !important;
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+
+    /* Pending - Disabled Button */
+    .recent-attempt-actions .recent-attempt-pending {
+        background: #f1edf5 !important;
+        border-color: #ded8e8 !important;
+        color: #9991a8 !important;
+        cursor: not-allowed;
+        pointer-events: none;
     }

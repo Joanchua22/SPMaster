@@ -554,12 +554,21 @@
                                     </span>
 
 
-                                    <a href='<%# Eval("ActionUrl") %>'
-                                       class='<%# Eval("ActionCss") %>'>
+                                   <%-- Continue / Completed: Clickable --%>
+                                    <asp:HyperLink
+                                        runat="server"
+                                        NavigateUrl='<%# Eval("ActionUrl") %>'
+                                        CssClass='<%# Eval("ActionCss") %>'
+                                        Text='<%# Eval("ActionText") %>'
+                                        Visible='<%# Eval("ActionText").ToString() != "Pending" %>' />
 
-                                        <%# Eval("ActionText") %>
 
-                                    </a>
+                                    <%-- Pending: Not clickable --%>
+                                    <asp:Label
+                                        runat="server"
+                                        CssClass="recent-attempt-pending"
+                                        Text="Pending"
+                                        Visible='<%# Eval("ActionText").ToString() == "Pending" %>' />
 
                                 </div>
 
